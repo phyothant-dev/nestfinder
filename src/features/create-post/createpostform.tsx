@@ -161,8 +161,8 @@ export default function CreatePostForm({
     phone: "",
     latitude: "",
     longitude: "",
-    hostelType: [] as string[],
-    roomCapacity: [] as string[],
+    hostelType: "",
+    roomCapacity: "",
     descriptionMm: "",
     descriptionEn: "",
     monthlyFeeFrom: "",
@@ -170,7 +170,6 @@ export default function CreatePostForm({
     areaFrom: "",
     areaTo: "",
     furnishedStatus: "",
-    coBrokerage: false,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -184,8 +183,8 @@ export default function CreatePostForm({
       (isWanted ? (formData.monthlyFeeFrom || formData.monthlyFeeTo ? 1 : 0) : (formData.price ? 1 : 0));
 
     const details = isHostel
-      ? (formData.hostelType.length > 0 ? 1 : 0) +
-        (formData.roomCapacity.length > 0 ? 1 : 0) +
+      ? (formData.hostelType ? 1 : 0) +
+        (formData.roomCapacity ? 1 : 0) +
         (formData.descriptionMm.trim() ? 1 : 0) +
         (formData.descriptionEn.trim() ? 1 : 0)
       : isWanted
@@ -230,16 +229,20 @@ export default function CreatePostForm({
     { label: "USD", value: "usd" },
   ];
 
-  const floorOptionsDataset = useMemo(
-    () => [
+  const floorOptionsDataset = useMemo(() => {
+    const ordinal = (n: number) =>
+      n % 100 >= 11 && n % 100 <= 13
+        ? "th"
+        : ["st", "nd", "rd"][(n % 10) - 1] || "th";
+    return [
       { label: t("ground floor") || "Ground Floor", value: "ground" },
       { label: t("ground + attic") || "Ground + Attic", value: "ground_attic" },
-      { label: `${t("floor.st") || "Low Floor (1-4)"}`, value: "low" },
-      { label: ` ${t("floor.nd") || "Middle Floor (5-8)"}`, value: "mid" },
-      { label: ` ${t("floor.rd") || "High Floor (9+)"}`, value: "high" },
-    ],
-    [t],
-  );
+      ...Array.from({ length: 20 }, (_, i) => ({
+        label: `${i + 1}${ordinal(i + 1)} Floor`,
+        value: `${i + 1}`,
+      })),
+    ];
+  }, [t]);
 
   const roomCountOptions = [
     { label: isBurmese ? "မပါ" : "None", value: "0" },
@@ -254,7 +257,6 @@ export default function CreatePostForm({
     { label: t("hostel.type_male") || "Male", value: "male" },
     { label: t("hostel.type_female") || "Female", value: "female" },
     { label: t("hostel.type_householder") || "Householder", value: "householder" },
-    { label: t("hostel.type_coed") || "Co-ed", value: "co-ed" },
   ];
 
   const roomCapacityOptions = [
@@ -268,7 +270,6 @@ export default function CreatePostForm({
     { label: t("hostel.capacity_8") || "8 Persons", value: "8" },
     { label: t("hostel.capacity_9") || "9 Persons", value: "9" },
     { label: t("hostel.capacity_10") || "10 Persons", value: "10" },
-    { label: t("hostel.capacity_hall") || "Hall", value: "hall" },
     { label: t("hostel.capacity_family") || "Family", value: "family" },
   ];
 
@@ -546,7 +547,6 @@ export default function CreatePostForm({
           floor: ["apartment", "condo"].includes(formData.propertyType) ? formData.floor : null,
           bedrooms: parseInt(formData.bedrooms) || null,
           bathrooms: parseInt(formData.bathrooms) || null,
-          co_brokerage: formData.coBrokerage,
           status: "active",
         };
 
@@ -618,8 +618,8 @@ export default function CreatePostForm({
         images: uploadedImageUrls,
         video_url: uploadedVideoUrl,
         description: [formData.descriptionMm, formData.descriptionEn].filter(Boolean).join("\n---\n") || null,
-        hostel_type: formData.hostelType.length ? formData.hostelType.join(",") : null,
-        room_capacity: formData.roomCapacity.length ? formData.roomCapacity.join(",") : null,
+        hostel_type: formData.hostelType || null,
+        room_capacity: formData.roomCapacity || null,
       };
 
       const { data: insertedData, error } = await supabase
@@ -846,16 +846,11 @@ export default function CreatePostForm({
                 <FormField label={isBurmese ? "အဆောင်အမျိုးအစား" : "Hostel Type"} required>
                   <View className="flex-row flex-wrap gap-2">
                     {hostelTypeOptions.map((opt) => {
-                      const selected = formData.hostelType.includes(opt.value);
+                      const selected = formData.hostelType === opt.value;
                       return (
                         <TouchableOpacity
                           key={opt.value}
-                          onPress={() => {
-                            const next = selected
-                              ? formData.hostelType.filter((v: string) => v !== opt.value)
-                              : [...formData.hostelType, opt.value];
-                            handleInputChange("hostelType", next);
-                          }}
+                          onPress={() => handleInputChange("hostelType", selected ? "" : opt.value)}
                           className={`px-4 py-2.5 rounded-xl border ${
                             selected ? "bg-primary-300 border-primary-300" : "bg-white border-gray-200"
                           }`}
@@ -871,16 +866,11 @@ export default function CreatePostForm({
                 <FormField label={isBurmese ? "အခန်းအမျိုးအစား" : "Room Capacity"} required>
                   <View className="flex-row flex-wrap gap-2">
                     {roomCapacityOptions.map((opt) => {
-                      const selected = formData.roomCapacity.includes(opt.value);
+                      const selected = formData.roomCapacity === opt.value;
                       return (
                         <TouchableOpacity
                           key={opt.value}
-                          onPress={() => {
-                            const next = selected
-                              ? formData.roomCapacity.filter((v: string) => v !== opt.value)
-                              : [...formData.roomCapacity, opt.value];
-                            handleInputChange("roomCapacity", next);
-                          }}
+                          onPress={() => handleInputChange("roomCapacity", selected ? "" : opt.value)}
                           className={`px-3 py-2 rounded-xl border ${
                             selected ? "bg-primary-300 border-primary-300" : "bg-white border-gray-200"
                           }`}
@@ -1209,23 +1199,6 @@ export default function CreatePostForm({
               />
             </FormField>
 
-            {isWanted && (
-              <TouchableOpacity
-                onPress={() => setFormData((prev) => ({ ...prev, coBrokerage: !prev.coBrokerage }))}
-                className="flex-row items-center gap-3 py-2"
-              >
-                <View
-                  className={`w-5 h-5 rounded border-2 items-center justify-center ${
-                    formData.coBrokerage ? "bg-primary-300 border-primary-300" : "border-gray-300"
-                  }`}
-                >
-                  {formData.coBrokerage && <Check size={12} color="white" strokeWidth={3} />}
-                </View>
-                <Text className="text-gray-700 font-rubik-medium text-sm flex-1">
-                  {isBurmese ? "အကျိုးတူဆောင်ရွက်မှု လက်ခံပါသည်" : "Co-brokerage accepted"}
-                </Text>
-              </TouchableOpacity>
-            )}
           </SectionCard>
 
           {/* ── SECTION 4: MEDIA ──────────────────────────────── */}

@@ -38,7 +38,12 @@ const getFloorLabel = (floor?: string) => {
     case "low": return "အောက်ခြေ (၁-၄)";
     case "mid": return "အလယ် (၅-၈)";
     case "high": return "အထက် (၉+)";
-    default: return "";
+    default:
+      if (floor && /^\d+$/.test(floor)) {
+        const n = parseInt(floor, 10);
+        return `${floor} လွှာ`;
+      }
+      return "";
   }
 };
 

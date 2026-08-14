@@ -1,7 +1,6 @@
 import { supabase } from "@/shared/lib/supabase";
 import { router } from "expo-router";
 import * as Linking from "expo-linking";
-import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { Home } from "lucide-react-native";
 import { useEffect, useState } from "react";
@@ -30,15 +29,10 @@ export default function OnboardingScreen() {
   const buttonOffset = useSharedValue(40);
   const buttonOpacity = useSharedValue(0);
 
-  const hideSplash = () => {
-    SplashScreen.hideAsync().catch(() => {});
-  };
-
   useEffect(() => {
     Linking.getInitialURL().then((url) => {
       if (url && url.includes("reset-password")) {
         router.replace("/(auth)/reset-password");
-        hideSplash();
         return;
       }
 
@@ -48,7 +42,6 @@ export default function OnboardingScreen() {
         } else {
           setChecking(false);
         }
-        hideSplash();
       });
     });
   }, []);

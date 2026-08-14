@@ -5,7 +5,6 @@ import {
   TextProps,
   TextStyle,
 } from "react-native";
-import { useLanguageStore } from "@/shared/store/useLanguageStore";
 
 const FONT_SIZE_MAP: Record<string, number> = {
   "text-2xs": 10,
@@ -50,8 +49,7 @@ function hasVerticalPadding(className?: string, style?: TextProps["style"]): boo
 }
 
 export default function Text({ className, style, children, ...props }: TextProps & { className?: string }) {
-  const language = useLanguageStore((s) => s.language);
-  const isBurmese = language === "mm" || containsBurmese(children);
+  const isBurmese = containsBurmese(children);
 
   const fontSize = extractFontSize(className, style);
 

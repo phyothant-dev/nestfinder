@@ -1,6 +1,6 @@
 import { supabase } from "@/shared/lib/supabase";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Eye, EyeOff, Info, Phone } from "lucide-react-native";
+import { Eye, EyeOff, Phone } from "lucide-react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Linking, ScrollView, TouchableOpacity, View } from "react-native";
@@ -90,7 +90,11 @@ export default function WantedDetailScreen() {
           ? isBurmese ? "အောက်ခြေ (၁-၄)" : "Low Floor (1-4)"
           : listing.floor === "mid"
             ? isBurmese ? "အလယ် (၅-၈)" : "Mid Floor (5-8)"
-            : isBurmese ? "အထက် (၉+)" : "High Floor (9+)"
+            : listing.floor === "high"
+              ? isBurmese ? "အထက် (၉+)" : "High Floor (9+)"
+              : /^\d+$/.test(listing.floor)
+                ? isBurmese ? `${listing.floor} လွှာ` : `${listing.floor}th Floor`
+                : listing.floor
     : null;
 
   const furnishedLabel = listing.furnished_status
@@ -182,14 +186,6 @@ export default function WantedDetailScreen() {
               </View>
             </View>
           ))}
-          {listing.co_brokerage && (
-            <View className="flex-row items-center gap-2.5 px-4 py-3.5">
-              <Info size={15} color="#134686" />
-              <Text className="text-primary-300 font-rubik-medium text-sm">
-                {isBurmese ? "အကျိုးတူဆောင်ရွက်မှု လက်ခံပါသည်" : "Co-brokerage accepted"}
-              </Text>
-            </View>
-          )}
         </View>
 
         {listing.contact_phone && (

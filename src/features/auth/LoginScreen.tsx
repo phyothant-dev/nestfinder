@@ -1,10 +1,8 @@
-import { handleAuthCallbackUrl, resetAuthCallbackLock } from "@/shared/lib/handleAuthCallback";
+import { signInWithGoogle } from "./signInWithGoogle";
 import { registerForPushNotifications, savePushToken } from "@/shared/lib/notifications";
 import { supabase } from "@/shared/lib/supabase";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 
-import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,32 +10,6 @@ import {
   ActivityIndicator, BackHandler, Image, KeyboardAvoidingView, Platform, ScrollView, StatusBar, TextInput, TouchableOpacity, View } from "react-native";
 import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const signInWithGoogle = async () => {
-  const redirectUrl = Linking.createURL("auth/callback");
-
-  resetAuthCallbackLock();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: redirectUrl,
-      queryParams: {
-        prompt: "select_account",
-      },
-    },
-  });
-
-  if (error) throw error;
-  if (!data?.url) throw new Error("Failed to get OAuth URL. Is Google provider enabled in Supabase?");
-
-  const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-  await WebBrowser.maybeCompleteAuthSession();
-
-  if (result.type === "success") {
-    await handleAuthCallbackUrl(result.url);
-  }
-};
 
 export default function LoginScreen() {
   const { t } = useTranslation();

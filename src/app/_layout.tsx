@@ -1,13 +1,10 @@
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { router, Stack } from "expo-router";
 import * as Linking from "expo-linking";
-import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "../../global.css";
-
-SplashScreen.preventAutoHideAsync();
 
 import i18n from "@/shared/lib/i18n";
 import {

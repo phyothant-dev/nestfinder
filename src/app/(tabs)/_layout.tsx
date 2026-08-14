@@ -10,11 +10,13 @@ import {
 import React, { useEffect, useState } from "react";
 import { DeviceEventEmitter, TouchableOpacity, View } from "react-native";
 import Text from "@/shared/components/Text";
+import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/shared/lib/supabase";
 import { useCompareStore } from "@/features/property/useCompareStore";
 
 export default function TabsLayout() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [totalUnread, setTotalUnread] = useState(0);
   useEffect(() => {
@@ -68,21 +70,21 @@ export default function TabsLayout() {
             },
           })}
           options={{
-            title: "Home",
+            title: t("tabs.home"),
             tabBarIcon: ({ color }) => <Home size={24} color={color} />,
           }}
         />
         <Tabs.Screen
           name="map"
           options={{
-            title: "Map",
+            title: t("tabs.map"),
             tabBarIcon: ({ color }) => <Map size={24} color={color} />,
           }}
         />
         <Tabs.Screen
           name="create_post"
           options={{
-            title: "Create",
+            title: t("tabs.create"),
             tabBarIcon: ({ color }) => <CirclePlus size={35} color={color} />,
             tabBarStyle: { display: "none" },
           }}
@@ -103,7 +105,7 @@ export default function TabsLayout() {
             },
           })}
           options={{
-            title: "Chat",
+            title: t("tabs.chat"),
             tabBarIcon: ({ color }) => (
               <View>
                 <MessageSquare size={22} color={color} />
@@ -136,7 +138,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="profile"
           options={{
-            title: "Profile",
+            title: t("tabs.profile"),
             tabBarIcon: ({ color }) => <User size={24} color={color} />,
           }}
         />

@@ -105,7 +105,10 @@ function ProfileContent() {
         className="flex-1"
         contentContainerStyle={{ padding: 24, paddingBottom: 86 }}
       >
-        <View className="flex-row justify-end mb-8">
+        <View className="flex-row items-center justify-between mb-8">
+          <Text className="text-2xl font-rubik-bold text-[#1F2937]">
+            {t("tabs.profile")}
+          </Text>
           <TouchableOpacity
             onPress={() => setShowLogoutDialog(true)}
             className="bg-primary-100 rounded-full px-4 py-2.5 active:opacity-80"

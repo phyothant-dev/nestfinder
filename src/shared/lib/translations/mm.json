@@ -1,19 +1,7 @@
 {
-  "chooseLanguage": "ဘာသာစကား ရွေးချယ်ပါ",
-  "english": "English",
-  "myanmar": "မြန်မာ",
-  "continue": "ဆက်လုပ်မည်",
   "findDreamHome": "စိတ်တိုင်းကျ အိမ်မက်အိမ်ရာကို ရှာဖွေပါ",
   "onboardingSubtitle": "လူကြီးမင်းအတွက် သီးသန့်ရွေးချယ်ထားသော အကောင်းစားလူနေအိမ်ရာများ၊ ဇိမ်ခံတိုက်ခန်းများနှင့် စိတ်အပန်းဖြေစရာနေရာများကို ရှာဖွေလိုက်ပါ။",
   "getStarted": "စတင်လိုက်ပါ",
-  "location": "တည်နေရာ",
-  "findYourPerfect": "စိတ်တိုင်းကျဖြစ်မည့်",
-  "dreamSpace": "အိမ်မက်အိမ်ရာ ရှာဖွေပါ",
-  "searchPlaceholder": "လိပ်စာ၊ မြို့၊ အကျိုးဆောင် ရှာဖွေရန်...",
-  "featuredProperties": "အထူးအကြံပြုထားသော အိမ်ရာများ",
-  "seeAll": "အားလုံးကြည့်ရန်",
-  "premium": "အကောင်းစား",
-  "trending": "လူကြိုက်များသော",
   "filter.allRegions": "တိုင်းဒေသကြီးနှင့်ပြည်နယ်အားလုံး",
   "filter.allTownships": "မြို့နယ်အားလုံး",
   "filter.allProperties": "အားလုံး",
@@ -26,29 +14,10 @@
   "choose floor": "အလွှာ ရွေးချယ်ပါ",
   "ground floor": "မြေညီထပ်",
   "ground + attic": "မြေညီထပ် + ထပ်ခိုး",
-  "floor.st": "၁ လွှာ",
-  "floor.nd": "၂ လွှာ",
-  "floor.rd": "၃ လွှာ",
-  "floor.th": "၄ လွှာ",
-  "chooseCategoryToPost": "ကြော်ငြာတင်ရန် တစ်ခုကို ရွေးချယ်",
-  "ad": "ကြော်ငြာ",
-  "categorySaleTitle": "အရောင်းကြော်ငြာ",
-  "categoryRentTitle": "အငှားကြော်ငြာ",
-  "categoryHostelTitle": "အဆောင်ကြော်ငြာ",
-  "categoryWantToBuyTitle": "ဝယ်လိုသည့်ကြော်ငြာ",
-  "categoryWantToRentTitle": "ငှားရမ်းလိုသည့်ကြော်ငြာ",
-  "forSale": "ရောင်းရန်ရှိသည်",
-  "forRent": "ငှားရန်ရှိသည်",
   "hostel": {
-    "step_title": "အဆောင်အချက်အလက်",
-    "rent_price": "လစဉ်ငှားခ",
-    "rent_price_placeholder": "ဥပမာ - ၁၅၀၀၀၀",
-    "type": "အမျိုးအစား",
     "type_male": "အမျိုးသား",
     "type_female": "အမျိုးသမီး",
     "type_householder": "အိမ်ထောင်သည်",
-    "type_coed": "တွဲနေ",
-    "room_capacity": "ဝင်ဆံ့နှုန်း",
     "capacity_1": "၁ ဦး",
     "capacity_2": "၂ ဦး",
     "capacity_3": "၃ ဦး",
@@ -59,21 +28,22 @@
     "capacity_8": "၈ ဦး",
     "capacity_9": "၉ ဦး",
     "capacity_10": "၁၀ ဦး",
-    "capacity_hall": "ခန်းမ",
-    "capacity_family": "မိသားစု",
-    "description": "အသေးစိတ်",
-    "description_placeholder": "ပါဝင်ပစ္စည်းများ၊ စည်းကမ်းချက်များ၊ အနီးအနား...",
-    "pin": "နေရာချရန်",
-    "pinned": "နေရာချပြီး"
+    "capacity_family": "မိသားစု"
   },
-  "wantToBuy": "ဝယ်ချင်ပါသည်",
-  "wantToRent": "ငှားချင်ပါသည်",
-  "categoryScreenSubtitle": "သင့်တွင် ဝယ်လိုသော အိမ်ခြံမြေ (သို့မဟုတ်) ငှားရမ်းလိုသော အိမ်ခြံမြေ ရှိပါက အောက်တွင် ကြော်ငြာတင်နိုင်ပါသည်။",
   "findyourDreamProperty": "သင့်အိမ်မက်ကို ရှာဖွေပါ",
   "common": {
     "error": "မှားယွင်းမှု",
     "removed": "ဖယ်ရှားပြီး",
     "saved": "သိမ်းဆည်းပြီး"
+  },
+  "error": {
+    "title": "မှားယွင်းမှု",
+    "databaseErrorTitle": "ဒေတာဘေ့စ် အမှား",
+    "databaseErrorMessage": "ပထဝီဝင်တည်နေရာ အချက်အလက်များကို ထပ်တူပြု၍မရပါ။"
+  },
+  "property": {
+    "savedSuccess": "အိမ်ခြံမြေကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။",
+    "removedFromSaved": "အိမ်ခြံမြေကို သိမ်းဆည်းမှုမှ ဖယ်ရှားပြီးပါပြီ။"
   },
   "createPost": {
     "selectCategory": "ကြော်ငြာအမျိုးအစားရွေးချယ်ပါ",
@@ -87,35 +57,6 @@
     "hostelTitle": "အဆောင်ကြော်ငြာ",
     "wantToBuyTitle": "ဝယ်လိုသည့်ကြော်ငြာ",
     "wantToRentTitle": "ငှားရမ်းလိုသည့်ကြော်ငြာ",
-    "fillForm": "ဖြည့်စွက်ရန်",
-    "basicInfo": "အခြေခံအချက်အလက်များ",
-    "detailInfo": "အသေးစိတ် အချက်အလက်များ",
-    "locationContact": "တည်နေရာနှင့် ဆက်သွယ်ရန်",
-    "titleMm": "ကြော်ငြာခေါင်းစဉ် (Myanmar) *",
-    "propertyType": "အိမ်ခြံမြေ အမျိုးအစား ရွေးချယ်ပါ *",
-    "priceSale": "ရောင်းဈေး/ဝယ်လိုဈေး (သိန်း) *",
-    "priceRent": "လစဉ်ငှားရမ်းခ (သိန်း) *",
-    "floor": "အလွှာ (Floor)",
-    "rooms": "အခန်းအရေအတွက်",
-    "sqft": "အကျယ်အဝန်း (Sqft)",
-    "region": "တိုင်းဒေသကြီး / ပြည်နယ် *",
-    "township": "မြို့နယ် *",
-    "phone": "ဆက်သွယ်ရန် ဖုန်းနံပါတ် *",
-    "back": "နောက်သို့",
-    "next": "ရှေ့သို့",
-    "submit": "ကြော်ငြာတင်မည်",
-    "apartment": "တိုက်ခန်း (Apartment)",
-    "condo": "ကွန်ဒို (Condo)",
-    "house": "လုံးချင်းအိမ် (House)",
-    "land": "မြေကွက် (Land)",
-    "warning": "သတိပေးချက်",
-    "success": "အောင်မြင်ပါသည်",
-    "error": "မှားယွင်းမှု",
-    "loginRequired": "ပို့စ်တင်ရန်အတွက် ဦးစွာ Login ဝင်ပေးပါရန်။",
-    "postSuccess": "သင်၏ ကြော်ငြာကို အောင်မြင်စွာ တင်ပြီးပါပြီ။",
-    "requiredFields": "လိုအပ်သော အချက်အလက်များကို ဖြည့်စွက်ပေးပါ။",
-    "locationRequired": "တည်နေရာနှင့် ဆက်သွယ်ရန် ဖုန်းနံပါတ် ဖြည့်စွက်ပေးပါ။",
-    "ok": "ကောင်းပြီ",
     "loginRequiredTitle": "သတိပေးချက်",
     "loginRequiredMessage": "ပို့စ်တင်ရန်အတွက် ဦးစွာ Login ဝင်ပေးပါရန်။",
     "cancel": "မလုပ်တော့ပါ",
@@ -146,13 +87,7 @@
   "filter": {
     "forSale": "ရောင်းရန်",
     "forRent": "ငှားရန်",
-    "buy": "ဝယ်ရန်",
-    "rent": "ငှားရန်",
     "newLaunch": "ကြိုပွိုင့်",
-    "hostel": "အဆောင်",
-    "all": "အားလုံး",
-    "byAgent": "ဘဏ်အရစ်ကျ",
-    "textSearchPlaceholder": "စာသားဖြင့် ရှာဖွေနိုင်ပါသည်",
     "stateRegion": "တိုင်းဒေသကြီးနှင့်ပြည်နယ်အားလုံး",
     "township": "မြို့နယ်အားလုံး",
     "propertyType": "အားလုံး",
@@ -218,9 +153,6 @@
   },
   "profile": {
     "user": "အသုံးပြုသူ",
-    "totalPosts": "တင်ထားသော ပို့စ်များ",
-    "active": "အသုံးပြုနေဆဲ",
-    "accountStatus": "အကောင့်အခြေအနေ",
     "settings": "ဆက်တင်များ",
     "myListings": "ကျွန်ုပ်၏စာရင်းများ",
     "availableToPost": "တင်နိုင်သည့်အရေအတွက်",
@@ -236,7 +168,6 @@
     "deleteConfirm": "ဤစာရင်းကို ဖျက်လိုသည်မှာ သေချာပါသလား။",
     "createListing": "စာရင်းအသစ်တင်ရန်",
     "language": "ဘာသာစကား",
-    "profileSettings": "ပရိုဖိုင် ဆက်တင်များ",
     "savedProperties": "သိမ်းဆည်းထားသော အိမ်ခြံမြေများ",
     "noSavedProperties": "သိမ်းဆည်းထားသော အိမ်ခြံမြေ မရှိသေးပါ",
     "browseProperties": "အိမ်ခြံမြေများ ကြည့်ရှုရန်",
@@ -247,81 +178,31 @@
     "logout": "ထွက်မည်",
     "signOut": "ထွက်မည်",
     "myContent": "ကျွန်ုပ်၏အကြောင်းအရာများ",
-    "onboarding": "လမ်းညွှန်",
-    "helpSupport": "အကူအညီနှင့် ပံ့ပိုးမှု",
-    "deleteAccount": "အကောင့်ဖျက်ရန်"
+    "helpSupport": "အကူအညီနှင့် ပံ့ပိုးမှု"
   },
   "dropdown_options": {
     "property_types": [
       {
-        "label": "တိုက်ခန်း (Apartment)",
+        "label": "တိုက်ခန်း",
         "value": "apartment"
       },
       {
-        "label": "ကွန်ဒို (Condo)",
+        "label": "ကွန်ဒို",
         "value": "condo"
       },
       {
-        "label": "လုံးချင်းအိမ် (House)",
+        "label": "လုံးချင်းအိမ်",
         "value": "house"
       },
       {
-        "label": "မြေကွက် (Land)",
+        "label": "မြေကွက်",
         "value": "land"
       },
       {
-        "label": "အဆောင် (Hostel)",
+        "label": "အဆောင်",
         "value": "hostel"
       }
     ]
-  },
-  "wanted": {
-    "title": "ဝယ်/ငှားလိုသော ကြော်ငြာများ",
-    "new": "အသစ်",
-    "all": "အားလုံး",
-    "buy": "ဝယ်ရန်",
-    "rent": "ငှားရန်",
-    "post": "ကြော်ငြာတင်မည်",
-    "titlePlaceholder": "ဥပမာ - မရမ်းကုန်းမြို့နယ်တွင် တိုက်ခန်းရှာနေပါသည်",
-    "descriptionPlaceholder": "သင်ရှာနေသောအိမ်ခြံမြေအကြောင်း အသေးစိတ်ရေးပါ...",
-    "propertyType": "အိမ်ခြံမြေအမျိုးအစား",
-    "selectPropertyType": "အမျိုးအစားရွေးပါ",
-    "budget": "ဘတ်ဂျက် (သိန်း)",
-    "budgetPlaceholder": "ဥပမာ - 5000",
-    "bedrooms": "အိပ်ခန်း",
-    "bedroomsPlaceholder": "ဥပမာ - 2",
-    "region": "တိုင်းဒေသကြီး / ပြည်နယ်",
-    "selectRegion": "တိုင်းဒေသကြီး / ပြည်နယ်ရွေးပါ",
-    "township": "မြို့နယ်",
-    "selectTownship": "မြို့နယ်ရွေးပါ",
-    "phone": "ဆက်သွယ်ရန် ဖုန်းနံပါတ်",
-    "phonePlaceholder": "ဖုန်းနံပါတ်",
-    "createTitle": "ဝယ်/ငှားလိုကြော်ငြာအသစ်",
-    "detailTitle": "ကြော်ငြာအသေးစိတ်",
-    "poster": "ကြော်ငြာရှင်",
-    "wantToBuy": "ဝယ်ယူလိုသည်",
-    "wantToRent": "ငှားရမ်းလိုသည်",
-    "empty": "ကြော်ငြာများမရှိသေးပါ",
-    "notFound": "ကြော်ငြာမတွေ့ပါ",
-    "success": "သင်၏ကြော်ငြာကို အောင်မြင်စွာ တင်ပြီးပါပြီ။",
-    "titleRequired": "ခေါင်းစဉ် ရိုက်ထည့်ပါ။",
-    "phoneRequired": "ဖုန်းနံပါတ် ရိုက်ထည့်ပါ။",
-    "description": "အသေးစိတ်ဖော်ပြချက်",
-    "since": "စတင်ခဲ့သည်",
-    "views": "ကြည့်ရှုမှု",
-    "category": "အမျိုးအစား",
-    "floor": "အလွှာ",
-    "stateDivision": "တိုင်းဒေသကြီး",
-    "monthlyFee": "ငှားရမ်းခ နှုန်းထား",
-    "furnished": "ဖာနီးရှားပါဝင်မှု",
-    "bedroom": "အိပ်ခန်း",
-    "bathroom": "ရေချိုးခန်း",
-    "cobrokerage": "အကျိုးတူဆောင်ရွက်မှု လက်ခံပါသည်",
-    "phoneNumber": "ဖုန်းနံပါတ်",
-    "clickToViewPhone": "ဖုန်းနံပါတ်ကြည့်ရန်",
-    "detailDescription": "အသေးစိတ်",
-    "readMore": "ပိုဖတ်ရန်",
-    "readLess": "ပိုနည်း"
   },
   "compare": {
     "title": "နှိုင်းယှဉ်ထားသော စာရင်းများ",
@@ -381,18 +262,10 @@
     "minLength": "လျှို့ဝှက်နံပါတ်သည် အနည်းဆုံး ၆ လုံးရှိရပါမည်။",
     "passwordsDoNotMatch": "လျှို့ဝှက်နံပါတ်များ တူညီမှုမရှိပါ။"
   },
-  "home": {
-    "goodMorning": "မင်္ဂလာနံနက်ခင်းပါ",
-    "goodAfternoon": "မင်္ဂလာနေ့လယ်ခင်းပါ",
-    "goodEvening": "မင်္ဂလာညနေခင်းပါ",
-    "guest": "ဧည့်သည်",
-    "noProperties": "အိမ်ခြံမြေများ မတွေ့ပါ"
-  },
   "settings": {
     "title": "ဆက်တင်များ",
     "account": "အကောင့်",
     "notifications": "အသိပေးချက်များ",
-    "privacy": "ကိုယ်ရေးလုံခြုံမှု",
     "privacySecurity": "ကိုယ်ရေးလုံခြုံမှုနှင့် လုံခြုံရေး",
     "privacyControls": "ကိုယ်ရေးလုံခြုံမှု ထိန်းချုပ်မှု",
     "security": "လုံခြုံရေး",
@@ -421,7 +294,6 @@
     "saving": "သိမ်းဆည်းနေသည်...",
     "saveChanges": "သိမ်းဆည်းမည်",
     "cancel": "မလုပ်တော့ပါ",
-    "saveFailed": "ပရိုဖိုင်ကို သိမ်းဆည်း၍မရပါ။ ထပ်ကြိုးစားပါ။",
     "notLoggedIn": "အကောင့်ဝင်ရောက်မထားပါ",
     "uploadError": "ဓာတ်ပုံတင်ရာတွင် အမှားရှိသည်",
     "saveError": "သိမ်းဆည်းရာတွင် အမှားရှိသည်",
@@ -434,8 +306,6 @@
     "searchPlaceholder": "စကားပြောခန်းများ ရှာဖွေရန်...",
     "noConversations": "စကားပြောခန်း မရှိသေးပါ။",
     "noConversationsSearch": "ရှာဖွေမှုနှင့် ကိုက်ညီသော စကားပြောခန်း မရှိပါ။",
-    "typeMessage": "မက်ဆေ့ချ် ရိုက်ထည့်ပါ...",
-    "editMessage": "မက်ဆေ့ချ် ပြင်ရန်...",
     "cancel": "မလုပ်တော့ပါ",
     "photoLibrary": "ဓာတ်ပုံများ",
     "files": "ဖိုင်များ",
@@ -485,12 +355,7 @@
     "map": "မြေပုံ",
     "create": "ဖန်တီးရန်",
     "chat": "စကားပြော",
-    "profile": "ပရိုဖိုင်",
-    "listings": "စာရင်းများ:",
-    "compare": "နှိုင်းယှဉ်"
-  },
-  "offline": {
-    "noConnection": "အင်တာနက်ချိတ်ဆက်မှုမရှိပါ"
+    "profile": "ပရိုဖိုင်"
   },
   "help": {
     "title": "အကူအညီနှင့် ပံ့ပိုးမှု",
@@ -515,38 +380,14 @@
     "email": "support@nestfinder.app"
   },
   "mapScreen": {
-    "unavailable": "မြေပုံမရနိုင်ပါ",
-    "lakhs": "သိန်း",
-    "kmAway": "ကီလိုမီတာ အကွာ",
     "propertyLocation": "အိမ်ခြံမြေတည်နေရာ",
     "googleMaps": "Google Maps"
   },
   "myListings": {
-    "postingCycle": "တင်ခွင့်သတ်မှတ်ချက်",
     "loginRequired": "လော့ဂ်အင်ဝင်ရန် လိုအပ်ပါသည်။",
-    "deleteFailed": "စာရင်းဖျက်ရန် မအောင်မြင်ပါ။",
-    "cancel": "မလုပ်တော့ပါ",
-    "lakhs": "သိန်း"
+    "deleteFailed": "စာရင်းဖျက်ရန် မအောင်မြင်ပါ။"
   },
   "createWanted": {
-    "title": "ဝယ်/ငှားလိုကြော်ငြာအသစ်",
-    "wantToBuy": "ဝယ်ယူလိုသည်",
-    "wantToRent": "ငှားရမ်းလိုသည်",
-    "titleField": "ခေါင်းစဉ် *",
-    "titlePlaceholder": "ဥပမာ - မရမ်းကုန်းမြို့နယ်တွင် တိုက်ခန်းရှာနေပါသည်",
-    "description": "အသေးစိတ်ဖော်ပြချက်",
-    "descriptionPlaceholder": "သင်ရှာနေသောအိမ်ခြံမြေအကြောင်း အသေးစိတ်ရေးပါ...",
-    "propertyType": "အိမ်ခြံမြေအမျိုးအစား",
-    "selectPropertyType": "အမျိုးအစားရွေးပါ",
-    "minPrice": "အနည်းဆုံးဈေး (သိန်း)",
-    "maxPrice": "အများဆုံးဈေး (သိန်း)",
-    "stateRegion": "တိုင်းဒေသကြီး / ပြည်နယ်",
-    "selectStateRegion": "တိုင်းဒေသကြီး / ပြည်နယ်ရွေးပါ",
-    "township": "မြို့နယ်",
-    "selectTownship": "မြို့နယ်ရွေးပါ",
-    "contactPhone": "ဆက်သွယ်ရန် ဖုန်းနံပါတ် *",
-    "phonePlaceholder": "ဖုန်းနံပါတ်",
-    "postListing": "ကြော်ငြာတင်မည်",
     "notice": "သတိပေးချက်",
     "enterTitle": "ခေါင်းစဉ် ရိုက်ထည့်ပါ။",
     "enterPhone": "ဖုန်းနံပါတ် ရိုက်ထည့်ပါ။",
@@ -555,54 +396,11 @@
     "error": "မှားယွင်းမှု",
     "ok": "ကောင်းပြီ"
   },
-  "search": {
-    "forSale": "ရောင်းရန်",
-    "forRent": "ငှားရန်",
-    "newLaunch": "ကြိုပွိုင့်",
-    "building": "အဆောင်",
-    "selectStateRegion": "တိုင်းဒေသကြီး / ပြည်နယ်ရွေးပါ",
-    "selectTownship": "မြို့နယ်ရွေးပါ",
-    "allPropertyTypes": "အားလုံး",
-    "condominium": "ကွန်ဒို",
-    "apartment": "တိုက်ခန်း",
-    "houseVilla": "လုံးချင်းအိမ်",
-    "land": "မြေကွက်",
-    "hostel": "အဆောင်",
-    "allFloors": "အလွှာအားလုံး",
-    "selectFloor": "အလွှာရွေးပါ",
-    "rooms": "အခန်း",
-    "squareFeet": "စတုရန်းပေ",
-    "search": "ရှာမည်",
-    "lakhs": "သိန်း",
-    "saved": "သိမ်းပြီး",
-    "removed": "ဖယ်ရှားပြီး",
-    "propertySaved": "အိမ်ခြံမြေကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။",
-    "propertyRemoved": "အိမ်ခြံမြေကို သိမ်းဆည်းမှုမှ ဖယ်ရှားပြီးပါပြီ။",
-    "databaseError": "ဒေတာဘေ့စ် အမှား",
-    "searchFailed": "ရှာဖွေမှု မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။",
-    "noProperties": "အိမ်ခြံမြေများ မတွေ့ပါ",
-    "adPrefix": "Ad #"
-  },
   "alerts_and_dialogs": {
     "button_confirm": "ကောင်းပြီ",
     "login_required": {
       "title": "သတိပေးချက်",
       "message": "ပို့စ်တင်ရန်အတွက် ဦးစွာ Login ဝင်ပေးပါရန်။"
-    },
-    "step_0_validation": {
-      "title": "သတိပေးချက်",
-      "message": "လိုအပ်သော အချက်အလက်များကို ဖြည့်စွက်ပေးပါ။"
-    },
-    "step_2_validation": {
-      "title": "သတိပေးချက်",
-      "message": "တည်နေရာနှင့် ဆက်သွယ်ရန် ဖုန်းနံပါတ် ဖြည့်စွက်ပေးပါ။"
-    },
-    "submission_success": {
-      "title": "အောင်မြင်ပါသည်",
-      "message": "သင်၏ ကြော်ငြာကို အောင်မြင်စွာ တင်ပြီးပါပြီ။"
-    },
-    "submission_error": {
-      "title": "မှားယွင်းမှု"
     }
   },
   "report": {

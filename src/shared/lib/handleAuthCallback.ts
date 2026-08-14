@@ -3,7 +3,7 @@ import { router } from "expo-router";
 
 let processingLock = false;
 
-async function syncProfileAvatar() {
+export async function syncProfileAvatar() {
   const {
     data: { user },
   } = await supabase.auth.getUser();

@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlashList } from "@shopify/flash-list";
 import {
-  DeviceEventEmitter, Image, RefreshControl, TouchableOpacity, View, ScrollView } from "react-native";
+  DeviceEventEmitter, Image, RefreshControl, Text as RNText, TouchableOpacity, View, ScrollView } from "react-native";
 import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -288,13 +288,15 @@ export default function HomeScreen() {
                       alignItems: "center",
                       paddingHorizontal: 4,
                     }}>
-                      <Text style={{
+                      <RNText style={{
                         color: "#fff",
                         fontSize: 9,
                         fontWeight: "800",
+                        lineHeight: 16,
+                        textAlign: "center",
                       }}>
                         {notifUnread > 99 ? "99+" : notifUnread}
-                      </Text>
+                      </RNText>
                     </View>
                   )}
                 </View>

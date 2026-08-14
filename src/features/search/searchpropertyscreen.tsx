@@ -57,6 +57,11 @@ export default function PropertySearchForm() {
   const [, setAgentType] = useState("all");
   const [, setTextSearch] = useState("");
 
+  const ordinal = (n: number) =>
+    n % 100 >= 11 && n % 100 <= 13
+      ? "th"
+      : ["st", "nd", "rd"][(n % 10) - 1] || "th";
+
   const [rawRegions, setRawRegions] = useState<SupabaseRegionRow[]>([]);
   const [rawTownships, setRawTownships] = useState<SupabaseTownshipRow[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -447,9 +452,10 @@ export default function PropertySearchForm() {
               { label: t("choose floor") || "All Floors", value: "" },
               { label: t("ground floor") || "Ground Floor", value: "ground" },
               { label: t("ground + attic") || "Ground + Attic", value: "ground_attic" },
-              { label: t("floor.st") || "Low Floor (1-4)", value: "low" },
-              { label: t("floor.nd") || "Middle Floor (5-8)", value: "mid" },
-              { label: t("floor.rd") || "High Floor (9+)", value: "high" },
+              ...Array.from({ length: 20 }, (_, i) => ({
+                label: `${i + 1}${ordinal(i + 1)} Floor`,
+                value: `${i + 1}`,
+              })),
             ]}
             placeholder={t("filter.floor") || "Select Floor"}
             value={dropdowns.floor}

@@ -142,136 +142,204 @@ sequenceDiagram
 
 ---
 
-## 4. Class Diagram (App Components / Modules)
+## 4. Class Diagram (Supabase Database Entities)
 
 ```mermaid
 classDiagram
     direction LR
 
-    class AppRoutes {
-        +index (Onboarding)
-        +(auth)/login|register|forgot|reset
-        +(tabs)/index|map|create_post|chat|profile
-        +property/[id] | detail
-        +wanted/index | [id] | create
-        +notifications
-        +compare | saved-properties | my-listings
-        +settings/* | edit-profile | help-support
+    class PROFILES {
+        +uuid id PK
+        +text full_name
+        +text email
+        +text avatar_url
+        +text phone
+        +text city
+        +text region
+        +timestamptz created_at
+        +RLS: read own profile
     }
 
-    class AuthLayer {
-        +LoginScreen
-        +RegisterScreen
-        +ForgotPasswordScreen
-        +ResetPasswordScreen
-        +handleAuthCallbackUrl(url)
+    class PROPERTIES {
+        +uuid id PK
+        +uuid user_id FK
+        +int ad_number
+        +text deal_type
+        +text property_type
+        +text state_region_id FK
+        +text township_id FK
+        +text floor
+        +numeric price
+        +text currency_unit
+        +numeric sqft
+        +int bedrooms
+        +int bathrooms
+        +text title_mm
+        +text title_en
+        +text[] images
+        +text video_url
+        +text description
+        +float latitude
+        +float longitude
+        +boolean is_sold
+        +boolean is_rented
+        +boolean is_flagged
+        +int views
+        +timestamptz created_at
+        +timestamptz sold_at
+        +RLS: public read (is_flagged = false)
+        +RLS: owner write
+        +trigger: notify_new_property()
     }
 
-    class HomeFeature {
-        +HomeScreen
-        +Cards
-        +fetchProperties(category)
-        +handleSave(propertyId)
-        +handleCompare(property)
+    class WANTED_LISTINGS {
+        +uuid id PK
+        +uuid user_id FK
+        +text title
+        +text description
+        +text deal_type
+        +text property_type
+        +text region_id FK
+        +text township_id FK
+        +numeric budget_min
+        +numeric budget_max
+        +text contact_phone
+        +text status
+        +int views
+        +timestamptz created_at
+        +RLS: owner write
     }
 
-    class MapFeature {
-        +MapTabScreen
-        +buildMapHtml(html)
-        +WebView map
-        +markers/popups
+    class CONVERSATIONS {
+        +uuid id PK
+        +uuid property_id FK
+        +uuid buyer_id FK
+        +uuid seller_id FK
+        +int buyer_unread_count
+        +int seller_unread_count
+        +boolean muted
+        +boolean archived
+        +boolean pinned
+        +timestamptz created_at
+        +timestamptz updated_at
+        +RLS: participants only
+        +realtime: broadcast
     }
 
-    class ChatFeature {
-        +chat_list
-        +chat_screen
-        +sendMessage()
-        +editMessage()
-        +deleteMessage()
-        +pinMessage()
-        +uploadAttachment()
+    class MESSAGES {
+        +uuid id PK
+        +uuid conversation_id FK
+        +uuid sender_id FK
+        +text text
+        +jsonb attachment
+        +uuid reply_to_id
+        +boolean private
+        +boolean pinned_by_buyer
+        +boolean pinned_by_seller
+        +timestamptz read_at
+        +timestamptz created_at
+        +RLS: participants only
+        +trigger: notify_new_message()
     }
 
-    class CreatePostFeature {
-        +CreatePostScreen
-        +createpostform
-        +uploadImages()
-        +publishProperty()
-        +publishWanted()
+    class NOTIFICATIONS {
+        +uuid id PK
+        +uuid user_id FK
+        +text type
+        +uuid actor_id FK
+        +uuid property_id FK
+        +uuid conversation_id FK
+        +text title
+        +text body
+        +timestamptz read_at
+        +timestamptz created_at
+        +RLS: read/mark own
     }
 
-    class PropertyDetail {
-        +Details
-        +CompareScreen
-        +PropertyMapScreen
-        +handleDelete()
-        +handleReport()
-        +handleContact()
+    class SAVED_PROPERTIES {
+        +uuid id PK
+        +uuid user_id FK
+        +uuid property_id FK
+        +timestamptz created_at
+        +UNIQUE (user_id, property_id)
+        +RLS: owner only
     }
 
-    class ProfileFeature {
-        +ProfileScreen
-        +MyListingsScreen
-        +SavedPropertiesScreen
-        +HelpSupportScreen
-        +EditProfileScreen
+    class SAVED_SEARCHES {
+        +uuid id PK
+        +uuid user_id FK
+        +text name
+        +jsonb search_params
+        +timestamptz created_at
+        +RLS: owner only
     }
 
-    class SettingsFeature {
-        +SettingsScreen
-        +AccountSettingsScreen
-        +NotificationSettingsScreen
-        +PrivacySettingsScreen
+    class PROPERTY_VIEWS {
+        +uuid user_id FK
+        +uuid property_id FK
+        +timestamptz viewed_at
+        +PK (user_id, property_id)
+        +function: increment_property_views()
     }
 
-    class NotificationFeature {
-        +NotificationsScreen
-        +fetchNotifications()
-        +markRead()
-        +handlePress()
+    class WANTED_LISTING_VIEWS {
+        +uuid user_id FK
+        +uuid listing_id FK
+        +timestamptz viewed_at
+        +PK (user_id, listing_id)
+        +function: increment_wanted_listing_views()
     }
 
-    class SharedLib {
-        +supabase client
-        +i18n (en/mm)
-        +notifications (push)
-        +handleAuthCallback
+    class PROPERTY_REPORTS {
+        +uuid id PK
+        +uuid property_id FK
+        +uuid reporter_id FK
+        +text reason
+        +timestamptz created_at
+        +RLS: any user can report
     }
 
-    class SharedComponents {
-        +BackButton
-        +Skeleton
-        +ImageViewer
-        +AlertDialog
-        +BottomSheet
-        +ActionSheet
+    class PUSH_TOKENS {
+        +uuid id PK
+        +uuid user_id FK
+        +text token
+        +text platform
+        +timestamptz created_at
+        +timestamptz updated_at
+        +RLS: owner only
     }
 
-    class Supabase {
-        +auth
-        +database (14 tables)
-        +storage (property-media)
-        +realtime (messages/conversations)
-        +edge functions (notify-new-property)
+    class STATES_REGIONS {
+        +text id PK
+        +text name_en
+        +text name_mm
     }
 
-    AppRoutes --> AuthLayer
-    AppRoutes --> HomeFeature
-    AppRoutes --> MapFeature
-    AppRoutes --> ChatFeature
-    AppRoutes --> CreatePostFeature
-    AppRoutes --> PropertyDetail
-    AppRoutes --> ProfileFeature
-    AppRoutes --> SettingsFeature
-    AppRoutes --> NotificationFeature
-    HomeFeature --> SharedComponents
-    PropertyDetail --> SharedComponents
-    ChatFeature --> SharedComponents
-    HomeFeature --> SharedLib
-    ChatFeature --> SharedLib
-    CreatePostFeature --> SharedLib
-    NotificationFeature --> SharedLib
-    SharedLib --> Supabase
+    class TOWNSHIPS {
+        +text id PK
+        +text name_en
+        +text name_mm
+        +text state_region_id FK
+    }
+
+    PROFILES "1" --> "0..*" PROPERTIES : owns
+    PROFILES "1" --> "0..*" WANTED_LISTINGS : posts
+    PROFILES "1" --> "0..*" SAVED_PROPERTIES : saves
+    PROFILES "1" --> "0..*" SAVED_SEARCHES : owns
+    PROFILES "1" --> "0..*" PUSH_TOKENS : has
+    PROFILES "1" --> "0..*" NOTIFICATIONS : receives
+    PROFILES "1" --> "0..*" PROPERTY_REPORTS : reports
+    PROFILES "1" --> "0..*" CONVERSATIONS : "buyer/seller"
+    PROFILES "1" --> "0..*" MESSAGES : sends
+    PROPERTIES "1" --> "0..*" SAVED_PROPERTIES : "saved in"
+    PROPERTIES "1" --> "0..*" PROPERTY_REPORTS : "flagged in"
+    PROPERTIES "1" --> "0..*" PROPERTY_VIEWS : viewed
+    PROPERTIES "1" --> "0..*" CONVERSATIONS : "chat about"
+    CONVERSATIONS "1" --> "0..*" MESSAGES : contains
+    WANTED_LISTINGS "1" --> "0..*" WANTED_LISTING_VIEWS : viewed
+    STATES_REGIONS "1" --> "0..*" TOWNSHIPS : has
+    TOWNSHIPS "1" --> "0..*" PROPERTIES : locates
+    STATES_REGIONS "1" --> "0..*" WANTED_LISTINGS : locates
 ```
 
 ---

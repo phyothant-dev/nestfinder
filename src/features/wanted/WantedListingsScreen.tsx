@@ -6,17 +6,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlashList } from "@shopify/flash-list";
 import {
-  ActivityIndicator,
-  Animated,
-  Dimensions,
-  Modal,
-  PanResponder,
-  RefreshControl,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, Animated, Dimensions, Modal, PanResponder, RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 
@@ -346,7 +337,7 @@ export default function WantedListingsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className="flex-1 bg-cream">
       <StatusBar style="dark" />
       <View className="px-5 pt-2 pb-3 border-b border-primary-100">
         <View className="flex-row items-center justify-between">

@@ -9,18 +9,8 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
-  BackHandler,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StatusBar,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, BackHandler, Image, KeyboardAvoidingView, Platform, ScrollView, StatusBar, TextInput, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const signInWithGoogle = async () => {

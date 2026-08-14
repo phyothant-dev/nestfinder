@@ -5,26 +5,12 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { decode } from "base64-arraybuffer";
 import { readAsStringAsync } from "expo-file-system/legacy";
 import {
-  Check,
-  Home,
-  Image as ImageIcon,
-  MapPin,
-  Pencil,
-  Video,
-  X,
-} from "lucide-react-native";
+  Check, Home, Image as ImageIcon, MapPin, Pencil, Video, X, } from "lucide-react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import MapView, { Marker } from "react-native-maps";
 import { SelectField } from "@/shared/components/actionsheet/actionsheet";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -678,7 +664,7 @@ export default function CreatePostForm({
 
   if (isMapSyncing) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 items-center justify-center">
+      <SafeAreaView className="flex-1 bg-cream items-center justify-center">
         <ActivityIndicator size="small" className="text-primary-300" />
         <Text className="text-gray-400 font-rubik-medium text-xs mt-2">
           {isBurmese ? "မြန်မာ မြေပုံဒေတာ ဆွဲနေသည်..." : "Syncing Myanmar Map Registries..."}
@@ -688,7 +674,7 @@ export default function CreatePostForm({
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-cream">
       {/* ── HEADER ──────────────────────────────────────────────── */}
       <View className="bg-white border-b border-gray-100">
         <View className="flex-row items-center px-4 py-3">

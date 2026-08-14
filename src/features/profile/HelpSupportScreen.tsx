@@ -12,7 +12,8 @@ import {
 } from "lucide-react-native";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Linking, ScrollView, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 
@@ -60,7 +61,7 @@ export default function HelpSupportScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView className="flex-1 bg-cream">
       <View className="px-4 py-4 flex-row items-center bg-white border-b border-slate-100">
         <BackButton onPress={() => router.back()} />
         <Text className="text-lg font-bold text-slate-800 ml-4">

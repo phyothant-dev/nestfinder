@@ -8,7 +8,7 @@ import { ChatList } from "@/features/chat/chat_list";
 export default function TabChatScreen() {
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "#fff" }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "#FDF4E3" }]}>
       <StatusBar style="dark" />
       <ChatList />
     </SafeAreaView>

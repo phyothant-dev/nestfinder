@@ -15,6 +15,21 @@ create table if not exists notifications (
 create index if not exists idx_notifications_user_created
   on notifications(user_id, created_at desc);
 
+-- Enable realtime so badges can update live
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_publication_tables
+      WHERE pubname = 'supabase_realtime'
+      AND schemaname = 'public'
+      AND tablename = 'notifications'
+    ) THEN
+      ALTER PUBLICATION supabase_realtime ADD TABLE notifications;
+    END IF;
+  END IF;
+END $$;
+
 alter table notifications enable row level security;
 
 drop policy if exists "Users can read own notifications" on notifications;
@@ -29,6 +44,12 @@ create policy "Users can update own notifications"
   to authenticated
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+drop policy if exists "Users can delete own notifications" on notifications;
+create policy "Users can delete own notifications"
+  on notifications for delete
+  to authenticated
+  using (auth.uid() = user_id);
 
 -- Notify all other users when a new property is posted
 create or replace function notify_new_property()

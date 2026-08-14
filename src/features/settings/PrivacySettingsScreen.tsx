@@ -2,7 +2,8 @@ import { router } from "expo-router";
 import { Eye, Lock, Shield, UserX } from "lucide-react-native";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Switch, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 
@@ -19,7 +20,7 @@ export default function PrivacySettingsScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView className="flex-1 bg-cream">
       <View className="px-4 py-4 flex-row items-center bg-white border-b border-slate-100">
         <BackButton onPress={() => router.back()} />
         <Text className="text-lg font-bold text-slate-800 ml-4">{t("settings.privacySecurity")}</Text>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Text } from "react-native";
+import Text from "@/shared/components/Text";
 
 interface HeadingProps {
   children: React.ReactNode;

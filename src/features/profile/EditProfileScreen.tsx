@@ -5,14 +5,8 @@ import { User } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DeviceEventEmitter } from "react-native";
-import {
-  ActivityIndicator,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, Image, TextInput, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 import { AlertDialog } from "@/shared/components/alert-dialog";
@@ -136,14 +130,14 @@ export default function EditProfileScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-slate-50">
+      <View className="flex-1 justify-center items-center bg-cream">
         <ActivityIndicator size="large" color="#134686" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView className="flex-1 bg-cream">
       <View className="flex-row items-center px-4 py-3 border-b border-slate-100 bg-white">
         <BackButton onPress={() => router.back()} />
         <Text className="flex-1 text-center text-lg font-bold text-slate-900 mr-6">

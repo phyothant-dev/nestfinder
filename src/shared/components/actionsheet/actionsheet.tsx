@@ -1,12 +1,6 @@
 import React from "react";
-import {
-  Modal,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-  ScrollView,
-  Text,
-} from "react-native";
+import { Modal, TouchableOpacity, TouchableWithoutFeedback, View, ScrollView } from "react-native";
+import Text from "@/shared/components/Text";
 import { ChevronDown, Check } from "lucide-react-native";
 
 export interface ActionSheetOption {

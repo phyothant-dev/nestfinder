@@ -1,35 +1,16 @@
-import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-} from "@/shared/components/alertdialog/alertdialog";
+import { AlertDialog, AlertDialogBackdrop, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, } from "@/shared/components/alertdialog/alertdialog";
 import { Button, ButtonText } from "@/shared/components/button/button";
 import { Heading } from "@/shared/components/heading/heading";
 import { supabase } from "@/shared/lib/supabase";
 import { router } from "expo-router";
 import {
-  BadgeCheck,
-  ChevronRight,
-  Home,
-  LogOut,
-  MapPin,
-  Pencil,
-  User,
-} from "lucide-react-native";
+  BadgeCheck, ChevronRight, Home, LogOut, MapPin, Pencil, User, } from "lucide-react-native";
 import { useLanguageStore } from "@/shared/store/useLanguageStore";
 import { ProfileSkeleton } from "@/shared/components/Skeleton";
 import React, { Component, useEffect, useState } from "react";
 import {
-  DeviceEventEmitter,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  DeviceEventEmitter, Image, ScrollView, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import Animated, {
   Easing,
   useAnimatedStyle,

@@ -27,7 +27,7 @@ export default function AuthLayout() {
           headerShown: false,
 
           // Background color behind screens during transitions
-          contentStyle: { backgroundColor: "#f8fafc" }, // slate-50
+          contentStyle: { backgroundColor: "#FDF4E3" },
 
           // Smooth slide animation on iOS and Android
           animation: "slide_from_right",

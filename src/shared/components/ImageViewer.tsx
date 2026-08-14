@@ -3,16 +3,8 @@ import * as MediaLibrary from "expo-media-library";
 import { Check, Download, X } from "lucide-react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  FlatList,
-  Modal,
-  Platform,
-  Pressable,
-  Text,
-  View,
-} from "react-native";
+  ActivityIndicator, Alert, Dimensions, FlatList, Modal, Platform, Pressable, View } from "react-native";
+import Text from "@/shared/components/Text";
 import {
   Gesture,
   GestureDetector,

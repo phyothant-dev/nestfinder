@@ -8,7 +8,8 @@ import {
   User,
 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
-import { DeviceEventEmitter, Text, TouchableOpacity, View } from "react-native";
+import { DeviceEventEmitter, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/shared/lib/supabase";
 import { useCompareStore } from "@/features/property/useCompareStore";

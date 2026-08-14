@@ -6,11 +6,8 @@ import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlashList } from "@shopify/flash-list";
 import {
-  ActivityIndicator,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 
@@ -89,6 +86,7 @@ export default function NotificationsScreen() {
   const isBurmese = i18n.language === "mm" || i18n.language?.startsWith("my");
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showingMock, setShowingMock] = useState(false);
 
   const fetchNotifications = async () => {
     const {
@@ -105,17 +103,8 @@ export default function NotificationsScreen() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     setNotifications((data && data.length > 0) ? data : MOCK_NOTIFICATIONS);
+    setShowingMock(!data || data.length === 0);
     setLoading(false);
-
-    const unread = (data || []).filter((n) => !n.read_at);
-    if (unread.length > 0) {
-      supabase
-        .from("notifications")
-        .update({ read_at: new Date().toISOString() })
-        .eq("user_id", user.id)
-        .is("read_at", null)
-        .then(() => {});
-    }
   };
 
   useFocusEffect(
@@ -130,6 +119,34 @@ export default function NotificationsScreen() {
     } else if (item.type === "new_message" && item.conversation_id) {
       router.push(`/chat/${item.conversation_id}`);
     }
+    if (!item.read_at) {
+      supabase
+        .from("notifications")
+        .update({ read_at: new Date().toISOString() })
+        .eq("id", item.id)
+        .then(() => {});
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === item.id ? { ...n, read_at: new Date().toISOString() } : n,
+        ),
+      );
+    }
+  };
+
+  const handleClear = async () => {
+    if (showingMock) {
+      setNotifications([]);
+      return;
+    }
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase
+      .from("notifications")
+      .delete()
+      .eq("user_id", user.id);
+    setNotifications([]);
   };
 
   const renderItem = ({ item }: { item: NotificationItem }) => {
@@ -148,7 +165,16 @@ export default function NotificationsScreen() {
     return (
       <TouchableOpacity
         onPress={() => handlePress(item)}
-        className={`flex-row items-center px-5 py-4 border-b border-primary-100 ${!item.read_at ? "bg-primary-50" : "bg-white"}`}
+        className={`mx-4 my-1.5 flex-row rounded-2xl border border-primary-100 ${
+          !item.read_at ? "bg-primary-50" : "bg-white"
+        } ${isBurmese ? "p-5" : "p-4"}`}
+        style={{
+          shadowColor: "#134686",
+          shadowOpacity: 0.06,
+          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 2 },
+          elevation: 2,
+        }}
       >
         <View className="size-11 rounded-full bg-primary-100 items-center justify-center overflow-hidden mr-3">
           {item.type === "new_property" ? (
@@ -158,10 +184,16 @@ export default function NotificationsScreen() {
           )}
         </View>
         <View className="flex-1">
-          <Text className="text-sm font-rubik-medium text-black-300" numberOfLines={1}>
+          <Text
+            className="text-sm font-rubik-medium text-black-300"
+            numberOfLines={isBurmese ? 2 : 1}
+          >
             {title}
           </Text>
-          <Text className="text-sm font-rubik text-black-200 mt-0.5" numberOfLines={1}>
+          <Text
+            className="text-sm font-rubik text-black-200 mt-0.5"
+            numberOfLines={isBurmese ? 2 : 1}
+          >
             {item.body}
           </Text>
           <Text className="text-xs font-rubik text-black-100 mt-1">
@@ -183,6 +215,13 @@ export default function NotificationsScreen() {
         <Text className="flex-1 text-lg font-rubik-bold text-black-300 ml-3">
           {t("settings.notifications")}
         </Text>
+        {notifications.length > 0 && (
+          <TouchableOpacity onPress={handleClear} className="px-2 py-1">
+            <Text className="text-sm font-rubik-medium text-danger">
+              {isBurmese ? "ရှင်းလင်းမည်" : "Clear"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {loading ? (
@@ -194,7 +233,7 @@ export default function NotificationsScreen() {
           data={notifications}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          contentContainerClassName="pb-10"
+          contentContainerClassName="py-4 pb-10"
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View className="items-center pt-24 px-8">

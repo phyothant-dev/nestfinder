@@ -2,55 +2,17 @@ import { supabase } from "@/shared/lib/supabase";
 import { useRouter, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
-  Bed,
-  Building,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  Home,
-  MapPin,
-  Maximize2,
-  MessageCircle,
-  Navigation,
-  Phone,
-  Ruler,
-  ShowerHead,
-  CheckCircle,
-  Hash,
-  Layers,
-  Clock,
-  LandPlot,
-  Building2,
-  ChevronRight,
-  Trash2,
-  Flag,
-} from "lucide-react-native";
+  Bed, Building, ChevronDown, ChevronUp, Eye, Home, MapPin, Maximize2, MessageCircle, Navigation, Phone, Ruler, ShowerHead, CheckCircle, Hash, Layers, Clock, LandPlot, Building2, ChevronRight, Trash2, Flag, } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  AlertDialog,
-  AlertDialogBackdrop,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-} from "@/shared/components/alertdialog/alertdialog";
+  AlertDialog, AlertDialogBackdrop, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, } from "@/shared/components/alertdialog/alertdialog";
 import { Button, ButtonText } from "@/shared/components/button/button";
 import { Heading } from "@/shared/components/heading/heading";
 import { BackButton } from "@/shared/components/BackButton";
 import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  Image,
-  Linking,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, Dimensions, FlatList, Image, Linking, NativeScrollEvent, NativeSyntheticEvent, Pressable, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ImageViewer from "@/shared/components/ImageViewer";
 import { WebView } from "react-native-webview";
@@ -170,7 +132,7 @@ function SkeletonBlock({ height, width }: { height: number; width?: number | str
 
 function SkeletonScreen() {
   return (
-    <View className="flex-1 bg-white px-5 pt-16">
+    <View className="flex-1 bg-cream px-5 pt-16">
       <SkeletonBlock height={220} />
       <View className="mt-4">
         <SkeletonBlock height={20} width="60%" />
@@ -443,7 +405,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
 
   if (!property) {
     return (
-      <View className="flex-1 bg-white items-center justify-center p-6">
+      <View className="flex-1 bg-cream items-center justify-center p-6">
         <Text className="font-rubik-bold text-center" style={{ color: textSecondary }}>
           {isBurmese ? "ကြော်ငြာအချက်အလက် ရှာမတွေ့ပါ" : "Property details not found."}
         </Text>
@@ -534,7 +496,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
   ].filter(Boolean) as string[];
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-cream">
       <StatusBar style="dark" />
 
       {/* ── Floating Header ── */}

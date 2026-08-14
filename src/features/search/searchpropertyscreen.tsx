@@ -4,14 +4,8 @@ import { ChevronLeft, Heart, Share2 } from "lucide-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
-  DeviceEventEmitter,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, DeviceEventEmitter, Image, ScrollView, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { AlertDialog } from "@/shared/components/alert-dialog";
 import { Button, ButtonText } from "@/shared/components/button/button";
 import { Heading } from "@/shared/components/heading/heading";

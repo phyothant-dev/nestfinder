@@ -3,7 +3,8 @@ import { router } from "expo-router";
 import { BadgeCheck, MapPin, MessageCircle, Phone, Share2 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, Alert, DeviceEventEmitter, Image, Linking, ScrollView, Share, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, DeviceEventEmitter, Image, Linking, ScrollView, Share, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 
 import { Card } from "@/features/home/Cards";
 import { BackButton } from "@/shared/components/BackButton";

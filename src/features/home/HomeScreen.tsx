@@ -2,21 +2,15 @@ import { supabase } from "@/shared/lib/supabase";
 import { Card } from "@/features/home/Cards";
 import { useCompareStore } from "@/features/property/useCompareStore";
 import { PropertyListSkeleton } from "@/shared/components/Skeleton";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ChevronDown, Search, User, ClipboardList, Bell } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlashList } from "@shopify/flash-list";
 import {
-  DeviceEventEmitter,
-  Image,
-  RefreshControl,
-  Text,
-  TouchableOpacity,
-  View,
-  ScrollView,
-} from "react-native";
+  DeviceEventEmitter, Image, RefreshControl, TouchableOpacity, View, ScrollView } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -33,6 +27,7 @@ export default function HomeScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  const [notifUnread, setNotifUnread] = useState(0);
 
   const fetchProperties = async (category: string, isPullRefresh = false) => {
     try {
@@ -89,6 +84,26 @@ export default function HomeScreen() {
     }
   };
 
+  const fetchNotifUnread = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setNotifUnread(0);
+      return;
+    }
+    const { count } = await supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .is("read_at", null);
+    setNotifUnread(count ?? 0);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchNotifUnread();
+    }, []),
+  );
+
   useEffect(() => {
     const init = async () => {
       await fetchUser();
@@ -103,7 +118,33 @@ export default function HomeScreen() {
     };
     init();
     const sub = DeviceEventEmitter.addListener("profileUpdated", fetchUser);
-    return () => sub.remove();
+
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let isActive = true;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!isActive || !user) return;
+      channel = supabase
+        .channel(`home-notifications-${user.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${user.id}`,
+          },
+          () => {
+            setNotifUnread((c) => c + 1);
+          },
+        )
+        .subscribe();
+    });
+
+    return () => {
+      isActive = false;
+      sub.remove();
+      channel?.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -232,7 +273,31 @@ export default function HomeScreen() {
                 <Search size={24} color={"#191D31"} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => router.push("/notifications" as any)}>
-                <Bell size={24} color={"#191D31"} />
+                <View>
+                  <Bell size={24} color={"#191D31"} />
+                  {notifUnread > 0 && (
+                    <View style={{
+                      position: "absolute",
+                      top: -4,
+                      right: -8,
+                      minWidth: 16,
+                      height: 16,
+                      borderRadius: 8,
+                      backgroundColor: "#ED3F27",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingHorizontal: 4,
+                    }}>
+                      <Text style={{
+                        color: "#fff",
+                        fontSize: 9,
+                        fontWeight: "800",
+                      }}>
+                        {notifUnread > 99 ? "99+" : notifUnread}
+                      </Text>
+                    </View>
+                  )}
+                </View>
               </TouchableOpacity>
             </View>
           </View>

@@ -4,13 +4,8 @@ import { ChevronLeft } from "lucide-react-native";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
-  Image,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, Image, TextInput, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 
 interface Property {
   id: string;

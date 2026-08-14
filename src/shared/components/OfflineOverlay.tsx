@@ -1,6 +1,7 @@
 import { WifiOff } from "lucide-react-native";
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import Text from "@/shared/components/Text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNetworkStore } from "@/shared/store/useNetworkStore";
 

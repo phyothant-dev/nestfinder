@@ -2,7 +2,8 @@ import { router } from "expo-router";
 import { ChevronRight, Bell, User } from "lucide-react-native";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 
@@ -15,7 +16,7 @@ export default function SettingsScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView className="flex-1 bg-cream">
       <View className="bg-white px-4 py-4 flex-row items-center border-b border-primary-200">
         <BackButton onPress={() => router.back()} />
         <Text className="text-black-300 text-lg font-rubik-bold ml-2 flex-1 text-center mr-10">{t("settings.title")}</Text>

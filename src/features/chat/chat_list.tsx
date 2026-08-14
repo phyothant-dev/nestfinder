@@ -1,27 +1,13 @@
 import { supabase } from "@/shared/lib/supabase";
 import { router, useFocusEffect } from "expo-router";
 import {
-  Archive,
-  BellOff,
-  MessageCircle,
-  Pin,
-  Trash2,
-  MailOpen,
-  Search,
-} from "lucide-react-native";
+  Archive, BellOff, MessageCircle, Pin, Trash2, MailOpen, Search, } from "lucide-react-native";
 import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlashList } from "@shopify/flash-list";
 import {
-  Animated,
-  DeviceEventEmitter,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  Animated, DeviceEventEmitter, Image, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { Swipeable } from "react-native-gesture-handler";
 import { AlertDialog } from "@/shared/components/alert-dialog";
 import { Button, ButtonText } from "@/shared/components/button/button";
@@ -420,7 +406,7 @@ export function ChatList() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { flex: 1, backgroundColor: "#fff" },
+  wrapper: { flex: 1, backgroundColor: "#FDF4E3" },
   headerBar: {
     paddingHorizontal: 16,
     paddingVertical: 14,

@@ -2,7 +2,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Navigation } from "lucide-react-native";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, Linking, Platform, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Linking, Platform, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 import { WebView } from "react-native-webview";
@@ -47,7 +48,7 @@ export default function MapScreen() {
 </html>`;
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+    <SafeAreaView className="flex-1 bg-cream" edges={["top"]}>
       <View className="flex-row items-center px-4 py-3 border-b border-primary-200 bg-white">
         <BackButton onPress={() => router.back()} />
         <View className="flex-1 mx-3">

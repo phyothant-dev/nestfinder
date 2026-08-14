@@ -1,43 +1,12 @@
 import { useCompareStore } from "@/features/property/useCompareStore";
 import { router } from "expo-router";
 import {
-  Bed,
-  Building,
-  Building2,
-  Car,
-  CheckCircle,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  Clock,
-  Eye,
-  Hash,
-  Home,
-  LampCeiling,
-  LandPlot,
-  Layers,
-  MapPin,
-  Maximize2,
-  Navigation,
-  Ruler,
-  ShowerHead,
-  Star,
-  X,
-} from "lucide-react-native";
+  Bed, Building, Building2, Car, CheckCircle, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Clock, Eye, Hash, Home, LampCeiling, LandPlot, Layers, MapPin, Maximize2, Navigation, Ruler, ShowerHead, Star, X, } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Dimensions,
-  FlatList,
-  Image,
-  Linking,
-  Modal,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  Dimensions, FlatList, Image, Linking, Modal, ScrollView, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 import { WebView } from "react-native-webview";

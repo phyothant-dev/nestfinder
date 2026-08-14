@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
+import Text from "@/shared/components/Text";
 
 // Updated interface to support all the props you are passing
 interface ButtonProps {

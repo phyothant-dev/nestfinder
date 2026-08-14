@@ -1,5 +1,6 @@
 import { Eye, GitCompare, Heart, Share2 } from "lucide-react-native";
-import { Image, Pressable, Share, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, Share, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import React, { useState } from "react";
 import Animated, {
   Easing,

@@ -7,37 +7,12 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { useTranslation } from "react-i18next";
 import {
-  CheckSquare,
-  ChevronLeft,
-  Copy,
-  Edit3,
-  FileText,
-  ImageIcon,
-  MessageSquareReply,
-  Paperclip,
-  Pin,
-  Send,
-  Square,
-  Trash2,
-  Video,
-  X,
-} from "lucide-react-native";
+  CheckSquare, ChevronLeft, Copy, Edit3, FileText, ImageIcon, MessageSquareReply, Paperclip, Pin, Send, Square, Trash2, Video, X, } from "lucide-react-native";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlashList, FlashListRef } from "@shopify/flash-list";
 import {
-  ActionSheetIOS,
-  ActivityIndicator,
-  DeviceEventEmitter,
-  Image,
-  Modal,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActionSheetIOS, ActivityIndicator, DeviceEventEmitter, Image, Modal, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { AlertDialog } from "@/shared/components/alert-dialog";
@@ -1153,7 +1128,7 @@ function Camera({ size, color }: { size: number; color: string }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#FDF4E3",
   },
   flex: {
     flex: 1,
@@ -1180,7 +1155,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#FDF4E3",
   },
   messageList: {
     paddingHorizontal: 12,

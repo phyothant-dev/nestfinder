@@ -7,13 +7,8 @@ import { useTranslation } from "react-i18next";
 import { FlashList } from "@shopify/flash-list";
 import { PropertyListSkeleton, Skeleton } from "@/shared/components/Skeleton";
 import {
-  ActivityIndicator,
-  DeviceEventEmitter,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, DeviceEventEmitter, Image, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 
@@ -85,7 +80,7 @@ export default function SavedPropertiesScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-primary-100">
+      <SafeAreaView className="flex-1 bg-cream">
         <View className="flex-row items-center px-4 py-3 bg-white border-b border-primary-200">
           <Skeleton className="w-10 h-10 rounded-full" />
           <Skeleton className="h-6 w-36 mx-auto" />
@@ -96,7 +91,7 @@ export default function SavedPropertiesScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-100">
+    <SafeAreaView className="flex-1 bg-cream">
       <StatusBar style="dark" />
       <View className="flex-row items-center px-4 py-3 bg-white border-b border-primary-200">
         <BackButton onPress={() => router.back()} />

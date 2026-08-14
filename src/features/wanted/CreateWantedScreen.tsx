@@ -3,15 +3,8 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+  ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton } from "@/shared/components/BackButton";
 import { SelectField } from "@/shared/components/actionsheet/actionsheet";
@@ -182,14 +175,14 @@ export default function CreateWantedScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView className="flex-1 bg-white items-center justify-center">
+      <SafeAreaView className="flex-1 bg-cream items-center justify-center">
         <ActivityIndicator size="large" color="#134686" />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-cream">
       <View className="px-5 pt-2 pb-3 border-b border-primary-100 flex-row items-center">
         <BackButton onPress={() => router.replace("/wanted")} />
         <Text className="text-lg font-rubik-bold text-black-300 ml-3">

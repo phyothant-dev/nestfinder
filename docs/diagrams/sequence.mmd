@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant C as Property Card
+    participant H as HomeScreen
+    participant S as Supabase
+    participant EB as Event Bus
+    participant SP as SavedPropertiesScreen
+
+    U->>C: Tap heart icon
+    C->>H: onSave(propertyId)
+    H->>S: auth.getUser()
+
+    opt user not signed in
+        H->>U: Redirect to Login and stop
+    end
+
+    Note over H: Check local savedIds.has(propertyId)
+
+    opt already saved
+        H->>S: DELETE saved_properties(propertyId)
+    end
+
+    opt not saved
+        H->>S: INSERT saved_properties(userId, propertyId)
+    end
+
+    H-->>C: savedIds updated, heart re-renders
+    C->>U: Show animated heart state
+    H->>EB: emit("savedPropertiesChanged")
+    Note over EB,SP: Cross-screen sync
+    EB-->>SP: listener refreshes saved list
+    SP->>S: SELECT saved_properties

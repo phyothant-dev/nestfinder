@@ -1,0 +1,127 @@
+erDiagram
+    PROFILES {
+        uuid id PK
+        text full_name
+        text avatar_url
+        text phone
+        text city
+        text region
+        timestamptz created_at
+    }
+
+    PROPERTIES {
+        uuid id PK
+        uuid user_id FK
+        text title_en
+        text title_mm
+        numeric price
+        text currency_unit
+        text deal_type
+        text property_type
+        text[] images
+        int bedrooms
+        int bathrooms
+        numeric area_value
+        text area_unit
+        numeric width
+        numeric length
+        text floor
+        text furnished_status
+        text region_id FK
+        text township_id FK
+        boolean is_sold
+        int views
+        float latitude
+        float longitude
+        timestamptz created_at
+    }
+
+    SAVED_PROPERTIES {
+        uuid id PK
+        uuid user_id FK
+        uuid property_id FK
+        timestamptz created_at
+    }
+
+    CONVERSATIONS {
+        uuid id PK
+        uuid property_id FK
+        uuid buyer_id FK
+        uuid seller_id FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    MESSAGES {
+        uuid id PK
+        uuid conversation_id FK
+        uuid sender_id FK
+        text text
+        jsonb attachment
+        timestamptz read_at
+        boolean pinned_by_buyer
+        boolean pinned_by_seller
+        timestamptz created_at
+    }
+
+    WANTED_LISTINGS {
+        uuid id PK
+        uuid user_id FK
+        text title
+        text description
+        text deal_type
+        text property_type
+        text region_id FK
+        text township_id FK
+        numeric budget_min
+        numeric budget_max
+        text contact_phone
+        text status
+        timestamptz created_at
+    }
+
+    SAVED_SEARCHES {
+        uuid id PK
+        uuid user_id FK
+        text name
+        jsonb search_params
+        timestamptz created_at
+    }
+
+    PUSH_TOKENS {
+        uuid id PK
+        uuid user_id FK
+        text token
+        text platform
+        timestamptz created_at
+    }
+
+    STATES_REGIONS {
+        text id PK
+        text name_en
+        text name_mm
+    }
+
+    TOWNSHIPS {
+        text id PK
+        text region_id FK
+        text name_en
+        text name_mm
+    }
+
+    PROFILES ||--o{ PROPERTIES : owns
+    PROFILES ||--o{ SAVED_PROPERTIES : saves
+    PROPERTIES ||--o{ SAVED_PROPERTIES : "saved by"
+    PROFILES ||--o{ CONVERSATIONS : "buyer"
+    PROFILES ||--o{ CONVERSATIONS : "seller"
+    PROPERTIES ||--o{ CONVERSATIONS : "about"
+    CONVERSATIONS ||--o{ MESSAGES : contains
+    PROFILES ||--o{ MESSAGES : sends
+    STATES_REGIONS ||--o{ TOWNSHIPS : contains
+    STATES_REGIONS ||--o{ PROPERTIES : locates
+    TOWNSHIPS ||--o{ PROPERTIES : locates
+    STATES_REGIONS ||--o{ WANTED_LISTINGS : locates
+    TOWNSHIPS ||--o{ WANTED_LISTINGS : locates
+    PROFILES ||--o{ WANTED_LISTINGS : posts
+    PROFILES ||--o{ SAVED_SEARCHES : owns
+    PROFILES ||--o{ PUSH_TOKENS : registers

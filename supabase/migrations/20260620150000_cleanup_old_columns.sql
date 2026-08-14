@@ -1,0 +1,9 @@
+ALTER TABLE messages
+  DROP COLUMN IF EXISTS topic,
+  DROP COLUMN IF EXISTS extension,
+  DROP COLUMN IF EXISTS payload,
+  DROP COLUMN IF EXISTS event,
+  DROP COLUMN IF EXISTS private,
+  DROP COLUMN IF EXISTS content,
+  DROP COLUMN IF EXISTS inserted_at,
+  DROP COLUMN IF EXISTS binary_payload;

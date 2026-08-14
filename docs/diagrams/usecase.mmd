@@ -1,0 +1,34 @@
+flowchart LR
+    Guest([Guest])
+    User([Registered User / Buyer])
+    Agent([Registered User / Seller - Agent])
+    System([System])
+
+    Guest --> G1[Browse Properties]
+    Guest --> G2[Register Account]
+    Guest --> G3[Login]
+    Guest --> G4[Switch Language]
+
+    User --> U1[Search & Filter Properties]
+    User --> U2[View Property Detail]
+    User --> U3[Save / Unsave Property]
+    User --> U4[Compare Properties]
+    User --> U5[View Map / Get Directions]
+    User --> U6[Call Agent]
+    User --> U7[Chat with Agent]
+    User --> U8[Manage Saved Properties]
+    User --> U9[Post Wanted Listing]
+    User --> U10[Save Search]
+    User --> U11[Edit Profile]
+    User --> U12[Change Settings]
+    User --> U13[Toggle Dark Mode]
+
+    Agent --> A1[Create Property Listing]
+    Agent --> A2[Manage Own Listings]
+    Agent --> A3[Respond to Buyers via Chat]
+    Agent --> A4[View Agent Profile]
+
+    System --> S1[Authenticate via Email / Google]
+    System --> S2[Send Push Notifications]
+    System --> S3[Track Property Views]
+    System --> S4[Enforce Monthly Post Limit]

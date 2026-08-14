@@ -1,0 +1,25 @@
+flowchart TD
+    A([Start]) --> B[Splash]
+    B --> C{Signed in?}
+    C -- No --> D[Onboarding]
+    D --> E[Get Started]
+    E --> F[Home]
+    C -- Yes --> F
+
+    F --> G[Browse & view properties]
+    F --> H[Search / Map / Property detail]
+    F --> I[Save / Compare / Share]
+    F --> J[Chat / Create post / Profile]
+
+    I -- guest --> K[Login / Register]
+    J -- guest --> K
+    K --> F
+
+    C --> SB[(Supabase - Auth / Database / Storage)]
+    K --> SB
+    G --> SB
+    H --> SB
+    I --> SB
+    J --> SB
+
+    F -- Exit app --> Z([End])

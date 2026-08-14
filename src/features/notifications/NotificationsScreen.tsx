@@ -26,6 +26,53 @@ interface NotificationItem {
   actor?: { full_name: string | null; avatar_url: string | null } | null;
 }
 
+const MOCK_NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: "mock-1",
+    type: "new_property",
+    title: null,
+    body: "နေပြည်တော် ကွန်ဒို အသစ် ရောက်ရှိလာပါသည်",
+    read_at: null,
+    created_at: new Date(Date.now() - 15 * 60000).toISOString(),
+    property_id: null,
+    conversation_id: null,
+    actor: { full_name: "Aung Aung", avatar_url: null },
+  },
+  {
+    id: "mock-2",
+    type: "new_message",
+    title: null,
+    body: "မင်္ဂလာပါ ဆရာမ၊ အိမ်ကို ကြည့်ချင်လို့ပါ။",
+    read_at: null,
+    created_at: new Date(Date.now() - 60 * 60000).toISOString(),
+    property_id: null,
+    conversation_id: null,
+    actor: { full_name: "Su Su", avatar_url: null },
+  },
+  {
+    id: "mock-3",
+    type: "new_property",
+    title: null,
+    body: "ရန်ကုန် မြို့လယ် ကွန်ဒို အသစ် ရောက်ရှိလာပါသည်",
+    read_at: new Date(Date.now() - 3 * 3600000).toISOString(),
+    created_at: new Date(Date.now() - 4 * 3600000).toISOString(),
+    property_id: null,
+    conversation_id: null,
+    actor: { full_name: "Ko Ko", avatar_url: null },
+  },
+  {
+    id: "mock-4",
+    type: "new_message",
+    title: null,
+    body: "ဈေးနှုန်း ညှိနှိုင်းလို့ ရပါသလား ခင်ဗျာ။",
+    read_at: new Date(Date.now() - 24 * 3600000).toISOString(),
+    created_at: new Date(Date.now() - 26 * 3600000).toISOString(),
+    property_id: null,
+    conversation_id: null,
+    actor: { full_name: "Mg Mg", avatar_url: null },
+  },
+];
+
 function timeAgo(dateStr: string, isBurmese: boolean) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
@@ -57,7 +104,7 @@ export default function NotificationsScreen() {
       .select("*, actor:profiles!actor_id(full_name, avatar_url)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    setNotifications(data || []);
+    setNotifications((data && data.length > 0) ? data : MOCK_NOTIFICATIONS);
     setLoading(false);
 
     const unread = (data || []).filter((n) => !n.read_at);

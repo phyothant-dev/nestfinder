@@ -5,14 +5,14 @@ All diagrams for the Nest Finder (Expo React Native + Supabase) app. Each diagra
 | Diagram | File | Description |
 | --- | --- | --- |
 | Flow chart | [flowchart.mmd](./flowchart.mmd) | Full app flow with start / end states for every process |
-| Sequence — auth | [sequence-auth.mmd](./sequence-auth.mmd) | Onboarding, login, register, forgot / reset password |
-| Sequence — home | [sequence-home.mmd](./sequence-home.mmd) | Browse, save / unsave, compare, notifications |
-| Sequence — search & map | [sequence-search.mmd](./sequence-search.mmd) | Filtered search, map markers, open detail |
-| Sequence — property detail | [sequence-detail.mmd](./sequence-detail.mmd) | Views, owner actions, call / chat / report |
-| Sequence — create post | [sequence-create.mmd](./sequence-create.mmd) | Property & wanted listing forms, upload, publish |
-| Sequence — chat | [sequence-chat.mmd](./sequence-chat.mmd) | Conversation list, realtime room, message actions |
-| Sequence — profile | [sequence-profile.mmd](./sequence-profile.mmd) | My listings, saved, settings, logout |
-| Class diagram | [class.mmd](./class.mmd) | Main screens, stores, services, models (namespaces) |
+| Sequence — auth | [sequence-auth.mmd](./sequence-auth.mmd) | Domain flow for "Login / Register" |
+| Sequence — home | [sequence-home.mmd](./sequence-home.mmd) | Domain flow for "Browse / search", "Save / unsave", "Compare" |
+| Sequence — search & map | [sequence-search.mmd](./sequence-search.mmd) | Domain flow for "Search", "View map markers", "View property detail" |
+| Sequence — property detail | [sequence-detail.mmd](./sequence-detail.mmd) | Domain flow for "Call agent", "Flag & report", "Mark sold / delete" |
+| Sequence — create post | [sequence-create.mmd](./sequence-create.mmd) | Domain flow for "Post property / hostel / wanted listing" |
+| Sequence — chat | [sequence-chat.mmd](./sequence-chat.mmd) | Domain flow for "Chat with agent / seller", "Respond via chat" |
+| Sequence — profile | [sequence-profile.mmd](./sequence-profile.mmd) | Domain flow for "Manage My Listings", "Manage profile", "Receive notifications" |
+| Class diagram | [class.mmd](./class.mmd) | Supabase database tables as classes (same schema as ER) |
 | ER diagram | [er.mmd](./er.mmd) | Supabase database schema and relationships |
 | Use case diagram | [usecase.mmd](./usecase.mmd) | Actors and use cases (rendered as a flowchart; GitHub Mermaid has no `useCaseDiagram` support) |
 
@@ -84,418 +84,332 @@ flowchart TB
     Tabs --> DB[("Supabase")]
 ```
 
-## Sequence diagram — auth
+## Sequence diagram — auth ("Login / Register")
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant OB as Onboarding (index)
-    participant AU as Auth Screens<br/>(Login / Register / Forgot)
-    participant CO as App Core<br/>(Session · Language · Push)
-    participant SU as Supabase (Auth)
+    participant S as Session
+    participant P as Profile
+    participant T as PushToken
 
-    User->>OB: Launch app
-    OB->>CO: loadLanguage() + setup listeners
-    OB->>SU: auth.getUser()
-    alt logged in
-        SU-->>OB: session exists
-        OB-->>User: replace → Main Tabs
-    else not logged in
-        SU-->>OB: no session
-        OB-->>User: show onboarding
-        User->>OB: tap Get Started
-        OB->>AU: open Login / Register
-        alt email / password
-            User->>AU: enter email + password
-            AU->>SU: auth.signInWithPassword()
-            SU-->>AU: session / error
-            AU->>CO: register push token
-            AU-->>User: replace → Main Tabs
-        else Google
-            User->>AU: tap Continue with Google
-            AU->>SU: auth.signInWithOAuth()
-            SU-->>AU: open auth/callback
-            AU->>AU: handleAuthCallbackUrl()
-            AU->>CO: sync profile avatar
-            AU-->>User: replace → Main Tabs
-        end
-    end
+    User->>S: signUp(email, password, full_name)
+    S->>P: upsert(id, full_name, email)
+    P-->>User: profile created
+    User->>S: signInWithPassword(email, password)
+    S-->>User: session
+    User->>S: signInWithOAuth(google)
+    S-->>User: session + callback
+    S->>P: sync avatar_url
+    S->>T: register push token
+    User->>S: resetPassword(new_password)
+    S-->>User: password updated
+    User->>S: signOut()
+    S-->>User: session cleared
 ```
 
-## Sequence diagram — home (browse / save / compare)
+## Sequence diagram — home ("Browse / search", "Save / unsave", "Compare")
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant HO as Home Screen
-    participant CD as Property Card
-    participant CO as App Core<br/>(savedIds · compare store)
-    participant SU as Supabase
+    participant P as Property
+    participant SP as SavedProperty
 
-    User->>HO: open Home tab
-    HO->>CO: fetch profile + saved ids
-    HO->>SU: select properties (is_flagged = false)
-    SU-->>HO: property list
-    HO->>HO: render cards
-    User->>CD: tap heart (save)
-    CD->>HO: onSave(propertyId)
-    HO->>CO: auth.getUser()
-    alt not signed in
-        CO-->>HO: no user → redirect Login
-    else saved
-        HO->>SU: delete saved_properties
-        SU-->>HO: ok
-        HO->>HO: remove from savedIds
-    else not saved
-        HO->>SU: insert saved_properties
-        SU-->>HO: ok
-        HO->>HO: add to savedIds
-    end
-    HO->>HO: emit savedPropertiesChanged
-    User->>CD: tap compare icon
-    CD->>HO: onCompare(property)
-    HO->>CO: compareStore.add(property)
-    CO-->>HO: floating compare bar
-    User->>HO: tap Compare bar
-    HO-->>User: open Compare Screen
+    User->>P: browse (deal_type, property_type)
+    P-->>User: public listings (is_flagged = false)
+    User->>P: open property
+    User->>SP: insert (user_id, property_id)
+    SP-->>User: saved (UNIQUE pair)
+    User->>SP: delete (user_id, property_id)
+    SP-->>User: unsaved
+    User->>P: compare (add / remove / clear)
+    P-->>User: compare items
 ```
 
-## Sequence diagram — search & map
+## Sequence diagram — search & map ("Search", "View map markers", "View property detail")
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant SE as Search Screen
-    participant MA as Map Tab
-    participant SU as Supabase
+    participant P as Property
+    participant R as Region / Township
+    participant V as PropertyView
+    participant A as Agent (Profile)
 
-    User->>SE: open Search
-    SE->>SU: load states_regions + townships
-    SU-->>SE: location data
-    User->>SE: set filters (deal, region, type, price, rooms)
-    User->>SE: tap Search
-    SE->>SU: select properties (filtered)
-    SU-->>SE: results
-    SE-->>User: show result cards
-    User->>SE: tap result card
-    SE-->>User: open Property Detail
-
-    User->>MA: open Map tab
-    MA->>SU: request location + select properties (lat/lng)
-    SU-->>MA: markers
-    MA->>MA: build Leaflet HTML (WebView)
-    User->>MA: tap marker
-    MA-->>User: open Property Detail
+    User->>P: search (deal, region, type, price, rooms)
+    P->>R: filter by state_region_id / township_id
+    R-->>P: matching rows
+    P-->>User: result list
+    User->>P: view map (lat / lng)
+    P-->>User: markers
+    User->>P: open property detail
+    P->>V: increment_property_views(user_id)
+    V-->>P: counted
+    P-->>User: property + related
+    User->>A: agent profile
+    A-->>User: listings + stats
 ```
 
-## Sequence diagram — property detail
+## Sequence diagram — property detail ("Call agent", "Flag & report", "Mark sold / delete")
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant DE as Property Detail
-    participant CO as App Core
-    participant SU as Supabase
+    participant P as Property
+    participant V as PropertyView
+    participant C as Conversation
+    participant R as PropertyReport
 
-    User->>DE: open property
-    DE->>SU: select property + agent + related
-    SU-->>DE: property row
-    DE->>SU: rpc increment_property_views
-    SU-->>DE: view counted
-
+    User->>P: open property detail
+    P->>V: increment_property_views(user_id)
+    V-->>P: view counted
     alt owner
-        User->>DE: tap Mark Sold
-        DE->>SU: update is_sold = true
-        SU-->>DE: ok
-        DE-->>User: back
-        User->>DE: tap Delete
-        DE->>SU: delete property
-        SU-->>DE: ok
-        DE-->>User: back
+        User->>P: update is_sold = true, sold_at
+        P-->>User: marked sold
+        User->>P: delete listing
+        P-->>User: removed
     else non-owner
-        User->>DE: tap Call
-        DE-->>User: open tel: dialer
-        User->>DE: tap Chat
-        DE->>CO: auth.getUser()
-        DE->>SU: find-or-create conversation
-        SU-->>DE: conversationId
-        DE->>SU: insert first message
-        DE-->>User: open Chat room
-        User->>DE: tap Flag & Report
-        DE->>SU: insert property_reports + set is_flagged
-        SU-->>DE: ok
-        DE-->>User: thank-you dialog
+        User->>C: find-or-create (property, buyer, seller)
+        C-->>User: conversationId
+        User->>R: insert (reason)
+        R->>P: is_flagged = true
+        P-->>User: flagged (hidden from public)
     end
 ```
 
-## Sequence diagram — create post
+## Sequence diagram — create post ("Post property / hostel / wanted listing")
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant CP as Create Post Screen
-    participant FM as Listing Form
-    participant CO as App Core
-    participant ST as Storage
-    participant SU as Supabase
+    participant P as Property
+    participant W as WantedListing
+    participant N as Notification
+    participant O as Other Users
 
-    User->>CP: open Create Post tab
-    CP->>CO: auth.getSession()
-    alt not signed in
-        CO-->>CP: no session
-        CP-->>User: login dialog → Login
-    else signed in
-        User->>CP: choose listing type (sale / rent / hostel / wanted)
-        CP->>FM: render form
-        User->>FM: fill info + details + location
-        alt wanted
-            User->>FM: set budget / fee range + phone
-            FM->>SU: insert wanted_listings
-            SU-->>FM: ok
-            FM-->>User: alert → Wanted List
-        else property
-            User->>FM: pick photos / video
-            FM->>ST: upload to property-media
-            ST-->>FM: public URLs
-            FM->>SU: insert properties
-            SU-->>FM: id + ad_number
-            FM->>SU: invoke notify-new-property
-            FM-->>User: alert (PROP-xxxxx) → Home
-        end
-    end
+    User->>P: insert (property / hostel, media)
+    P-->>User: id + ad_number (PROP-xxxxx)
+    P->>N: notify-new-property (fan-out)
+    N-->>O: new_property notification + push
+    User->>W: insert (deal_type, budget, phone)
+    W-->>User: wanted listing created
+    User->>W: view (increment_wanted_listing_views)
 ```
 
-## Sequence diagram — chat
+## Sequence diagram — chat ("Chat with agent / seller", "Respond via chat")
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant CL as Chat List
-    participant CR as Chat Room
-    participant CO as App Core<br/>(unread badge)
-    participant RT as Realtime Channel
-    participant SU as Supabase
+    participant C as Conversation
+    participant M as Message
+    participant N as Notification
+    participant O as Counterpart
 
-    User->>CL: open Chat tab
-    CL->>SU: select conversations + profiles
-    SU-->>CL: conversations (unread counts)
-    CL->>CO: rpc get_total_unread_count
-    CO-->>CL: badge
-    User->>CL: open conversation
-    CL-->>User: open Chat room
-    CR->>SU: select messages (asc)
-    SU-->>CR: history
-    CR->>RT: subscribe messages:{channelId}
-    RT-->>CR: realtime INSERT / UPDATE
-    User->>CR: type + tap send
-    CR->>SU: insert message (text / attachment)
-    SU-->>CR: ok
-    CR->>CR: optimistic render + clear input
-    CR->>CO: mark read + refresh unread
-    User->>CR: long-press message
-    User->>CR: edit / delete / pin / reply
-    CR->>SU: update / delete message
-    SU-->>CR: ok
+    User->>C: open (find-or-create)
+    C-->>User: conversation + unread counts
+    C-->>M: history (asc)
+    User->>M: insert (text / attachment)
+    M-->>C: realtime INSERT / UPDATE
+    M->>N: notify-new-message
+    N-->>O: new_message notification + push
+    User->>M: edit / delete / pin / reply
+    User->>M: mark read (read_at)
+    C-->>User: unread counts updated
 ```
 
-## Sequence diagram — profile
+## Sequence diagram — profile ("Manage My Listings", "Manage profile", "Receive notifications")
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant PR as Profile Screen
-    participant ML as My Listings
-    participant SE as Settings / Account
-    participant CO as App Core
-    participant SU as Supabase
+    participant P as Profile
+    participant L as My Listings
+    participant N as Notification
+    participant S as Session
 
-    User->>PR: open Profile tab
-    PR->>CO: auth.getUser()
-    alt not signed in
-        CO-->>PR: no user → redirect Login
-    else signed in
-        PR->>SU: select profile
-        SU-->>PR: profile row
-        PR-->>User: header + menus
-        User->>PR: My Listings
-        PR->>ML: open My Listings
-        ML->>SU: select own properties + rpc post count
-        SU-->>ML: listings + limit
-        User->>ML: open listing → detail (mark sold / delete)
-        User->>PR: Edit Profile
-        PR->>SE: open Settings / Account
-        User->>SE: edit full_name / avatar
-        SE->>SU: upload avatar + update profile
-        SU-->>SE: ok
-        SE->>CO: emit profileUpdated
-        User->>PR: tap Sign Out
-        PR->>SU: auth.signOut()
-        SU-->>PR: ok
-        PR-->>User: redirect → Login
-    end
+    User->>P: fetch profile
+    P-->>User: profile row
+    User->>L: select own properties + post count
+    L-->>User: listings + monthly limit
+    User->>P: update (full_name, avatar_url)
+    P-->>User: profileUpdated event
+    User->>N: fetch notifications
+    N-->>User: list
+    User->>N: mark read (read_at) / clear all
+    User->>S: signOut()
+    S-->>User: session cleared → Login
 ```
 
-## Class diagram
+## Class diagram (Supabase tables)
+
+The same schema as the ER diagram, drawn as a class diagram: each table is a class, its columns are attributes, and the PK/FK associations are class relationships.
 
 ```mermaid
 classDiagram
     direction TB
 
-    namespace Screens {
-        class HomeScreen {
-            -properties: Property[]
-            -savedIds: Set
-            +fetchProperties(category)
-            +handleSave(propertyId)
-            +handleCompare(property)
-        }
-        class PropertyDetailScreen {
-            -property: Property
-            -agent: Profile
-            +fetchPropertyDetails()
-            +handleChat()
-            +handleReport()
-            +handleDelete()
-        }
-        class AgentScreen {
-            -agent: Profile
-            -listings: Property[]
-            +handleCall()
-            +handleChat()
-            +handleSave()
-        }
-        class SearchScreen {
-            -results: Property[]
-            -filters
-            +handleSearchSubmit()
-        }
-        class ChatScreen {
-            -messages: Message[]
-            +sendMessage()
-        }
-        class MapTabScreen {
-            +loadProperties(loc)
-            +centerOnUser()
-        }
-        class CreatePostForm {
-            -dealType
-            +handleSubmitPost()
-            +uploadImages()
-        }
-        class ProfileScreen {
-            +fetchProfile()
-            +handleLogout()
-        }
-    }
-
-    namespace Stores {
-        class useThemeStore {
-            +theme
-            +setTheme()
-        }
-        class useLanguageStore {
-            +language
-            +setLanguage()
-        }
-        class useCompareStore {
-            +items: Property[]
-            +add(property)
-            +remove(id)
-            +clear()
-        }
-        class useNetworkStore {
-            +isOnline
-            +setOnline()
-        }
-    }
-
-    namespace Services {
-        class SupabaseClient {
-            +auth
-            +from(table)
-            +storage
-            +rpc(name)
-        }
-        class Notifications {
-            +registerForPushNotifications()
-            +savePushToken()
-            +setupNotificationListeners()
-        }
-    }
-
-    namespace Models {
-        class Property {
-            +id: string
-            +title_en: string
-            +title_mm: string
-            +price: number
-            +deal_type: string
-            +property_type: string
-            +images: string[]
-            +is_sold: boolean
-        }
+    namespace Tables {
         class Profile {
-            +id: string
-            +full_name: string
-            +avatar_url: string
-            +phone: string
+            +uuid id PK
+            +text full_name
+            +text email
+            +text avatar_url
+            +text phone
+            +text city
+            +text region
+            +timestamptz created_at
         }
-        class Message {
-            +id: string
-            +text: string
-            +attachment
-            +reply_to_id
-            +pinned_by_buyer
-            +pinned_by_seller
+        class Property {
+            +uuid id PK
+            +uuid user_id FK
+            +int ad_number
+            +text deal_type
+            +text property_type
+            +text state_region_id FK
+            +text township_id FK
+            +text floor
+            +numeric price
+            +text currency_unit
+            +numeric sqft
+            +int bedrooms
+            +int bathrooms
+            +text title_mm
+            +text title_en
+            +text[] images
+            +text video_url
+            +text description
+            +float latitude
+            +float longitude
+            +boolean is_sold
+            +boolean is_rented
+            +boolean is_flagged
+            +int views
+            +timestamptz created_at
+            +timestamptz sold_at
+        }
+        class WantedListing {
+            +uuid id PK
+            +uuid user_id FK
+            +text title
+            +text deal_type
+            +text property_type
+            +text region_id FK
+            +text township_id FK
+            +numeric budget_min
+            +numeric budget_max
+            +text contact_phone
+            +text status
+            +int views
+            +timestamptz created_at
         }
         class Conversation {
-            +id: string
-            +buyer_unread_count
-            +seller_unread_count
-            +muted
-            +archived
-            +pinned
+            +uuid id PK
+            +uuid property_id FK
+            +uuid buyer_id FK
+            +uuid seller_id FK
+            +int buyer_unread_count
+            +int seller_unread_count
+            +boolean muted
+            +boolean archived
+            +boolean pinned
+            +timestamptz created_at
+            +timestamptz updated_at
+        }
+        class Message {
+            +uuid id PK
+            +uuid conversation_id FK
+            +uuid sender_id FK
+            +text text
+            +jsonb attachment
+            +uuid reply_to_id FK
+            +boolean private
+            +boolean pinned_by_buyer
+            +boolean pinned_by_seller
+            +timestamptz read_at
+            +timestamptz created_at
+        }
+        class Notification {
+            +uuid id PK
+            +uuid user_id FK
+            +text type
+            +uuid actor_id FK
+            +uuid property_id FK
+            +uuid conversation_id FK
+            +text title
+            +text body
+            +timestamptz read_at
+            +timestamptz created_at
+        }
+        class SavedProperty {
+            +uuid id PK
+            +uuid user_id FK
+            +uuid property_id FK
+            +timestamptz created_at
+        }
+        class SavedSearch {
+            +uuid id PK
+            +uuid user_id FK
+            +text name
+            +jsonb search_params
+            +timestamptz created_at
+        }
+        class PropertyView {
+            +uuid user_id FK
+            +uuid property_id FK
+            +timestamptz viewed_at
+        }
+        class WantedListingView {
+            +uuid user_id FK
+            +uuid listing_id FK
+            +timestamptz viewed_at
+        }
+        class PropertyReport {
+            +uuid id PK
+            +uuid property_id FK
+            +uuid reporter_id FK
+            +text reason
+            +timestamptz created_at
+        }
+        class PushToken {
+            +uuid id PK
+            +uuid user_id FK
+            +text token
+            +text platform
+            +timestamptz created_at
+            +timestamptz updated_at
+        }
+        class StatesRegion {
+            +text id PK
+            +text name_en
+            +text name_mm
+        }
+        class Township {
+            +text id PK
+            +text name_en
+            +text name_mm
+            +text state_region_id FK
         }
     }
 
-    namespace UI {
-        class Card {
-            +item: Property
-            +isSaved: boolean
-            +onSave()
-            +onCompare()
-        }
-        class Skeleton {
-            +PropertyCardSkeleton
-            +ChatListSkeleton
-        }
-        class SegmentedToggle {
-            +options
-            +value
-            +onChange()
-        }
-    }
+    Profile "1" --> "many" Property : posts
+    Profile "1" --> "many" WantedListing : posts
+    Profile "1" --> "many" SavedProperty : saves
+    Profile "1" --> "many" Notification : receives
+    Profile "1" --> "many" PropertyReport : reports
+    Profile "1" --> "many" Conversation : buyer
+    Profile "1" --> "many" Conversation : seller
+    Profile "1" --> "many" Message : sends
+    Property "1" --> "many" SavedProperty : has
+    Property "1" --> "many" PropertyReport : has
+    Property "1" --> "many" PropertyView : viewed
+    Property "1" --> "many" Conversation : about
+    Conversation "1" --> "many" Message : contains
+    StatesRegion "1" --> "many" Township : has
+    StatesRegion "1" --> "many" Property : locates
+    Township "1" --> "many" Property : locates
 
-    HomeScreen --> Card : renders
-    PropertyDetailScreen --> Card : renders
-    AgentScreen --> Card : renders
-    SearchScreen --> Card : renders
-
-    HomeScreen --> SupabaseClient
-    PropertyDetailScreen --> SupabaseClient
-    AgentScreen --> SupabaseClient
-    SearchScreen --> SupabaseClient
-    ChatScreen --> SupabaseClient
-    MapTabScreen --> SupabaseClient
-    CreatePostForm --> SupabaseClient
-    ProfileScreen --> SupabaseClient
-    Notifications --> SupabaseClient
-
-    HomeScreen --> useCompareStore
-    HomeScreen --> useThemeStore
-    HomeScreen --> useLanguageStore
-    useThemeStore --> useNetworkStore
-    ProfileScreen --> useLanguageStore
 ```
 
 ## ER diagram

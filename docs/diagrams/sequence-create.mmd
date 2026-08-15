@@ -1,32 +1,14 @@
 sequenceDiagram
     actor User
-    participant CP as Create Post Screen
-    participant FM as Listing Form
-    participant CO as App Core
-    participant ST as Storage
-    participant SU as Supabase
+    participant P as Property
+    participant W as WantedListing
+    participant N as Notification
+    participant O as Other Users
 
-    User->>CP: open Create Post tab
-    CP->>CO: auth.getSession()
-    alt not signed in
-        CO-->>CP: no session
-        CP-->>User: login dialog → Login
-    else signed in
-        User->>CP: choose listing type (sale / rent / hostel / wanted)
-        CP->>FM: render form
-        User->>FM: fill info + details + location
-        alt wanted
-            User->>FM: set budget / fee range + phone
-            FM->>SU: insert wanted_listings
-            SU-->>FM: ok
-            FM-->>User: alert → Wanted List
-        else property
-            User->>FM: pick photos / video
-            FM->>ST: upload to property-media
-            ST-->>FM: public URLs
-            FM->>SU: insert properties
-            SU-->>FM: id + ad_number
-            FM->>SU: invoke notify-new-property
-            FM-->>User: alert (PROP-xxxxx) → Home
-        end
-    end
+    User->>P: insert (property / hostel, media)
+    P-->>User: id + ad_number (PROP-xxxxx)
+    P->>N: notify-new-property (fan-out)
+    N-->>O: new_property notification + push
+    User->>W: insert (deal_type, budget, phone)
+    W-->>User: wanted listing created
+    User->>W: view (increment_wanted_listing_views)

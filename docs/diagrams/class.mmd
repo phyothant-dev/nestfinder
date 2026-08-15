@@ -1,158 +1,163 @@
 classDiagram
     direction TB
 
-    namespace Screens {
-        class HomeScreen {
-            -properties: Property[]
-            -savedIds: Set
-            +fetchProperties(category)
-            +handleSave(propertyId)
-            +handleCompare(property)
-        }
-        class PropertyDetailScreen {
-            -property: Property
-            -agent: Profile
-            +fetchPropertyDetails()
-            +handleChat()
-            +handleReport()
-            +handleDelete()
-        }
-        class AgentScreen {
-            -agent: Profile
-            -listings: Property[]
-            +handleCall()
-            +handleChat()
-            +handleSave()
-        }
-        class SearchScreen {
-            -results: Property[]
-            -filters
-            +handleSearchSubmit()
-        }
-        class ChatScreen {
-            -messages: Message[]
-            +sendMessage()
-        }
-        class MapTabScreen {
-            +loadProperties(loc)
-            +centerOnUser()
-        }
-        class CreatePostForm {
-            -dealType
-            +handleSubmitPost()
-            +uploadImages()
-        }
-        class ProfileScreen {
-            +fetchProfile()
-            +handleLogout()
-        }
-    }
-
-    namespace Stores {
-        class useThemeStore {
-            +theme
-            +setTheme()
-        }
-        class useLanguageStore {
-            +language
-            +setLanguage()
-        }
-        class useCompareStore {
-            +items: Property[]
-            +add(property)
-            +remove(id)
-            +clear()
-        }
-        class useNetworkStore {
-            +isOnline
-            +setOnline()
-        }
-    }
-
-    namespace Services {
-        class SupabaseClient {
-            +auth
-            +from(table)
-            +storage
-            +rpc(name)
-        }
-        class Notifications {
-            +registerForPushNotifications()
-            +savePushToken()
-            +setupNotificationListeners()
-        }
-    }
-
-    namespace Models {
-        class Property {
-            +id: string
-            +title_en: string
-            +title_mm: string
-            +price: number
-            +deal_type: string
-            +property_type: string
-            +images: string[]
-            +is_sold: boolean
-        }
+    namespace Tables {
         class Profile {
-            +id: string
-            +full_name: string
-            +avatar_url: string
-            +phone: string
+            +uuid id PK
+            +text full_name
+            +text email
+            +text avatar_url
+            +text phone
+            +text city
+            +text region
+            +timestamptz created_at
         }
-        class Message {
-            +id: string
-            +text: string
-            +attachment
-            +reply_to_id
-            +pinned_by_buyer
-            +pinned_by_seller
+        class Property {
+            +uuid id PK
+            +uuid user_id FK
+            +int ad_number
+            +text deal_type
+            +text property_type
+            +text state_region_id FK
+            +text township_id FK
+            +text floor
+            +numeric price
+            +text currency_unit
+            +numeric sqft
+            +int bedrooms
+            +int bathrooms
+            +text title_mm
+            +text title_en
+            +text[] images
+            +text video_url
+            +text description
+            +float latitude
+            +float longitude
+            +boolean is_sold
+            +boolean is_rented
+            +boolean is_flagged
+            +int views
+            +timestamptz created_at
+            +timestamptz sold_at
+        }
+        class WantedListing {
+            +uuid id PK
+            +uuid user_id FK
+            +text title
+            +text deal_type
+            +text property_type
+            +text region_id FK
+            +text township_id FK
+            +numeric budget_min
+            +numeric budget_max
+            +text contact_phone
+            +text status
+            +int views
+            +timestamptz created_at
         }
         class Conversation {
-            +id: string
-            +buyer_unread_count
-            +seller_unread_count
-            +muted
-            +archived
-            +pinned
+            +uuid id PK
+            +uuid property_id FK
+            +uuid buyer_id FK
+            +uuid seller_id FK
+            +int buyer_unread_count
+            +int seller_unread_count
+            +boolean muted
+            +boolean archived
+            +boolean pinned
+            +timestamptz created_at
+            +timestamptz updated_at
+        }
+        class Message {
+            +uuid id PK
+            +uuid conversation_id FK
+            +uuid sender_id FK
+            +text text
+            +jsonb attachment
+            +uuid reply_to_id FK
+            +boolean private
+            +boolean pinned_by_buyer
+            +boolean pinned_by_seller
+            +timestamptz read_at
+            +timestamptz created_at
+        }
+        class Notification {
+            +uuid id PK
+            +uuid user_id FK
+            +text type
+            +uuid actor_id FK
+            +uuid property_id FK
+            +uuid conversation_id FK
+            +text title
+            +text body
+            +timestamptz read_at
+            +timestamptz created_at
+        }
+        class SavedProperty {
+            +uuid id PK
+            +uuid user_id FK
+            +uuid property_id FK
+            +timestamptz created_at
+        }
+        class SavedSearch {
+            +uuid id PK
+            +uuid user_id FK
+            +text name
+            +jsonb search_params
+            +timestamptz created_at
+        }
+        class PropertyView {
+            +uuid user_id FK
+            +uuid property_id FK
+            +timestamptz viewed_at
+        }
+        class WantedListingView {
+            +uuid user_id FK
+            +uuid listing_id FK
+            +timestamptz viewed_at
+        }
+        class PropertyReport {
+            +uuid id PK
+            +uuid property_id FK
+            +uuid reporter_id FK
+            +text reason
+            +timestamptz created_at
+        }
+        class PushToken {
+            +uuid id PK
+            +uuid user_id FK
+            +text token
+            +text platform
+            +timestamptz created_at
+            +timestamptz updated_at
+        }
+        class StatesRegion {
+            +text id PK
+            +text name_en
+            +text name_mm
+        }
+        class Township {
+            +text id PK
+            +text name_en
+            +text name_mm
+            +text state_region_id FK
         }
     }
 
-    namespace UI {
-        class Card {
-            +item: Property
-            +isSaved: boolean
-            +onSave()
-            +onCompare()
-        }
-        class Skeleton {
-            +PropertyCardSkeleton
-            +ChatListSkeleton
-        }
-        class SegmentedToggle {
-            +options
-            +value
-            +onChange()
-        }
-    }
+    Profile "1" --> "many" Property : posts
+    Profile "1" --> "many" WantedListing : posts
+    Profile "1" --> "many" SavedProperty : saves
+    Profile "1" --> "many" Notification : receives
+    Profile "1" --> "many" PropertyReport : reports
+    Profile "1" --> "many" Conversation : buyer
+    Profile "1" --> "many" Conversation : seller
+    Profile "1" --> "many" Message : sends
+    Property "1" --> "many" SavedProperty : has
+    Property "1" --> "many" PropertyReport : has
+    Property "1" --> "many" PropertyView : viewed
+    Property "1" --> "many" Conversation : about
+    Conversation "1" --> "many" Message : contains
+    StatesRegion "1" --> "many" Township : has
+    StatesRegion "1" --> "many" Property : locates
+    Township "1" --> "many" Property : locates
 
-    HomeScreen --> Card : renders
-    PropertyDetailScreen --> Card : renders
-    AgentScreen --> Card : renders
-    SearchScreen --> Card : renders
-
-    HomeScreen --> SupabaseClient
-    PropertyDetailScreen --> SupabaseClient
-    AgentScreen --> SupabaseClient
-    SearchScreen --> SupabaseClient
-    ChatScreen --> SupabaseClient
-    MapTabScreen --> SupabaseClient
-    CreatePostForm --> SupabaseClient
-    ProfileScreen --> SupabaseClient
-    Notifications --> SupabaseClient
-
-    HomeScreen --> useCompareStore
-    HomeScreen --> useThemeStore
-    HomeScreen --> useLanguageStore
-    useThemeStore --> useNetworkStore
-    ProfileScreen --> useLanguageStore

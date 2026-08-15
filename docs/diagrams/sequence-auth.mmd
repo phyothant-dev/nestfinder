@@ -1,33 +1,19 @@
 sequenceDiagram
     actor User
-    participant OB as Onboarding (index)
-    participant AU as Auth Screens<br/>(Login / Register / Forgot)
-    participant CO as App Core<br/>(Session · Language · Push)
-    participant SU as Supabase (Auth)
+    participant S as Session
+    participant P as Profile
+    participant T as PushToken
 
-    User->>OB: Launch app
-    OB->>CO: loadLanguage() + setup listeners
-    OB->>SU: auth.getUser()
-    alt logged in
-        SU-->>OB: session exists
-        OB-->>User: replace → Main Tabs
-    else not logged in
-        SU-->>OB: no session
-        OB-->>User: show onboarding
-        User->>OB: tap Get Started
-        OB->>AU: open Login / Register
-        alt email / password
-            User->>AU: enter email + password
-            AU->>SU: auth.signInWithPassword()
-            SU-->>AU: session / error
-            AU->>CO: register push token
-            AU-->>User: replace → Main Tabs
-        else Google
-            User->>AU: tap Continue with Google
-            AU->>SU: auth.signInWithOAuth()
-            SU-->>AU: open auth/callback
-            AU->>AU: handleAuthCallbackUrl()
-            AU->>CO: sync profile avatar
-            AU-->>User: replace → Main Tabs
-        end
-    end
+    User->>S: signUp(email, password, full_name)
+    S->>P: upsert(id, full_name, email)
+    P-->>User: profile created
+    User->>S: signInWithPassword(email, password)
+    S-->>User: session
+    User->>S: signInWithOAuth(google)
+    S-->>User: session + callback
+    S->>P: sync avatar_url
+    S->>T: register push token
+    User->>S: resetPassword(new_password)
+    S-->>User: password updated
+    User->>S: signOut()
+    S-->>User: session cleared

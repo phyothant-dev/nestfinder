@@ -12,6 +12,7 @@ One flowchart for the whole app. Shape legend:
 | --- | --- |
 | `[ box ]` | Process / action |
 | `{ diamond }` | Decision (Yes / No) |
+| `[ / box / ]` | Input / output (user input, screen output) |
 | `( [ stadium ] )` | Start / End |
 | `( ( database ) )` | Database |
 
@@ -21,81 +22,54 @@ flowchart TB
     Start(["Start"]) --> Splash["Splash + Auth Guard"]
     Splash --> Logged{"Logged in?"}
     Logged -- No --> Onboarding["Onboarding"]
+    Logged -- Yes --> Tabs
     Onboarding --> AuthChoice{"Auth choice"}
-    AuthChoice -- Login --> Login["Login<br/>(email / Google)"]
-    AuthChoice -- Register --> Register["Register"]
-    AuthChoice -- Forgot --> Forgot["Forgot / Reset Password"]
-    Login -->|session saved| Tabs
-    Register -->|profile created| Login
-    Forgot -->|reset link| Login
-    Logged -- Yes --> Tabs["Main Tabs<br/>(Home · Map · Create · Chat · Profile)"]
+    AuthChoice -- Login --> Login[/"Login"/]
+    AuthChoice -- Register --> Register[/"Register"/]
+    AuthChoice -- Forgot --> Forgot[/"Forgot / Reset"/]
+    Register --> Login
+    Forgot --> Login
+    Login --> Tabs
 
-    Tabs --> HomeTab["Home Tab"]
-    Tabs --> MapTab["Map Tab"]
-    Tabs --> CreateTab["Create Post Tab"]
-    Tabs --> ChatTab["Chat Tab"]
-    Tabs --> ProfileTab["Profile Tab"]
+    Tabs["Main Tabs<br/>(Home · Map · Create · Chat · Profile)"]
+    Tabs --> HomeTab["Home"]
+    Tabs --> MapTab["Map"]
+    Tabs --> CreateTab["Create Post"]
+    Tabs --> ChatTab["Chat"]
+    Tabs --> ProfileTab["Profile"]
 
-    HomeTab --> Browse["Browse property cards"]
+    HomeTab --> Browse[/"Browse property cards"/]
     Browse --> SaveCompare["Save / Unsave / Compare"]
-    SaveCompare -->|login required| Login
-    SaveCompare --> Compare["Compare Screen"]
-    Compare --> End1(["End"])
+    SaveCompare --> EndHome(["End"])
     Browse --> Detail["Property Detail"]
     Detail --> Owner{"Owner?"}
-    Owner -- Yes --> OwnActions["Mark Sold / Delete"]
-    OwnActions --> End1
-    Owner -- No --> GuestActions["Call Agent / Chat"]
-    GuestActions --> End1
-    Detail --> Report["Flag & Report"]
-    Report --> End1
-    HomeTab --> Notif["Notifications"]
-    Notif --> End1
+    Owner -- Yes --> Own["Mark Sold / Delete"]
+    Own --> EndHome
+    Owner -- No --> Guest["Call / Chat / Report"]
+    Guest --> EndHome
+    HomeTab --> Notif[/"Notifications"/]
+    Notif --> EndHome
 
-    MapTab --> MapLoad["Load map + markers"]
-    MapLoad --> MapTap["Tap marker → Property Detail"]
-    MapTap --> Detail
+    MapTab -->|view markers| Detail
 
-    CreateTab --> ListingType{"Listing type"}
-    ListingType -- Property --> PropForm["Property listing<br/>(multi-section form)"]
-    PropForm --> Upload["Upload images / video"]
-    Upload --> InsertProp["INSERT properties<br/>+ notify-new-property"]
-    InsertProp --> End2(["End → Home"])
-    ListingType -- Wanted --> WantedForm["Wanted listing<br/>(buy / rent)"]
-    WantedForm --> InsertWanted["INSERT wanted_listings"]
-    InsertWanted --> End3(["End → Wanted List"])
+    CreateTab --> LType{"Listing type"}
+    LType -- Property --> PropForm[/"Property form<br/>(upload + publish)"/]
+    PropForm --> EndCreate(["End → Home"])
+    LType -- Wanted --> WantedForm[/"Wanted form<br/>(publish)"/]
+    WantedForm --> EndWanted(["End → Wanted List"])
 
-    ChatTab --> ChatList["Conversation list"]
-    ChatList --> ChatRoom["Chat room"]
-    ChatRoom --> MsgActions["Send / edit / delete / pin"]
-    MsgActions --> End4(["End"])
-    ChatList --> LoginReq(["End → Login"])
+    ChatTab --> CList["Conversation list"]
+    CList --> CRoom["Chat room<br/>(send / edit / pin)"]
+    CRoom --> EndChat(["End"])
 
-    ProfileTab --> MyListings["My Listings"]
-    MyListings --> End5(["End"])
-    ProfileTab --> SavedProps["Saved Properties"]
-    SavedProps --> End5
+    ProfileTab --> MyL["My Listings / Saved"]
     ProfileTab --> Settings["Settings / Account"]
-    Settings --> End5
     ProfileTab --> Logout["Logout"]
-    Logout --> LogoutEnd(["End → Login"])
+    MyL --> EndProfile(["End"])
+    Settings --> EndProfile
+    Logout --> EndLogin(["End → Login"])
 
-    Tabs --> DB[("Supabase<br/>Postgres · Storage<br/>Realtime")]
-    Detail --> DB
-    MapLoad --> DB
-    Upload --> DB
-    InsertProp --> DB
-    InsertWanted --> DB
-    ChatRoom --> DB
-    MyListings --> DB
-    SavedProps --> DB
-    Login --> DB
-    Register --> DB
-    Forgot --> DB
-    Browse --> DB
-    Compare --> DB
-    Notif --> DB
-    MsgActions --> DB
+    Tabs --> DB[("Supabase")]
 ```
 
 ---

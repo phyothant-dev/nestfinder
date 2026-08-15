@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator, BackHandler, Image, KeyboardAvoidingView, Platform, ScrollView, StatusBar, TextInput, TouchableOpacity, View } from "react-native";
 import Text from "@/shared/components/Text";
+import { BackButton } from "@/shared/components/BackButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
@@ -104,6 +105,9 @@ export default function LoginScreen() {
   return (
     <SafeAreaView className="flex-1 bg-cream">
       <StatusBar barStyle="dark-content" />
+      <View className="px-4 pt-4 pb-1 flex-row items-center">
+        <BackButton onPress={() => router.replace("/(tabs)")} />
+      </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "padding"}
         className="flex-1"

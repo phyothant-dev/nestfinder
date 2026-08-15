@@ -1,34 +1,41 @@
 flowchart LR
-    Guest([Guest])
-    User([Registered User / Buyer])
-    Agent([Registered User / Seller - Agent])
-    System([System])
+    subgraph Guest["Guest (unauthenticated)"]
+        direction TB
+        G1[Browse Properties]
+        G2[Register Account]
+        G3[Login]
+        G4[Switch Language]
+    end
 
-    Guest --> G1[Browse Properties]
-    Guest --> G2[Register Account]
-    Guest --> G3[Login]
-    Guest --> G4[Switch Language]
+    subgraph User["Registered User / Buyer"]
+        direction TB
+        U1[Search & Filter Properties]
+        U2[View Property Detail]
+        U3[Save / Unsave Property]
+        U4[Compare Properties]
+        U5[View Map / Get Directions]
+        U6[Call Agent]
+        U7[Chat with Agent]
+        U8[Manage Saved Properties]
+        U9[Post Wanted Listing]
+        U10[Save Search]
+        U11[Edit Profile]
+        U12[Change Settings]
+        U13[Toggle Dark Mode]
+    end
 
-    User --> U1[Search & Filter Properties]
-    User --> U2[View Property Detail]
-    User --> U3[Save / Unsave Property]
-    User --> U4[Compare Properties]
-    User --> U5[View Map / Get Directions]
-    User --> U6[Call Agent]
-    User --> U7[Chat with Agent]
-    User --> U8[Manage Saved Properties]
-    User --> U9[Post Wanted Listing]
-    User --> U10[Save Search]
-    User --> U11[Edit Profile]
-    User --> U12[Change Settings]
-    User --> U13[Toggle Dark Mode]
+    subgraph Agent["Registered User / Seller - Agent"]
+        direction TB
+        A1[Create Property Listing]
+        A2[Manage Own Listings]
+        A3[Respond to Buyers via Chat]
+        A4[View Agent Profile]
+    end
 
-    Agent --> A1[Create Property Listing]
-    Agent --> A2[Manage Own Listings]
-    Agent --> A3[Respond to Buyers via Chat]
-    Agent --> A4[View Agent Profile]
-
-    System --> S1[Authenticate via Email / Google]
-    System --> S2[Send Push Notifications]
-    System --> S3[Track Property Views]
-    System --> S4[Enforce Monthly Post Limit]
+    subgraph System["System"]
+        direction TB
+        S1[Authenticate via Email / Google]
+        S2[Send Push Notifications]
+        S3[Track Property Views]
+        S4[Enforce Monthly Post Limit]
+    end

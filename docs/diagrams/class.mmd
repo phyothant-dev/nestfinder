@@ -1,93 +1,5 @@
 classDiagram
-    direction LR
-
-    class SupabaseClient {
-        +auth
-        +from(table)
-        +storage
-        +rpc(name)
-    }
-
-    class i18n {
-        +language
-        +changeLanguage(lang)
-    }
-
-    class Notifications {
-        +registerForPushNotifications()
-        +savePushToken()
-        +setupNotificationListeners()
-    }
-
-    class useThemeStore {
-        +theme
-        +resolvedTheme
-        +setTheme()
-        +loadTheme()
-    }
-
-    class useLanguageStore {
-        +language
-        +setLanguage()
-        +loadLanguage()
-    }
-
-    class useCompareStore {
-        +items: Property[]
-        +add(property)
-        +remove(id)
-        +clear()
-    }
-
-    class useNetworkStore {
-        +isOnline
-        +setOnline()
-    }
-
-    class Property {
-        +id: string
-        +title_en: string
-        +title_mm: string
-        +price: number
-        +currency_unit: string
-        +deal_type: string
-        +property_type: string
-        +images: string[]
-        +area_value: number
-        +area_unit: string
-        +floor: string
-        +views: number
-        +is_sold: boolean
-    }
-
-    class Profile {
-        +id: string
-        +full_name: string
-        +avatar_url: string
-        +phone: string
-        +city: string
-        +region: string
-    }
-
-    class Card {
-        +item: Property
-        +isSaved: boolean
-        +onSave()
-        +onCompare()
-    }
-
-    class Skeleton {
-        +PropertyCardSkeleton
-        +PropertyListSkeleton
-        +ChatListSkeleton
-        +ProfileSkeleton
-    }
-
-    class SegmentedToggle {
-        +options
-        +value
-        +onChange()
-    }
+    direction TB
 
     class HomeScreen {
         -properties: Property[]
@@ -123,16 +35,106 @@ classDiagram
         +sendMessage()
     }
 
+    class Card {
+        +item: Property
+        +isSaved: boolean
+        +onSave()
+        +onCompare()
+    }
+
+    class SupabaseClient {
+        +auth
+        +from(table)
+        +storage
+        +rpc(name)
+    }
+
+    class Notifications {
+        +registerForPushNotifications()
+        +savePushToken()
+        +setupNotificationListeners()
+    }
+
+    class useCompareStore {
+        +items: Property[]
+        +add(property)
+        +remove(id)
+        +clear()
+    }
+
+    class useThemeStore {
+        +theme
+        +resolvedTheme
+        +setTheme()
+        +loadTheme()
+    }
+
+    class useNetworkStore {
+        +isOnline
+        +setOnline()
+    }
+
+    class useLanguageStore {
+        +language
+        +setLanguage()
+        +loadLanguage()
+    }
+
+    class i18n {
+        +language
+        +changeLanguage(lang)
+    }
+
+    class Property {
+        +id: string
+        +title_en: string
+        +title_mm: string
+        +price: number
+        +currency_unit: string
+        +deal_type: string
+        +property_type: string
+        +images: string[]
+        +area_value: number
+        +area_unit: string
+        +floor: string
+        +views: number
+        +is_sold: boolean
+    }
+
+    class Profile {
+        +id: string
+        +full_name: string
+        +avatar_url: string
+        +phone: string
+        +city: string
+        +region: string
+    }
+
+    class Skeleton {
+        +PropertyCardSkeleton
+        +PropertyListSkeleton
+        +ChatListSkeleton
+        +ProfileSkeleton
+    }
+
+    class SegmentedToggle {
+        +options
+        +value
+        +onChange()
+    }
+
     HomeScreen --> Card : renders
     PropertyDetailScreen --> Card : renders
     AgentScreen --> Card : renders
     SearchScreen --> Card : renders
+
     HomeScreen --> SupabaseClient
     PropertyDetailScreen --> SupabaseClient
     AgentScreen --> SupabaseClient
     ChatScreen --> SupabaseClient
+    Notifications --> SupabaseClient
+
     HomeScreen --> useCompareStore
     HomeScreen --> useThemeStore
-    useLanguageStore --> i18n : changes language
-    Notifications --> SupabaseClient
     useThemeStore --> useNetworkStore
+    useLanguageStore --> i18n : changes language

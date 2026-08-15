@@ -14,10 +14,10 @@ flowchart TD
     D --> E[Login]
     D --> F[Register]
     D --> G[Forgot / Reset Password]
-    E --> H
+    E --> H[(Tabs)]
     F --> H
     G --> E
-    B -- Yes --> H[(Tabs)]
+    B -- Yes --> H
 
     H --> I[Home Tab]
     H --> J[Map Tab]
@@ -26,6 +26,11 @@ flowchart TD
     H --> M[Profile Tab]
 
     I --> I1[Browse property cards]
+    I1 --> I5[Property detail]
+    I5 --> I6{Owner?}
+    I6 -- Yes --> I7[Mark sold / Delete]
+    I6 -- No --> I8[Call agent / Chat / Save / Compare]
+    I5 --> I9[Flag & Report]
     I --> I2[Save / Unsave / Compare]
     I --> I3[Notifications]
 
@@ -43,17 +48,10 @@ flowchart TD
     L1 --> L2[Send / edit / delete / pin messages]
 
     M --> M1[My Listings]
+    M1 --> M1a[Mark sold / delete]
     M --> M2[Saved Properties]
     M --> M3[Settings]
-    M --> M4[Logout]
-    M1 --> M1a[Mark sold / delete]
-    M4 --> C
-
-    I1 --> I5[Property detail]
-    I5 --> I6{Owner?}
-    I6 -- Yes --> I7[Mark sold / Delete]
-    I6 -- No --> I8[Call agent / Chat / Save / Compare]
-    I5 --> I9[Flag & Report]
+    M --> M4[Logout → Onboarding]
 ```
 
 ---
@@ -65,11 +63,11 @@ sequenceDiagram
     autonumber
     actor Sender as Sender (User A)
     participant App as Chat Screen
+    actor Recipient as Recipient (User B)
     participant Supa as Supabase API
     participant DB as Postgres
     participant Trig as Trigger notify_new_message
     participant NB as Notifications Table
-    participant Recipient as Recipient (User B)
 
     Sender->>App: Type message + tap send
     App->>App: Check editing / attachments
@@ -189,6 +187,57 @@ classDiagram
         +RLS: owner write
     }
 
+    class SAVED_PROPERTIES {
+        +uuid id PK
+        +uuid user_id FK
+        +uuid property_id FK
+        +timestamptz created_at
+        +UNIQUE (user_id, property_id)
+        +RLS: owner only
+    }
+
+    class SAVED_SEARCHES {
+        +uuid id PK
+        +uuid user_id FK
+        +text name
+        +jsonb search_params
+        +timestamptz created_at
+        +RLS: owner only
+    }
+
+    class PROPERTY_REPORTS {
+        +uuid id PK
+        +uuid property_id FK
+        +uuid reporter_id FK
+        +text reason
+        +timestamptz created_at
+        +RLS: any user can report
+    }
+
+    class PUSH_TOKENS {
+        +uuid id PK
+        +uuid user_id FK
+        +text token
+        +text platform
+        +timestamptz created_at
+        +timestamptz updated_at
+        +RLS: owner only
+    }
+
+    class NOTIFICATIONS {
+        +uuid id PK
+        +uuid user_id FK
+        +text type
+        +uuid actor_id FK
+        +uuid property_id FK
+        +uuid conversation_id FK
+        +text title
+        +text body
+        +timestamptz read_at
+        +timestamptz created_at
+        +RLS: read/mark own
+    }
+
     class CONVERSATIONS {
         +uuid id PK
         +uuid property_id FK
@@ -221,38 +270,6 @@ classDiagram
         +trigger: notify_new_message()
     }
 
-    class NOTIFICATIONS {
-        +uuid id PK
-        +uuid user_id FK
-        +text type
-        +uuid actor_id FK
-        +uuid property_id FK
-        +uuid conversation_id FK
-        +text title
-        +text body
-        +timestamptz read_at
-        +timestamptz created_at
-        +RLS: read/mark own
-    }
-
-    class SAVED_PROPERTIES {
-        +uuid id PK
-        +uuid user_id FK
-        +uuid property_id FK
-        +timestamptz created_at
-        +UNIQUE (user_id, property_id)
-        +RLS: owner only
-    }
-
-    class SAVED_SEARCHES {
-        +uuid id PK
-        +uuid user_id FK
-        +text name
-        +jsonb search_params
-        +timestamptz created_at
-        +RLS: owner only
-    }
-
     class PROPERTY_VIEWS {
         +uuid user_id FK
         +uuid property_id FK
@@ -269,25 +286,6 @@ classDiagram
         +function: increment_wanted_listing_views()
     }
 
-    class PROPERTY_REPORTS {
-        +uuid id PK
-        +uuid property_id FK
-        +uuid reporter_id FK
-        +text reason
-        +timestamptz created_at
-        +RLS: any user can report
-    }
-
-    class PUSH_TOKENS {
-        +uuid id PK
-        +uuid user_id FK
-        +text token
-        +text platform
-        +timestamptz created_at
-        +timestamptz updated_at
-        +RLS: owner only
-    }
-
     class STATES_REGIONS {
         +text id PK
         +text name_en
@@ -302,20 +300,20 @@ classDiagram
     }
 
     PROFILES "1" --> "0..*" PROPERTIES : owns
-    PROFILES "1" --> "0..*" WANTED_LISTINGS : posts
-    PROFILES "1" --> "0..*" SAVED_PROPERTIES : saves
-    PROFILES "1" --> "0..*" SAVED_SEARCHES : owns
-    PROFILES "1" --> "0..*" PUSH_TOKENS : has
-    PROFILES "1" --> "0..*" NOTIFICATIONS : receives
-    PROFILES "1" --> "0..*" PROPERTY_REPORTS : reports
-    PROFILES "1" --> "0..*" CONVERSATIONS : "buyer/seller"
-    PROFILES "1" --> "0..*" MESSAGES : sends
     PROPERTIES "1" --> "0..*" SAVED_PROPERTIES : "saved in"
     PROPERTIES "1" --> "0..*" PROPERTY_REPORTS : "flagged in"
     PROPERTIES "1" --> "0..*" PROPERTY_VIEWS : viewed
     PROPERTIES "1" --> "0..*" CONVERSATIONS : "chat about"
     CONVERSATIONS "1" --> "0..*" MESSAGES : contains
+    PROFILES "1" --> "0..*" CONVERSATIONS : "buyer/seller"
+    PROFILES "1" --> "0..*" MESSAGES : sends
+    PROFILES "1" --> "0..*" WANTED_LISTINGS : posts
     WANTED_LISTINGS "1" --> "0..*" WANTED_LISTING_VIEWS : viewed
+    PROFILES "1" --> "0..*" SAVED_PROPERTIES : saves
+    PROFILES "1" --> "0..*" SAVED_SEARCHES : owns
+    PROFILES "1" --> "0..*" PUSH_TOKENS : has
+    PROFILES "1" --> "0..*" NOTIFICATIONS : receives
+    PROFILES "1" --> "0..*" PROPERTY_REPORTS : reports
     STATES_REGIONS "1" --> "0..*" TOWNSHIPS : has
     TOWNSHIPS "1" --> "0..*" PROPERTIES : locates
     STATES_REGIONS "1" --> "0..*" WANTED_LISTINGS : locates
@@ -334,14 +332,14 @@ erDiagram
     PROFILES ||--o{ PUSH_TOKENS : has
     PROFILES ||--o{ NOTIFICATIONS : receives
     PROFILES ||--o{ PROPERTY_REPORTS : reports
+    PROFILES ||--o{ CONVERSATIONS : "participates (buyer)"
+    PROFILES ||--o{ CONVERSATIONS : "participates (seller)"
+    PROFILES ||--o{ MESSAGES : sends
     PROPERTIES ||--o{ SAVED_PROPERTIES : "saved in"
     PROPERTIES ||--o{ PROPERTY_REPORTS : "flagged in"
     PROPERTIES ||--o{ PROPERTY_VIEWS : viewed
     PROPERTIES ||--o{ CONVERSATIONS : "chat about"
     CONVERSATIONS ||--o{ MESSAGES : contains
-    PROFILES ||--o{ MESSAGES : sends
-    PROFILES ||--o{ CONVERSATIONS : "participates (buyer)"
-    PROFILES ||--o{ CONVERSATIONS : "participates (seller)"
     WANTED_LISTINGS ||--o{ WANTED_LISTING_VIEWS : viewed
     STATES_REGIONS ||--o{ TOWNSHIPS : has
     TOWNSHIPS ||--o{ PROPERTIES : locates
@@ -508,8 +506,9 @@ erDiagram
 ## 6. Use Case Diagram
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph Guest["Guest (unauthenticated)"]
+        direction TB
         GU1[Browse properties]
         GU2[Search / filter properties]
         GU3[View map markers]
@@ -518,7 +517,14 @@ flowchart TB
         GU6[Forgot / Reset password]
     end
 
+    subgraph GuestSystem["System — read access"]
+        direction TB
+        GS1[RLS: public read]
+        GS2[View counters]
+    end
+
     subgraph User["Registered User"]
+        direction TB
         U1[Post property listing]
         U2[Post wanted listing]
         U3[Chat with agents / sellers]
@@ -537,48 +543,24 @@ flowchart TB
         U16[Track post limit]
     end
 
-    subgraph System["Supabase Backend"]
-        S1[RLS policies]
-        S2[Realtime channels]
-        S3[View counters]
-        S4[Unread counts]
-        S5[Notification triggers]
-        S6[Storage uploads]
+    subgraph UserSystem["System — user actions"]
+        direction TB
+        US1[RLS policies]
+        US2[Realtime channels]
+        US3[Unread counts]
+        US4[Notification triggers]
+        US5[Storage uploads]
     end
 
-    Guest --> GU1
-    Guest --> GU2
-    Guest --> GU3
-    Guest --> GU4
-    Guest --> GU5
-    Guest --> GU6
+    GU4 --> GS1
+    GU1 --> GS2
 
-    User --> U1
-    User --> U2
-    User --> U3
-    User --> U4
-    User --> U5
-    User --> U6
-    User --> U7
-    User --> U8
-    User --> U9
-    User --> U10
-    User --> U10
-    User --> U11
-    User --> U12
-    User --> U13
-    User --> U14
-    User --> U15
-    User --> U16
-
-    U1 --> S6
-    U4 --> S6
-    U3 --> S2
-    U9 --> S5
-    U3 --> S4
-    U1 --> S1
-    GU4 --> S1
-    GU1 --> S3
+    U1 --> US1
+    U1 --> US5
+    U3 --> US2
+    U3 --> US3
+    U4 --> US5
+    U9 --> US4
 ```
 
 ---

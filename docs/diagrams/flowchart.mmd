@@ -1,5 +1,6 @@
 flowchart TD
     A([Start]) --> B[Splash]
+    B --> SB[(Supabase - Auth / Database / Storage)]
     B --> C{Signed in?}
     C -- No --> D[Onboarding]
     D --> E[Get Started]
@@ -11,15 +12,7 @@ flowchart TD
     F --> I[Save / Compare / Share]
     F --> J[Chat / Create post / Profile]
 
-    I -- guest --> K[Login / Register]
+    I -- guest --> K[Login / Register → returns to Home]
     J -- guest --> K
-    K --> F
-
-    C --> SB[(Supabase - Auth / Database / Storage)]
-    K --> SB
-    G --> SB
-    H --> SB
-    I --> SB
-    J --> SB
 
     F -- Exit app --> Z([End])

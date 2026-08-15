@@ -110,18 +110,18 @@ erDiagram
     }
 
     PROFILES ||--o{ PROPERTIES : owns
+    PROFILES ||--o{ WANTED_LISTINGS : posts
     PROFILES ||--o{ SAVED_PROPERTIES : saves
-    PROPERTIES ||--o{ SAVED_PROPERTIES : "saved by"
+    PROFILES ||--o{ SAVED_SEARCHES : owns
+    PROFILES ||--o{ PUSH_TOKENS : registers
     PROFILES ||--o{ CONVERSATIONS : "buyer"
     PROFILES ||--o{ CONVERSATIONS : "seller"
+    PROFILES ||--o{ MESSAGES : sends
+    PROPERTIES ||--o{ SAVED_PROPERTIES : "saved by"
     PROPERTIES ||--o{ CONVERSATIONS : "about"
     CONVERSATIONS ||--o{ MESSAGES : contains
-    PROFILES ||--o{ MESSAGES : sends
     STATES_REGIONS ||--o{ TOWNSHIPS : contains
     STATES_REGIONS ||--o{ PROPERTIES : locates
     TOWNSHIPS ||--o{ PROPERTIES : locates
     STATES_REGIONS ||--o{ WANTED_LISTINGS : locates
     TOWNSHIPS ||--o{ WANTED_LISTINGS : locates
-    PROFILES ||--o{ WANTED_LISTINGS : posts
-    PROFILES ||--o{ SAVED_SEARCHES : owns
-    PROFILES ||--o{ PUSH_TOKENS : registers

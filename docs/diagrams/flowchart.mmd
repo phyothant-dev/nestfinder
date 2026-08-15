@@ -1,18 +1,80 @@
-flowchart TD
-    A([Start]) --> B[Splash]
-    B --> SB[(Supabase - Auth / Database / Storage)]
-    B --> C{Signed in?}
-    C -- No --> D[Onboarding]
-    D --> E[Get Started]
-    E --> F[Home]
-    C -- Yes --> F
+%%{init: {"flowchart": {"curve": "stepAfter", "nodeSpacing": 40, "rankSpacing": 50}}}%%
+flowchart TB
+    Start(["Start"]) --> Splash["Splash + Auth Guard"]
+    Splash --> Logged{"Logged in?"}
+    Logged -- No --> Onboarding["Onboarding"]
+    Onboarding --> AuthChoice{"Auth choice"}
+    AuthChoice -- Login --> Login["Login<br/>(email / Google)"]
+    AuthChoice -- Register --> Register["Register"]
+    AuthChoice -- Forgot --> Forgot["Forgot / Reset Password"]
+    Login -->|session saved| Tabs
+    Register -->|profile created| Login
+    Forgot -->|reset link| Login
+    Logged -- Yes --> Tabs["Main Tabs<br/>(Home · Map · Create · Chat · Profile)"]
 
-    F --> G[Browse & view properties]
-    F --> H[Search / Map / Property detail]
-    F --> I[Save / Compare / Share]
-    F --> J[Chat / Create post / Profile]
+    Tabs --> HomeTab["Home Tab"]
+    Tabs --> MapTab["Map Tab"]
+    Tabs --> CreateTab["Create Post Tab"]
+    Tabs --> ChatTab["Chat Tab"]
+    Tabs --> ProfileTab["Profile Tab"]
 
-    I -- guest --> K[Login / Register → returns to Home]
-    J -- guest --> K
+    HomeTab --> Browse["Browse property cards"]
+    Browse --> SaveCompare["Save / Unsave / Compare"]
+    SaveCompare -->|login required| Login
+    SaveCompare --> Compare["Compare Screen"]
+    Compare --> End1(["End"])
+    Browse --> Detail["Property Detail"]
+    Detail --> Owner{"Owner?"}
+    Owner -- Yes --> OwnActions["Mark Sold / Delete"]
+    OwnActions --> End1
+    Owner -- No --> GuestActions["Call Agent / Chat"]
+    GuestActions --> End1
+    Detail --> Report["Flag & Report"]
+    Report --> End1
+    HomeTab --> Notif["Notifications"]
+    Notif --> End1
 
-    F -- Exit app --> Z([End])
+    MapTab --> MapLoad["Load map + markers"]
+    MapLoad --> MapTap["Tap marker → Property Detail"]
+    MapTap --> Detail
+
+    CreateTab --> ListingType{"Listing type"}
+    ListingType -- Property --> PropForm["Property listing<br/>(multi-section form)"]
+    PropForm --> Upload["Upload images / video"]
+    Upload --> InsertProp["INSERT properties<br/>+ notify-new-property"]
+    InsertProp --> End2(["End → Home"])
+    ListingType -- Wanted --> WantedForm["Wanted listing<br/>(buy / rent)"]
+    WantedForm --> InsertWanted["INSERT wanted_listings"]
+    InsertWanted --> End3(["End → Wanted List"])
+
+    ChatTab --> ChatList["Conversation list"]
+    ChatList --> ChatRoom["Chat room"]
+    ChatRoom --> MsgActions["Send / edit / delete / pin"]
+    MsgActions --> End4(["End"])
+    ChatList --> LoginReq(["End → Login"])
+
+    ProfileTab --> MyListings["My Listings"]
+    MyListings --> End5(["End"])
+    ProfileTab --> SavedProps["Saved Properties"]
+    SavedProps --> End5
+    ProfileTab --> Settings["Settings / Account"]
+    Settings --> End5
+    ProfileTab --> Logout["Logout"]
+    Logout --> LogoutEnd(["End → Login"])
+
+    Tabs --> DB[("Supabase<br/>Postgres · Storage<br/>Realtime")]
+    Detail --> DB
+    MapLoad --> DB
+    Upload --> DB
+    InsertProp --> DB
+    InsertWanted --> DB
+    ChatRoom --> DB
+    MyListings --> DB
+    SavedProps --> DB
+    Login --> DB
+    Register --> DB
+    Forgot --> DB
+    Browse --> DB
+    Compare --> DB
+    Notif --> DB
+    MsgActions --> DB

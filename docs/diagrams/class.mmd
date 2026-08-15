@@ -1,126 +1,139 @@
 classDiagram
     direction TB
 
-    class HomeScreen {
-        -properties: Property[]
-        -savedIds: Set
-        +fetchProperties(category)
-        +handleSave(propertyId)
+    namespace Screens {
+        class HomeScreen {
+            -properties: Property[]
+            -savedIds: Set
+            +fetchProperties(category)
+            +handleSave(propertyId)
+            +handleCompare(property)
+        }
+        class PropertyDetailScreen {
+            -property: Property
+            -agent: Profile
+            +fetchPropertyDetails()
+            +handleChat()
+            +handleReport()
+            +handleDelete()
+        }
+        class AgentScreen {
+            -agent: Profile
+            -listings: Property[]
+            +handleCall()
+            +handleChat()
+            +handleSave()
+        }
+        class SearchScreen {
+            -results: Property[]
+            -filters
+            +handleSearchSubmit()
+        }
+        class ChatScreen {
+            -messages: Message[]
+            +sendMessage()
+        }
+        class MapTabScreen {
+            +loadProperties(loc)
+            +centerOnUser()
+        }
+        class CreatePostForm {
+            -dealType
+            +handleSubmitPost()
+            +uploadImages()
+        }
+        class ProfileScreen {
+            +fetchProfile()
+            +handleLogout()
+        }
     }
 
-    class PropertyDetailScreen {
-        -property: Property
-        -agent: Profile
-        -related: Property[]
-        +fetchPropertyDetails()
-        +handleChat()
+    namespace Stores {
+        class useThemeStore {
+            +theme
+            +setTheme()
+        }
+        class useLanguageStore {
+            +language
+            +setLanguage()
+        }
+        class useCompareStore {
+            +items: Property[]
+            +add(property)
+            +remove(id)
+            +clear()
+        }
+        class useNetworkStore {
+            +isOnline
+            +setOnline()
+        }
     }
 
-    class AgentScreen {
-        -agent: Profile
-        -listings: Property[]
-        -stats
-        +handleCall()
-        +handleChat()
+    namespace Services {
+        class SupabaseClient {
+            +auth
+            +from(table)
+            +storage
+            +rpc(name)
+        }
+        class Notifications {
+            +registerForPushNotifications()
+            +savePushToken()
+            +setupNotificationListeners()
+        }
     }
 
-    class SearchScreen {
-        -results: Property[]
-        -filters
-        +handleSearchSubmit()
+    namespace Models {
+        class Property {
+            +id: string
+            +title_en: string
+            +title_mm: string
+            +price: number
+            +deal_type: string
+            +property_type: string
+            +images: string[]
+            +is_sold: boolean
+        }
+        class Profile {
+            +id: string
+            +full_name: string
+            +avatar_url: string
+            +phone: string
+        }
+        class Message {
+            +id: string
+            +text: string
+            +attachment
+            +reply_to_id
+            +pinned_by_buyer
+            +pinned_by_seller
+        }
+        class Conversation {
+            +id: string
+            +buyer_unread_count
+            +seller_unread_count
+            +muted
+            +archived
+            +pinned
+        }
     }
 
-    class ChatScreen {
-        -messages: Message[]
-        +sendMessage()
-    }
-
-    class Card {
-        +item: Property
-        +isSaved: boolean
-        +onSave()
-        +onCompare()
-    }
-
-    class SupabaseClient {
-        +auth
-        +from(table)
-        +storage
-        +rpc(name)
-    }
-
-    class Notifications {
-        +registerForPushNotifications()
-        +savePushToken()
-        +setupNotificationListeners()
-    }
-
-    class useCompareStore {
-        +items: Property[]
-        +add(property)
-        +remove(id)
-        +clear()
-    }
-
-    class useThemeStore {
-        +theme
-        +resolvedTheme
-        +setTheme()
-        +loadTheme()
-    }
-
-    class useNetworkStore {
-        +isOnline
-        +setOnline()
-    }
-
-    class useLanguageStore {
-        +language
-        +setLanguage()
-        +loadLanguage()
-    }
-
-    class i18n {
-        +language
-        +changeLanguage(lang)
-    }
-
-    class Property {
-        +id: string
-        +title_en: string
-        +title_mm: string
-        +price: number
-        +currency_unit: string
-        +deal_type: string
-        +property_type: string
-        +images: string[]
-        +area_value: number
-        +area_unit: string
-        +floor: string
-        +views: number
-        +is_sold: boolean
-    }
-
-    class Profile {
-        +id: string
-        +full_name: string
-        +avatar_url: string
-        +phone: string
-        +city: string
-        +region: string
-    }
-
-    class Skeleton {
-        +PropertyCardSkeleton
-        +PropertyListSkeleton
-        +ChatListSkeleton
-        +ProfileSkeleton
-    }
-
-    class SegmentedToggle {
-        +options
-        +value
-        +onChange()
+    namespace UI {
+        class Card {
+            +item: Property
+            +isSaved: boolean
+            +onSave()
+            +onCompare()
+        }
+        class Skeleton {
+            +PropertyCardSkeleton
+            +ChatListSkeleton
+        }
+        class SegmentedToggle {
+            +options
+            +value
+            +onChange()
+        }
     }
 
     HomeScreen --> Card : renders
@@ -131,10 +144,15 @@ classDiagram
     HomeScreen --> SupabaseClient
     PropertyDetailScreen --> SupabaseClient
     AgentScreen --> SupabaseClient
+    SearchScreen --> SupabaseClient
     ChatScreen --> SupabaseClient
+    MapTabScreen --> SupabaseClient
+    CreatePostForm --> SupabaseClient
+    ProfileScreen --> SupabaseClient
     Notifications --> SupabaseClient
 
     HomeScreen --> useCompareStore
     HomeScreen --> useThemeStore
+    HomeScreen --> useLanguageStore
     useThemeStore --> useNetworkStore
-    useLanguageStore --> i18n : changes language
+    ProfileScreen --> useLanguageStore

@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor User
+    participant SE as Search Screen
+    participant MA as Map Tab
+    participant SU as Supabase
+
+    User->>SE: open Search
+    SE->>SU: load states_regions + townships
+    SU-->>SE: location data
+    User->>SE: set filters (deal, region, type, price, rooms)
+    User->>SE: tap Search
+    SE->>SU: select properties (filtered)
+    SU-->>SE: results
+    SE-->>User: show result cards
+    User->>SE: tap result card
+    SE-->>User: open Property Detail
+
+    User->>MA: open Map tab
+    MA->>SU: request location + select properties (lat/lng)
+    SU-->>MA: markers
+    MA->>MA: build Leaflet HTML (WebView)
+    User->>MA: tap marker
+    MA-->>User: open Property Detail

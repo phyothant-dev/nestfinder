@@ -1,327 +1,363 @@
-# Nest Finder — Application Diagrams
+# Nest Finder — Diagrams
 
-Expo React Native (expo-router) + Supabase app for property listing, search, chat, and notifications.
+All diagrams for the Nest Finder app (Expo React Native + Supabase) in one file: full app flowchart, per-flow sequence diagrams, ER diagram, class diagram, use-case diagram, and the database tables.
 
 ---
 
-## 1. Flow Chart (App Navigation & User Flow)
+## 1. Full App Flowchart
+
+One flowchart for the whole app. Shape legend:
+
+| Shape | Meaning |
+| --- | --- |
+| `[ box ]` | Process / action |
+| `{ diamond }` | Decision (Yes / No) |
+| `( [ stadium ] )` | Start / End |
+| `( ( database ) )` | Database |
 
 ```mermaid
-flowchart TD
-    A([App Launch / Splash]) --> B{Logged in?}
-    B -- No --> C[Onboarding]
-    C --> D{Auth choice}
-    D --> E[Login]
-    D --> F[Register]
-    D --> G[Forgot / Reset Password]
-    E --> H[(Tabs)]
-    F --> H
-    G --> E
-    B -- Yes --> H
+%%{init: {"flowchart": {"curve": "stepAfter", "nodeSpacing": 40, "rankSpacing": 50}}}%%
+flowchart TB
+    Start(["Start"]) --> Splash["Splash + Auth Guard"]
+    Splash --> Logged{"Logged in?"}
+    Logged -- No --> Onboarding["Onboarding"]
+    Onboarding --> AuthChoice{"Auth choice"}
+    AuthChoice -- Login --> Login["Login<br/>(email / Google)"]
+    AuthChoice -- Register --> Register["Register"]
+    AuthChoice -- Forgot --> Forgot["Forgot / Reset Password"]
+    Login -->|session saved| Tabs
+    Register -->|profile created| Login
+    Forgot -->|reset link| Login
+    Logged -- Yes --> Tabs["Main Tabs<br/>(Home · Map · Create · Chat · Profile)"]
 
-    H --> I[Home Tab]
-    H --> J[Map Tab]
-    H --> K[Create Post Tab]
-    H --> L[Chat Tab]
-    H --> M[Profile Tab]
+    Tabs --> HomeTab["Home Tab"]
+    Tabs --> MapTab["Map Tab"]
+    Tabs --> CreateTab["Create Post Tab"]
+    Tabs --> ChatTab["Chat Tab"]
+    Tabs --> ProfileTab["Profile Tab"]
 
-    I --> I1[Browse property cards]
-    I1 --> I5[Property detail]
-    I5 --> I6{Owner?}
-    I6 -- Yes --> I7[Mark sold / Delete]
-    I6 -- No --> I8[Call agent / Chat / Save / Compare]
-    I5 --> I9[Flag & Report]
-    I --> I2[Save / Unsave / Compare]
-    I --> I3[Notifications]
+    HomeTab --> Browse["Browse property cards"]
+    Browse --> SaveCompare["Save / Unsave / Compare"]
+    SaveCompare -->|login required| Login
+    SaveCompare --> Compare["Compare Screen"]
+    Compare --> End1(["End"])
+    Browse --> Detail["Property Detail"]
+    Detail --> Owner{"Owner?"}
+    Owner -- Yes --> OwnActions["Mark Sold / Delete"]
+    OwnActions --> End1
+    Owner -- No --> GuestActions["Call Agent / Chat"]
+    GuestActions --> End1
+    Detail --> Report["Flag & Report"]
+    Report --> End1
+    HomeTab --> Notif["Notifications"]
+    Notif --> End1
 
-    J --> J1[Load map + markers]
-    J1 --> J2[Tap marker → Property detail]
+    MapTab --> MapLoad["Load map + markers"]
+    MapLoad --> MapTap["Tap marker → Property Detail"]
+    MapTap --> Detail
 
-    K --> K1{Listing type}
-    K1 --> K2[Property listing]
-    K2 --> K3[Multi-step form]
-    K3 --> K4[Publish to properties]
-    K1 --> K5[Wanted listing]
-    K5 --> K6[Publish to wanted_listings]
+    CreateTab --> ListingType{"Listing type"}
+    ListingType -- Property --> PropForm["Property listing<br/>(multi-section form)"]
+    PropForm --> Upload["Upload images / video"]
+    Upload --> InsertProp["INSERT properties<br/>+ notify-new-property"]
+    InsertProp --> End2(["End → Home"])
+    ListingType -- Wanted --> WantedForm["Wanted listing<br/>(buy / rent)"]
+    WantedForm --> InsertWanted["INSERT wanted_listings"]
+    InsertWanted --> End3(["End → Wanted List"])
 
-    L --> L1[Chat room]
-    L1 --> L2[Send / edit / delete / pin messages]
+    ChatTab --> ChatList["Conversation list"]
+    ChatList --> ChatRoom["Chat room"]
+    ChatRoom --> MsgActions["Send / edit / delete / pin"]
+    MsgActions --> End4(["End"])
+    ChatList --> LoginReq(["End → Login"])
 
-    M --> M1[My Listings]
-    M1 --> M1a[Mark sold / delete]
-    M --> M2[Saved Properties]
-    M --> M3[Settings]
-    M --> M4[Logout → Onboarding]
+    ProfileTab --> MyListings["My Listings"]
+    MyListings --> End5(["End"])
+    ProfileTab --> SavedProps["Saved Properties"]
+    SavedProps --> End5
+    ProfileTab --> Settings["Settings / Account"]
+    Settings --> End5
+    ProfileTab --> Logout["Logout"]
+    Logout --> LogoutEnd(["End → Login"])
+
+    Tabs --> DB[("Supabase<br/>Postgres · Storage<br/>Realtime")]
+    Detail --> DB
+    MapLoad --> DB
+    Upload --> DB
+    InsertProp --> DB
+    InsertWanted --> DB
+    ChatRoom --> DB
+    MyListings --> DB
+    SavedProps --> DB
+    Login --> DB
+    Register --> DB
+    Forgot --> DB
+    Browse --> DB
+    Compare --> DB
+    Notif --> DB
+    MsgActions --> DB
 ```
 
 ---
 
-## 2. Sequence Diagram — Send a Chat Message with Notifications
+## 2. Sequence Diagrams
+
+Frontend-focused sequence diagrams for each flow in the flowchart, showing the screens the user interacts with and the key Supabase calls. The database is shown as a single participant per flow.
+
+### 2.1 Onboarding & Auth
 
 ```mermaid
 sequenceDiagram
-    autonumber
-    actor Sender as Sender (User A)
-    participant App as Chat Screen
-    actor Recipient as Recipient (User B)
-    participant Supa as Supabase API
-    participant DB as Postgres
-    participant Trig as Trigger notify_new_message
-    participant NB as Notifications Table
+    actor User
+    participant OB as Onboarding (index)
+    participant AU as Auth Screens<br/>(Login / Register / Forgot)
+    participant CO as App Core<br/>(Session · Language · Push)
+    participant SU as Supabase (Auth)
 
-    Sender->>App: Type message + tap send
-    App->>App: Check editing / attachments
-    App->>Supa: INSERT into messages
-    Note over App,Supa: {conversation_id, sender_id, text, attachment?, reply_to_id}
-    Supa->>DB: Insert row (RLS: participant only)
-    DB-->>Trig: AFTER INSERT fires
-    Trig->>Trig: Look up conversation, find OTHER participant
-    Trig->>NB: INSERT notification {user_id=other, type='new_message', body=text}
-    DB-->>Supa: Return inserted row
-    Supa-->>App: Data / error
-    App-->>Sender: Optimistic render + clear input
-    Recipient->>App: Opens Chat / Notification screen
-    App->>Supa: SELECT notifications (user_id = me)
-    Supa-->>App: List incl. new_message
-    App->>Supa: UPDATE notifications SET read_at (mark read)
-    Recipient->>App: Tap notification → open /chat/{conversationId}
+    User->>OB: Launch app
+    OB->>CO: loadLanguage() + setup listeners
+    OB->>SU: auth.getUser()
+    alt logged in
+        SU-->>OB: session exists
+        OB-->>User: replace → Main Tabs
+    else not logged in
+        SU-->>OB: no session
+        OB-->>User: show onboarding
+        User->>OB: tap Get Started
+        OB->>AU: open Login / Register
+        alt email / password
+            User->>AU: enter email + password
+            AU->>SU: auth.signInWithPassword()
+            SU-->>AU: session / error
+            AU->>CO: register push token
+            AU-->>User: replace → Main Tabs
+        else Google
+            User->>AU: tap Continue with Google
+            AU->>SU: auth.signInWithOAuth()
+            SU-->>AU: open auth/callback
+            AU->>AU: handleAuthCallbackUrl()
+            AU->>CO: sync profile avatar
+            AU-->>User: replace → Main Tabs
+        end
+    end
 ```
 
----
-
-## 3. Sequence Diagram — Publish a Property + Broadcast Notifications
+### 2.2 Browse & Save / Unsave / Compare (Home)
 
 ```mermaid
 sequenceDiagram
-    autonumber
-    actor Owner as Owner
-    participant App as Create Post Screen
-    participant Storage as Supabase Storage
-    participant Supa as Supabase API
-    participant DB as Postgres
-    participant Trig as Trigger notify_new_property
-    participant NB as Notifications Table
+    actor User
+    participant HO as Home Screen
+    participant CD as Property Card
+    participant CO as App Core<br/>(savedIds · compare store)
+    participant SU as Supabase
 
-    Owner->>App: Fill multi-step form
-    App->>App: Validate steps (title, phone, location)
-    App->>Storage: Upload images / video (property-media)
-    Storage-->>App: Public URLs
-    App->>Supa: INSERT into properties
-    Note over App,Supa: {user_id, deal_type, property_type, price, images, ...}
-    Supa->>DB: Insert row (RLS: auth.uid() = user_id)
-    DB-->>Trig: AFTER INSERT fires
-    Trig->>Trig: SELECT profiles WHERE id <> new.user_id
-    Trig->>NB: INSERT notifications {user_id=<each user>, type='new_property', title='New Property'}
-    DB-->>Supa: Return inserted row + ad_number
-    Supa-->>App: OK (PROP-xxxxx)
-    App-->>Owner: Success alert, navigate to home/wanted
+    User->>HO: open Home tab
+    HO->>CO: fetch profile + saved ids
+    HO->>SU: select properties (is_flagged = false)
+    SU-->>HO: property list
+    HO->>HO: render cards
+    User->>CD: tap heart (save)
+    CD->>HO: onSave(propertyId)
+    HO->>CO: auth.getUser()
+    alt not signed in
+        CO-->>HO: no user → redirect Login
+    else saved
+        HO->>SU: delete saved_properties
+        SU-->>HO: ok
+        HO->>HO: remove from savedIds
+    else not saved
+        HO->>SU: insert saved_properties
+        SU-->>HO: ok
+        HO->>HO: add to savedIds
+    end
+    HO->>HO: emit savedPropertiesChanged
+    User->>CD: tap compare icon
+    CD->>HO: onCompare(property)
+    HO->>CO: compareStore.add(property)
+    CO-->>HO: floating compare bar
+    User->>HO: tap Compare bar
+    HO-->>User: open Compare Screen
 ```
 
----
-
-## 4. Class Diagram (Supabase Database Entities)
+### 2.3 Search & Map
 
 ```mermaid
-classDiagram
-    direction LR
+sequenceDiagram
+    actor User
+    participant SE as Search Screen
+    participant MA as Map Tab
+    participant SU as Supabase
 
-    class PROFILES {
-        +uuid id PK
-        +text full_name
-        +text email
-        +text avatar_url
-        +text phone
-        +text city
-        +text region
-        +timestamptz created_at
-        +RLS: read own profile
-    }
+    User->>SE: open Search
+    SE->>SU: load states_regions + townships
+    SU-->>SE: location data
+    User->>SE: set filters (deal, region, type, price, rooms)
+    User->>SE: tap Search
+    SE->>SU: select properties (filtered)
+    SU-->>SE: results
+    SE-->>User: show result cards
+    User->>SE: tap result card
+    SE-->>User: open Property Detail
 
-    class PROPERTIES {
-        +uuid id PK
-        +uuid user_id FK
-        +int ad_number
-        +text deal_type
-        +text property_type
-        +text state_region_id FK
-        +text township_id FK
-        +text floor
-        +numeric price
-        +text currency_unit
-        +numeric sqft
-        +int bedrooms
-        +int bathrooms
-        +text title_mm
-        +text title_en
-        +text[] images
-        +text video_url
-        +text description
-        +float latitude
-        +float longitude
-        +boolean is_sold
-        +boolean is_rented
-        +boolean is_flagged
-        +int views
-        +timestamptz created_at
-        +timestamptz sold_at
-        +RLS: public read (is_flagged = false)
-        +RLS: owner write
-        +trigger: notify_new_property()
-    }
+    User->>MA: open Map tab
+    MA->>SU: request location + select properties (lat/lng)
+    SU-->>MA: markers
+    MA->>MA: build Leaflet HTML (WebView)
+    User->>MA: tap marker
+    MA-->>User: open Property Detail
+```
 
-    class WANTED_LISTINGS {
-        +uuid id PK
-        +uuid user_id FK
-        +text title
-        +text description
-        +text deal_type
-        +text property_type
-        +text region_id FK
-        +text township_id FK
-        +numeric budget_min
-        +numeric budget_max
-        +text contact_phone
-        +text status
-        +int views
-        +timestamptz created_at
-        +RLS: owner write
-    }
+### 2.4 Property Detail (Owner / Non-owner / Report)
 
-    class SAVED_PROPERTIES {
-        +uuid id PK
-        +uuid user_id FK
-        +uuid property_id FK
-        +timestamptz created_at
-        +UNIQUE (user_id, property_id)
-        +RLS: owner only
-    }
+```mermaid
+sequenceDiagram
+    actor User
+    participant DE as Property Detail
+    participant CO as App Core
+    participant SU as Supabase
 
-    class SAVED_SEARCHES {
-        +uuid id PK
-        +uuid user_id FK
-        +text name
-        +jsonb search_params
-        +timestamptz created_at
-        +RLS: owner only
-    }
+    User->>DE: open property
+    DE->>SU: select property + agent + related
+    SU-->>DE: property row
+    DE->>SU: rpc increment_property_views
+    SU-->>DE: view counted
 
-    class PROPERTY_REPORTS {
-        +uuid id PK
-        +uuid property_id FK
-        +uuid reporter_id FK
-        +text reason
-        +timestamptz created_at
-        +RLS: any user can report
-    }
+    alt owner
+        User->>DE: tap Mark Sold
+        DE->>SU: update is_sold = true
+        SU-->>DE: ok
+        DE-->>User: back
+        User->>DE: tap Delete
+        DE->>SU: delete property
+        SU-->>DE: ok
+        DE-->>User: back
+    else non-owner
+        User->>DE: tap Call
+        DE-->>User: open tel: dialer
+        User->>DE: tap Chat
+        DE->>CO: auth.getUser()
+        DE->>SU: find-or-create conversation
+        SU-->>DE: conversationId
+        DE->>SU: insert first message
+        DE-->>User: open Chat room
+        User->>DE: tap Flag & Report
+        DE->>SU: insert property_reports + set is_flagged
+        SU-->>DE: ok
+        DE-->>User: thank-you dialog
+    end
+```
 
-    class PUSH_TOKENS {
-        +uuid id PK
-        +uuid user_id FK
-        +text token
-        +text platform
-        +timestamptz created_at
-        +timestamptz updated_at
-        +RLS: owner only
-    }
+### 2.5 Create Post (Property / Wanted)
 
-    class NOTIFICATIONS {
-        +uuid id PK
-        +uuid user_id FK
-        +text type
-        +uuid actor_id FK
-        +uuid property_id FK
-        +uuid conversation_id FK
-        +text title
-        +text body
-        +timestamptz read_at
-        +timestamptz created_at
-        +RLS: read/mark own
-    }
+```mermaid
+sequenceDiagram
+    actor User
+    participant CP as Create Post Screen
+    participant FM as Listing Form
+    participant CO as App Core
+    participant ST as Storage
+    participant SU as Supabase
 
-    class CONVERSATIONS {
-        +uuid id PK
-        +uuid property_id FK
-        +uuid buyer_id FK
-        +uuid seller_id FK
-        +int buyer_unread_count
-        +int seller_unread_count
-        +boolean muted
-        +boolean archived
-        +boolean pinned
-        +timestamptz created_at
-        +timestamptz updated_at
-        +RLS: participants only
-        +realtime: broadcast
-    }
+    User->>CP: open Create Post tab
+    CP->>CO: auth.getSession()
+    alt not signed in
+        CO-->>CP: no session
+        CP-->>User: login dialog → Login
+    else signed in
+        User->>CP: choose listing type (sale / rent / hostel / wanted)
+        CP->>FM: render form
+        User->>FM: fill info + details + location
+        alt wanted
+            User->>FM: set budget / fee range + phone
+            FM->>SU: insert wanted_listings
+            SU-->>FM: ok
+            FM-->>User: alert → Wanted List
+        else property
+            User->>FM: pick photos / video
+            FM->>ST: upload to property-media
+            ST-->>FM: public URLs
+            FM->>SU: insert properties
+            SU-->>FM: id + ad_number
+            FM->>SU: invoke notify-new-property
+            FM-->>User: alert (PROP-xxxxx) → Home
+        end
+    end
+```
 
-    class MESSAGES {
-        +uuid id PK
-        +uuid conversation_id FK
-        +uuid sender_id FK
-        +text text
-        +jsonb attachment
-        +uuid reply_to_id
-        +boolean private
-        +boolean pinned_by_buyer
-        +boolean pinned_by_seller
-        +timestamptz read_at
-        +timestamptz created_at
-        +RLS: participants only
-        +trigger: notify_new_message()
-    }
+### 2.6 Chat
 
-    class PROPERTY_VIEWS {
-        +uuid user_id FK
-        +uuid property_id FK
-        +timestamptz viewed_at
-        +PK (user_id, property_id)
-        +function: increment_property_views()
-    }
+```mermaid
+sequenceDiagram
+    actor User
+    participant CL as Chat List
+    participant CR as Chat Room
+    participant CO as App Core<br/>(unread badge)
+    participant RT as Realtime Channel
+    participant SU as Supabase
 
-    class WANTED_LISTING_VIEWS {
-        +uuid user_id FK
-        +uuid listing_id FK
-        +timestamptz viewed_at
-        +PK (user_id, listing_id)
-        +function: increment_wanted_listing_views()
-    }
+    User->>CL: open Chat tab
+    CL->>SU: select conversations + profiles
+    SU-->>CL: conversations (unread counts)
+    CL->>CO: rpc get_total_unread_count
+    CO-->>CL: badge
+    User->>CL: open conversation
+    CL-->>User: open Chat room
+    CR->>SU: select messages (asc)
+    SU-->>CR: history
+    CR->>RT: subscribe messages:{channelId}
+    RT-->>CR: realtime INSERT / UPDATE
+    User->>CR: type + tap send
+    CR->>SU: insert message (text / attachment)
+    SU-->>CR: ok
+    CR->>CR: optimistic render + clear input
+    CR->>CO: mark read + refresh unread
+    User->>CR: long-press message
+    User->>CR: edit / delete / pin / reply
+    CR->>SU: update / delete message
+    SU-->>CR: ok
+```
 
-    class STATES_REGIONS {
-        +text id PK
-        +text name_en
-        +text name_mm
-    }
+### 2.7 Profile / My Listings / Settings
 
-    class TOWNSHIPS {
-        +text id PK
-        +text name_en
-        +text name_mm
-        +text state_region_id FK
-    }
+```mermaid
+sequenceDiagram
+    actor User
+    participant PR as Profile Screen
+    participant ML as My Listings
+    participant SE as Settings / Account
+    participant CO as App Core
+    participant SU as Supabase
 
-    PROFILES "1" --> "0..*" PROPERTIES : owns
-    PROPERTIES "1" --> "0..*" SAVED_PROPERTIES : "saved in"
-    PROPERTIES "1" --> "0..*" PROPERTY_REPORTS : "flagged in"
-    PROPERTIES "1" --> "0..*" PROPERTY_VIEWS : viewed
-    PROPERTIES "1" --> "0..*" CONVERSATIONS : "chat about"
-    CONVERSATIONS "1" --> "0..*" MESSAGES : contains
-    PROFILES "1" --> "0..*" CONVERSATIONS : "buyer/seller"
-    PROFILES "1" --> "0..*" MESSAGES : sends
-    PROFILES "1" --> "0..*" WANTED_LISTINGS : posts
-    WANTED_LISTINGS "1" --> "0..*" WANTED_LISTING_VIEWS : viewed
-    PROFILES "1" --> "0..*" SAVED_PROPERTIES : saves
-    PROFILES "1" --> "0..*" SAVED_SEARCHES : owns
-    PROFILES "1" --> "0..*" PUSH_TOKENS : has
-    PROFILES "1" --> "0..*" NOTIFICATIONS : receives
-    PROFILES "1" --> "0..*" PROPERTY_REPORTS : reports
-    STATES_REGIONS "1" --> "0..*" TOWNSHIPS : has
-    TOWNSHIPS "1" --> "0..*" PROPERTIES : locates
-    STATES_REGIONS "1" --> "0..*" WANTED_LISTINGS : locates
+    User->>PR: open Profile tab
+    PR->>CO: auth.getUser()
+    alt not signed in
+        CO-->>PR: no user → redirect Login
+    else signed in
+        PR->>SU: select profile
+        SU-->>PR: profile row
+        PR-->>User: header + menus
+        User->>PR: My Listings
+        PR->>ML: open My Listings
+        ML->>SU: select own properties + rpc post count
+        SU-->>ML: listings + limit
+        User->>ML: open listing → detail (mark sold / delete)
+        User->>PR: Edit Profile
+        PR->>SE: open Settings / Account
+        User->>SE: edit full_name / avatar
+        SE->>SU: upload avatar + update profile
+        SU-->>SE: ok
+        SE->>CO: emit profileUpdated
+        User->>PR: tap Sign Out
+        PR->>SU: auth.signOut()
+        SU-->>PR: ok
+        PR-->>User: redirect → Login
+    end
 ```
 
 ---
 
-## 5. ER Diagram (Supabase Database)
+## 3. ER Diagram (Supabase Database)
 
 ```mermaid
 erDiagram
@@ -503,72 +539,422 @@ erDiagram
 
 ---
 
-## 6. Use Case Diagram
+## 4. Class Diagram
+
+The main screens, stores, services, and domain models, grouped into namespaces.
+
+```mermaid
+classDiagram
+    direction TB
+
+    namespace Screens {
+        class HomeScreen {
+            -properties: Property[]
+            -savedIds: Set
+            +fetchProperties(category)
+            +handleSave(propertyId)
+            +handleCompare(property)
+        }
+        class PropertyDetailScreen {
+            -property: Property
+            -agent: Profile
+            +fetchPropertyDetails()
+            +handleChat()
+            +handleReport()
+            +handleDelete()
+        }
+        class AgentScreen {
+            -agent: Profile
+            -listings: Property[]
+            +handleCall()
+            +handleChat()
+            +handleSave()
+        }
+        class SearchScreen {
+            -results: Property[]
+            -filters
+            +handleSearchSubmit()
+        }
+        class ChatScreen {
+            -messages: Message[]
+            +sendMessage()
+        }
+        class MapTabScreen {
+            +loadProperties(loc)
+            +centerOnUser()
+        }
+        class CreatePostForm {
+            -dealType
+            +handleSubmitPost()
+            +uploadImages()
+        }
+        class ProfileScreen {
+            +fetchProfile()
+            +handleLogout()
+        }
+    }
+
+    namespace Stores {
+        class useThemeStore {
+            +theme
+            +setTheme()
+        }
+        class useLanguageStore {
+            +language
+            +setLanguage()
+        }
+        class useCompareStore {
+            +items: Property[]
+            +add(property)
+            +remove(id)
+            +clear()
+        }
+        class useNetworkStore {
+            +isOnline
+            +setOnline()
+        }
+    }
+
+    namespace Services {
+        class SupabaseClient {
+            +auth
+            +from(table)
+            +storage
+            +rpc(name)
+        }
+        class Notifications {
+            +registerForPushNotifications()
+            +savePushToken()
+            +setupNotificationListeners()
+        }
+    }
+
+    namespace Models {
+        class Property {
+            +id: string
+            +title_en: string
+            +title_mm: string
+            +price: number
+            +deal_type: string
+            +property_type: string
+            +images: string[]
+            +is_sold: boolean
+        }
+        class Profile {
+            +id: string
+            +full_name: string
+            +avatar_url: string
+            +phone: string
+        }
+        class Message {
+            +id: string
+            +text: string
+            +attachment
+            +reply_to_id
+            +pinned_by_buyer
+            +pinned_by_seller
+        }
+        class Conversation {
+            +id: string
+            +buyer_unread_count
+            +seller_unread_count
+            +muted
+            +archived
+            +pinned
+        }
+    }
+
+    namespace UI {
+        class Card {
+            +item: Property
+            +isSaved: boolean
+            +onSave()
+            +onCompare()
+        }
+        class Skeleton {
+            +PropertyCardSkeleton
+            +ChatListSkeleton
+        }
+        class SegmentedToggle {
+            +options
+            +value
+            +onChange()
+        }
+    }
+
+    HomeScreen --> Card : renders
+    PropertyDetailScreen --> Card : renders
+    AgentScreen --> Card : renders
+    SearchScreen --> Card : renders
+
+    HomeScreen --> SupabaseClient
+    PropertyDetailScreen --> SupabaseClient
+    AgentScreen --> SupabaseClient
+    SearchScreen --> SupabaseClient
+    ChatScreen --> SupabaseClient
+    MapTabScreen --> SupabaseClient
+    CreatePostForm --> SupabaseClient
+    ProfileScreen --> SupabaseClient
+    Notifications --> SupabaseClient
+
+    HomeScreen --> useCompareStore
+    HomeScreen --> useThemeStore
+    HomeScreen --> useLanguageStore
+    useThemeStore --> useNetworkStore
+    ProfileScreen --> useLanguageStore
+```
+
+---
+
+## 5. Use-Case Diagram
+
+Mermaid has no native use-case diagram, so this uses a flowchart with actor nodes and use-case ellipses inside the system boundary.
 
 ```mermaid
 flowchart LR
-    subgraph Guest["Guest (unauthenticated)"]
+    subgraph SYSTEM["📱 Nest Finder App (system boundary)"]
         direction TB
-        GU1[Browse properties]
-        GU2[Search / filter properties]
-        GU3[View map markers]
-        GU4[View property detail]
-        GU5[Login / Register]
-        GU6[Forgot / Reset password]
+        subgraph G1["Guest use cases"]
+            U1(("🔍 Browse / search properties"))
+            U2(("🗺️ View map markers"))
+            U3(("📄 View property detail"))
+            U4(("🔑 Login / Register"))
+        end
+        subgraph G2["Buyer use cases"]
+            U5(("💾 Save / unsave properties"))
+            U6(("⚖️ Compare properties"))
+            U7(("💬 Chat with agent / seller"))
+            U8(("📞 Call agent"))
+            U9(("🚩 Flag & report listing"))
+            U10(("📋 Post wanted listing"))
+            U11(("🔔 Receive notifications"))
+        end
+        subgraph G3["Owner / Seller use cases"]
+            U12(("🏠 Post property listing"))
+            U13(("🏢 Post hostel listing"))
+            U14(("📂 Manage My Listings"))
+            U15(("✅ Mark sold / delete"))
+            U16(("💬 Respond via chat"))
+        end
+        subgraph G4["Any-user use cases"]
+            U17(("🛠️ Manage profile & settings"))
+            U18(("🌐 Switch language (EN / MM)"))
+        end
     end
-
-    subgraph GuestSystem["System — read access"]
-        direction TB
-        GS1[RLS: public read]
-        GS2[View counters]
-    end
-
-    subgraph User["Registered User"]
-        direction TB
-        U1[Post property listing]
-        U2[Post wanted listing]
-        U3[Chat with agents / sellers]
-        U4[Send images in chat]
-        U5[Save / unsave properties]
-        U6[Compare properties]
-        U7[Report a listing]
-        U8[Receive notifications]
-        U9[View notifications]
-        U10[Manage My Listings]
-        U11[Mark listing as sold]
-        U12[Delete listing]
-        U13[Manage profile & settings]
-        U14[Call agent directly]
-        U15[View saved properties]
-        U16[Track post limit]
-    end
-
-    subgraph UserSystem["System — user actions"]
-        direction TB
-        US1[RLS policies]
-        US2[Realtime channels]
-        US3[Unread counts]
-        US4[Notification triggers]
-        US5[Storage uploads]
-    end
-
-    GU4 --> GS1
-    GU1 --> GS2
-
-    U1 --> US1
-    U1 --> US5
-    U3 --> US2
-    U3 --> US3
-    U4 --> US5
-    U9 --> US4
+    A1(["👤 Guest"]) --> U1
+    A1 --> U2
+    A1 --> U3
+    A1 --> U4
+    A2(["👤 Buyer"]) --> U5
+    A2 --> U6
+    A2 --> U7
+    A2 --> U8
+    A2 --> U9
+    A2 --> U10
+    A2 --> U11
+    A3(["👤 Owner / Seller"]) --> U12
+    A3 --> U13
+    A3 --> U14
+    A3 --> U15
+    A3 --> U16
+    A4(["👤 Any user"]) --> U17
+    A4 --> U18
 ```
+
+---
+
+## 6. Database Tables
+
+Enums: `deal_type` (`sale`, `rent`, `buy`, `launch`, `building`), `wanted.deal_type` (`buy`, `rent`), `wanted.status` (`active`, `filled`, `expired`).
+
+### profiles
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK → auth.users(id) |
+| full_name | text | |
+| email | text | |
+| avatar_url | text | |
+| phone | text | |
+| city | text | |
+| region | text | |
+| created_at | timestamptz | default now() |
+
+### properties
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| user_id | uuid | FK → profiles(id) |
+| ad_number | int | server sequence → `PROP-{10000 + ad_number}` |
+| deal_type | text | `sale` / `rent` / `launch` / `building` |
+| property_type | text | `condo` / `apartment` / `house` / `land` / `hostel` |
+| state_region_id | text | FK → states_regions(id) |
+| township_id | text | FK → townships(id) |
+| floor | text | |
+| price | numeric | |
+| currency_unit | text | |
+| sqft | numeric | |
+| bedrooms | int | |
+| bathrooms | int | |
+| title_mm | text | |
+| title_en | text | |
+| images | text[] | |
+| video_url | text | |
+| description | text | |
+| latitude / longitude | float | |
+| is_sold | boolean | |
+| is_rented | boolean | |
+| is_flagged | boolean | default false |
+| views | int | |
+| created_at | timestamptz | default now() |
+| sold_at | timestamptz | |
+
+### wanted_listings
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| user_id | uuid | FK → profiles(id) |
+| title | text | |
+| description | text | |
+| deal_type | text | check `buy` / `rent` |
+| property_type | text | |
+| region_id | text | FK → states_regions(id) |
+| township_id | text | FK → townships(id) |
+| budget_min / budget_max | numeric | |
+| contact_phone | text | |
+| status | text | check `active` / `filled` / `expired` |
+| views | int | |
+| created_at | timestamptz | default now() |
+
+### conversations
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| property_id | uuid | FK → properties(id) |
+| buyer_id | uuid | FK → profiles(id) |
+| seller_id | uuid | FK → profiles(id) |
+| buyer_unread_count | int | |
+| seller_unread_count | int | |
+| muted | boolean | |
+| archived | boolean | |
+| pinned | boolean | |
+| created_at / updated_at | timestamptz | |
+
+### messages
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| conversation_id | uuid | FK → conversations(id) |
+| sender_id | uuid | FK → profiles(id) |
+| text | text | |
+| attachment | jsonb | `{url, type, name, size}` |
+| reply_to_id | uuid | FK → messages(id) |
+| private | boolean | |
+| pinned_by_buyer / pinned_by_seller | boolean | |
+| read_at | timestamptz | |
+| created_at | timestamptz | default now() |
+
+### notifications
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| user_id | uuid | FK → profiles(id) |
+| type | text | `new_property` / `new_message` |
+| actor_id | uuid | FK → profiles(id) |
+| property_id | uuid | FK → properties(id) |
+| conversation_id | uuid | FK → conversations(id) |
+| title / body | text | |
+| read_at | timestamptz | null = unread |
+| created_at | timestamptz | default now() |
+
+### saved_properties
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| user_id | uuid | FK → profiles(id) |
+| property_id | uuid | FK → properties(id) |
+| created_at | timestamptz | default now() |
+| — | — | UNIQUE (user_id, property_id) |
+
+### saved_searches
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| user_id | uuid | FK → profiles(id) |
+| name | text | |
+| search_params | jsonb | |
+| created_at | timestamptz | default now() |
+
+### property_views
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| user_id | uuid | FK → profiles(id) |
+| property_id | uuid | FK → properties(id) |
+| viewed_at | timestamptz | |
+| — | — | PK (user_id, property_id) |
+
+### wanted_listing_views
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| user_id | uuid | FK → profiles(id) |
+| listing_id | uuid | FK → wanted_listings(id) |
+| viewed_at | timestamptz | |
+| — | — | PK (user_id, listing_id) |
+
+### property_reports
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| property_id | uuid | FK → properties(id) |
+| reporter_id | uuid | FK → profiles(id) |
+| reason | text | `spam` / `misleading` / `off_topic` / `other` |
+| created_at | timestamptz | default now() |
+
+### push_tokens
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | uuid | PK |
+| user_id | uuid | FK → profiles(id) |
+| token | text | Expo push token |
+| platform | text | |
+| created_at / updated_at | timestamptz | |
+
+### states_regions
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | text | PK |
+| name_en | text | |
+| name_mm | text | |
+
+### townships
+
+| Column | Type | Constraints |
+| --- | --- | --- |
+| id | text | PK |
+| name_en | text | |
+| name_mm | text | |
+| state_region_id | text | FK → states_regions(id) |
 
 ---
 
 ## Notes
 
 - **Tech stack**: Expo SDK 54, expo-router v6 (file-based routing), NativeWind v4 (Tailwind), gluestack-ui, react-i18next (en + mm), @shopify/flash-list, react-native-webview (Leaflet map), Supabase (auth, Postgres, Storage, Realtime).
-- **Auth guard**: App launch → `index.tsx` checks `supabase.auth.getUser()` → redirects to `(tabs)` or onboarding.
+- **Auth guard**: App launch → `index.tsx` checks `supabase.auth.getUser()` → redirects to `(tabs)` or onboarding. Guests may still browse (Save/Chat/Create require login).
 - **RLS model**: Most tables enforce `auth.uid()` ownership; properties are publicly readable (except flagged), writes restricted to owner.
 - **Flagged listings**: `property_reports` sets `is_flagged = true`; all public queries filter `is_flagged = false`. Owners still see their own in My Listings.
-- **Notifications**: DB triggers `notify_new_property` (fan-out to all other users) and `notify_new_message` (to conversation counterpart) insert into `notifications`.
+- **Notifications**: DB triggers `notify_new_property` (fan-out to all other users) and `notify_new_message` (to conversation counterpart) insert into `notifications`; client additionally fires `notify-new-property` / `send-notification` edge functions for Expo push.
+- **Views**: `increment_property_views` / `increment_wanted_listing_views` count each logged-in user once (owner's own views are skipped); anonymous views increment directly.
+- **Monthly post limit**: `get_monthly_post_count` + `can_user_post` RPCs enforce 5 property/hostel posts per month (wanted posts are not limited).

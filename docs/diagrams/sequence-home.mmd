@@ -1,0 +1,33 @@
+sequenceDiagram
+    actor User
+    participant HO as Home Screen
+    participant CD as Property Card
+    participant CO as App Core<br/>(savedIds · compare store)
+    participant SU as Supabase
+
+    User->>HO: open Home tab
+    HO->>CO: fetch profile + saved ids
+    HO->>SU: select properties (is_flagged = false)
+    SU-->>HO: property list
+    HO->>HO: render cards
+    User->>CD: tap heart (save)
+    CD->>HO: onSave(propertyId)
+    HO->>CO: auth.getUser()
+    alt not signed in
+        CO-->>HO: no user → redirect Login
+    else saved
+        HO->>SU: delete saved_properties
+        SU-->>HO: ok
+        HO->>HO: remove from savedIds
+    else not saved
+        HO->>SU: insert saved_properties
+        SU-->>HO: ok
+        HO->>HO: add to savedIds
+    end
+    HO->>HO: emit savedPropertiesChanged
+    User->>CD: tap compare icon
+    CD->>HO: onCompare(property)
+    HO->>CO: compareStore.add(property)
+    CO-->>HO: floating compare bar
+    User->>HO: tap Compare bar
+    HO-->>User: open Compare Screen

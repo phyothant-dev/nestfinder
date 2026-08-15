@@ -1,41 +1,48 @@
 flowchart LR
-    subgraph Guest["Guest (unauthenticated)"]
+    subgraph SYSTEM["📱 Nest Finder App (system boundary)"]
         direction TB
-        G1[Browse Properties]
-        G2[Register Account]
-        G3[Login]
-        G4[Switch Language]
+        subgraph G1["Guest use cases"]
+            U1(("🔍 Browse / search properties"))
+            U2(("🗺️ View map markers"))
+            U3(("📄 View property detail"))
+            U4(("🔑 Login / Register"))
+        end
+        subgraph G2["Buyer use cases"]
+            U5(("💾 Save / unsave properties"))
+            U6(("⚖️ Compare properties"))
+            U7(("💬 Chat with agent / seller"))
+            U8(("📞 Call agent"))
+            U9(("🚩 Flag & report listing"))
+            U10(("📋 Post wanted listing"))
+            U11(("🔔 Receive notifications"))
+        end
+        subgraph G3["Owner / Seller use cases"]
+            U12(("🏠 Post property listing"))
+            U13(("🏢 Post hostel listing"))
+            U14(("📂 Manage My Listings"))
+            U15(("✅ Mark sold / delete"))
+            U16(("💬 Respond via chat"))
+        end
+        subgraph G4["Any-user use cases"]
+            U17(("🛠️ Manage profile & settings"))
+            U18(("🌐 Switch language (EN / MM)"))
+        end
     end
-
-    subgraph User["Registered User / Buyer"]
-        direction TB
-        U1[Search & Filter Properties]
-        U2[View Property Detail]
-        U3[Save / Unsave Property]
-        U4[Compare Properties]
-        U5[View Map / Get Directions]
-        U6[Call Agent]
-        U7[Chat with Agent]
-        U8[Manage Saved Properties]
-        U9[Post Wanted Listing]
-        U10[Save Search]
-        U11[Edit Profile]
-        U12[Change Settings]
-        U13[Toggle Dark Mode]
-    end
-
-    subgraph Agent["Registered User / Seller - Agent"]
-        direction TB
-        A1[Create Property Listing]
-        A2[Manage Own Listings]
-        A3[Respond to Buyers via Chat]
-        A4[View Agent Profile]
-    end
-
-    subgraph System["System"]
-        direction TB
-        S1[Authenticate via Email / Google]
-        S2[Send Push Notifications]
-        S3[Track Property Views]
-        S4[Enforce Monthly Post Limit]
-    end
+    A1(["👤 Guest"]) --> U1
+    A1 --> U2
+    A1 --> U3
+    A1 --> U4
+    A2(["👤 Buyer"]) --> U5
+    A2 --> U6
+    A2 --> U7
+    A2 --> U8
+    A2 --> U9
+    A2 --> U10
+    A2 --> U11
+    A3(["👤 Owner / Seller"]) --> U12
+    A3 --> U13
+    A3 --> U14
+    A3 --> U15
+    A3 --> U16
+    A4(["👤 Any user"]) --> U17
+    A4 --> U18

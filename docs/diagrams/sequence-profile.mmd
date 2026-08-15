@@ -1,0 +1,32 @@
+sequenceDiagram
+    actor User
+    participant PR as Profile Screen
+    participant ML as My Listings
+    participant SE as Settings / Account
+    participant CO as App Core
+    participant SU as Supabase
+
+    User->>PR: open Profile tab
+    PR->>CO: auth.getUser()
+    alt not signed in
+        CO-->>PR: no user → redirect Login
+    else signed in
+        PR->>SU: select profile
+        SU-->>PR: profile row
+        PR-->>User: header + menus
+        User->>PR: My Listings
+        PR->>ML: open My Listings
+        ML->>SU: select own properties + rpc post count
+        SU-->>ML: listings + limit
+        User->>ML: open listing → detail (mark sold / delete)
+        User->>PR: Edit Profile
+        PR->>SE: open Settings / Account
+        User->>SE: edit full_name / avatar
+        SE->>SU: upload avatar + update profile
+        SU-->>SE: ok
+        SE->>CO: emit profileUpdated
+        User->>PR: tap Sign Out
+        PR->>SU: auth.signOut()
+        SU-->>PR: ok
+        PR-->>User: redirect → Login
+    end

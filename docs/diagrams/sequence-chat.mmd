@@ -1,0 +1,28 @@
+sequenceDiagram
+    actor User
+    participant CL as Chat List
+    participant CR as Chat Room
+    participant CO as App Core<br/>(unread badge)
+    participant RT as Realtime Channel
+    participant SU as Supabase
+
+    User->>CL: open Chat tab
+    CL->>SU: select conversations + profiles
+    SU-->>CL: conversations (unread counts)
+    CL->>CO: rpc get_total_unread_count
+    CO-->>CL: badge
+    User->>CL: open conversation
+    CL-->>User: open Chat room
+    CR->>SU: select messages (asc)
+    SU-->>CR: history
+    CR->>RT: subscribe messages:{channelId}
+    RT-->>CR: realtime INSERT / UPDATE
+    User->>CR: type + tap send
+    CR->>SU: insert message (text / attachment)
+    SU-->>CR: ok
+    CR->>CR: optimistic render + clear input
+    CR->>CO: mark read + refresh unread
+    User->>CR: long-press message
+    User->>CR: edit / delete / pin / reply
+    CR->>SU: update / delete message
+    SU-->>CR: ok

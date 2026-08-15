@@ -12,6 +12,7 @@ All diagrams for the Nest Finder (Expo React Native + Supabase) app. Each diagra
 | Sequence — create post | [sequence-create.mmd](./sequence-create.mmd) | Domain flow for "Post property / hostel / wanted listing" |
 | Sequence — chat | [sequence-chat.mmd](./sequence-chat.mmd) | Domain flow for "Chat with agent / seller", "Respond via chat" |
 | Sequence — profile | [sequence-profile.mmd](./sequence-profile.mmd) | Domain flow for "Manage My Listings", "Manage profile", "Receive notifications" |
+| Sequence — seller process | [sequence-seller.mmd](./sequence-seller.mmd) | Domain flow for the seller: post, manage, mark sold / delete, respond via chat |
 | Class diagram | [class.mmd](./class.mmd) | Supabase database tables as classes (same schema as ER) |
 | ER diagram | [er.mmd](./er.mmd) | Supabase database schema and relationships |
 | Use case diagram | [usecase.mmd](./usecase.mmd) | Actors and use cases (rendered as a flowchart; GitHub Mermaid has no `useCaseDiagram` support) |
@@ -240,6 +241,39 @@ sequenceDiagram
     User->>N: mark read (read_at) / clear all
     User->>S: signOut()
     S-->>User: session cleared → Login
+```
+
+## Sequence diagram — seller process ("Post property / hostel listing", "Manage My Listings", "Mark sold / delete", "Respond via chat")
+
+```mermaid
+sequenceDiagram
+    actor Seller
+    participant P as Property
+    participant L as My Listings
+    participant N as Notification
+    participant C as Conversation
+    participant M as Message
+    participant B as Buyer
+
+    Seller->>P: post listing (property / hostel, media)
+    P-->>Seller: id + ad_number (PROP-xxxxx)
+    P->>N: notify-new-property (fan-out)
+    N-->>B: new_property notification + push
+    Seller->>L: open My Listings
+    L-->>Seller: own listings + monthly post limit
+    Seller->>L: filter tab (For Sale / For Rent / Sold)
+    L-->>Seller: filtered listings
+    Seller->>P: update is_sold = true, sold_at
+    P-->>Seller: marked sold
+    Seller->>P: delete listing
+    P-->>Seller: removed
+    Seller->>C: open conversation (property, buyer)
+    C-->>Seller: seller_unread_count
+    Seller->>M: insert reply (text / attachment)
+    M->>N: notify-new-message
+    N-->>B: new_message notification + push
+    Seller->>M: mark read (read_at)
+    C-->>Seller: unread cleared
 ```
 
 ## Class diagram (Supabase tables)

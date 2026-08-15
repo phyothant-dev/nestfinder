@@ -236,6 +236,39 @@ sequenceDiagram
     S-->>User: session cleared → Login
 ```
 
+### 2.8 Seller Process — "Post property listing" · "Post hostel listing" · "Manage My Listings" · "Mark sold / delete" · "Respond via chat"
+
+```mermaid
+sequenceDiagram
+    actor Seller
+    participant P as Property
+    participant L as My Listings
+    participant N as Notification
+    participant C as Conversation
+    participant M as Message
+    participant B as Buyer
+
+    Seller->>P: post listing (property / hostel, media)
+    P-->>Seller: id + ad_number (PROP-xxxxx)
+    P->>N: notify-new-property (fan-out)
+    N-->>B: new_property notification + push
+    Seller->>L: open My Listings
+    L-->>Seller: own listings + monthly post limit
+    Seller->>L: filter tab (For Sale / For Rent / Sold)
+    L-->>Seller: filtered listings
+    Seller->>P: update is_sold = true, sold_at
+    P-->>Seller: marked sold
+    Seller->>P: delete listing
+    P-->>Seller: removed
+    Seller->>C: open conversation (property, buyer)
+    C-->>Seller: seller_unread_count
+    Seller->>M: insert reply (text / attachment)
+    M->>N: notify-new-message
+    N-->>B: new_message notification + push
+    Seller->>M: mark read (read_at)
+    C-->>Seller: unread cleared
+```
+
 
 
 Frontend-focused sequence diagrams for each flow in the flowchart, showing the screens the user interacts with and the key Supabase calls. The database is shown as a single participant per flow.

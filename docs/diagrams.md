@@ -25,56 +25,35 @@ flowchart TD
     H --> L[Chat Tab]
     H --> M[Profile Tab]
 
-    I --> I1{Category?}
-    I1 --> I2[All / For Rent / For Sale / Apartment / Condo / Hostel]
-    I2 --> I3{Sub-filter?}
-    I3 --> I4[Affordable / Sold / Rented]
-    I4 --> I5[Browse property cards]
-    I5 --> I6{Card action}
-    I6 --> I7[Open detail]
-    I6 --> I8[Save / Unsave]
-    I6 --> I9[Compare]
-    I5 --> I10[Tap bell icon]
-    I10 --> I11[Notifications screen]
+    I --> I1[Browse property cards]
+    I --> I2[Save / Unsave / Compare]
+    I --> I3[Notifications]
 
     J --> J1[Load map + markers]
-    J1 --> J2[Filter by category]
-    J2 --> J3[Tap marker]
-    J3 --> J4[Property card]
-    J4 --> J5[Open detail]
+    J1 --> J2[Tap marker → Property detail]
 
     K --> K1{Listing type}
     K1 --> K2[Property listing]
-    K1 --> K3[Wanted listing]
-    K2 --> K4[Multi-step form]
-    K4 --> K5[Upload images/video]
-    K5 --> K6[Publish to properties]
-    K3 --> K7[Wanted form]
-    K7 --> K8[Publish to wanted_listings]
+    K2 --> K3[Multi-step form]
+    K3 --> K4[Publish to properties]
+    K1 --> K5[Wanted listing]
+    K5 --> K6[Publish to wanted_listings]
 
-    L --> L1{Conversation selected?}
-    L1 -- Yes --> L2[Chat room]
-    L2 --> L3[Send / edit / delete / pin messages]
-    L1 -- No --> L4[Empty chat state]
+    L --> L1[Chat room]
+    L1 --> L2[Send / edit / delete / pin messages]
 
-    M --> M1[Profile]
-    M1 --> M2{Options}
-    M2 --> M3[My Listings]
-    M2 --> M4[Saved Properties]
-    M2 --> M5[Settings]
-    M2 --> M6[Help & Support]
-    M2 --> M7[Compare]
-    M3 --> M3a[Mark sold / delete]
-    M5 --> M5a[Account / Notifications / Privacy]
-    M1 --> M8[Logout]
-    M8 --> C
+    M --> M1[My Listings]
+    M --> M2[Saved Properties]
+    M --> M3[Settings]
+    M --> M4[Logout]
+    M1 --> M1a[Mark sold / delete]
+    M4 --> C
 
-    I7 --> I7a[Property detail]
-    I7a --> I7b{Owner?}
-    I7b -- Yes --> I7c[Mark sold / Delete]
-    I7b -- No --> I7d[Call agent / Chat / Save / Compare]
-    I7a --> I7e[Flag & Report]
-    I7e --> I7f[Submit property report]
+    I1 --> I5[Property detail]
+    I5 --> I6{Owner?}
+    I6 -- Yes --> I7[Mark sold / Delete]
+    I6 -- No --> I8[Call agent / Chat / Save / Compare]
+    I5 --> I9[Flag & Report]
 ```
 
 ---

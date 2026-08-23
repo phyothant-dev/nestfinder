@@ -142,7 +142,7 @@ export default function PropertySearchForm() {
     setResults([]);
 
     const dp = searchParams as Record<string, string>;
-    const dt = dp.dealType && ["sale", "rent", "launch", "building"].includes(dp.dealType) ? dp.dealType : "sale";
+    const dt = dp.dealType && ["sale", "rent", "building"].includes(dp.dealType) ? dp.dealType : "sale";
     setDealType(dt);
     const dd = {
       stateRegion: dp.stateRegion || "",
@@ -387,7 +387,7 @@ export default function PropertySearchForm() {
     <View className="gap-5">
       <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row py-1">
         <View className="flex-row gap-5 items-center pr-6">
-          {(["sale", "rent", "launch", "building"] as const).map((type) => (
+          {(["sale", "rent", "building"] as const).map((type) => (
               <TouchableOpacity key={type} onPress={() => setDealType(type)} className="flex-row items-center gap-2">
               <View className={`w-5 h-5 rounded-full border-2 items-center justify-center ${dealType === type ? "border-primary-300" : "border-primary-200"}`}>
                 {dealType === type && <View className="w-2.5 h-2.5 bg-primary-300 rounded-full" />}
@@ -395,7 +395,6 @@ export default function PropertySearchForm() {
               <Text className="text-black-300 font-rubik-bold text-sm">
                 {type === "sale" && (t("filter.forSale") || "For Sale")}
                 {type === "rent" && (t("filter.forRent") || "For Rent")}
-                {type === "launch" && (t("filter.newLaunch") || "New Launch")}
                 {type === "building" && (t("filter.building") || "Building")}
               </Text>
             </TouchableOpacity>

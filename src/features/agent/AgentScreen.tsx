@@ -230,9 +230,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
         <Text className="text-lg font-rubik-bold text-gray-950 flex-1 ml-3">
           {t("agent.title")}
         </Text>
-        <TouchableOpacity onPress={handleShare} className="w-10 h-10 items-center justify-center rounded-full bg-primary-100">
-          <Share2 size={20} color={GREEN} />
-        </TouchableOpacity>
+        <View className="w-10" />
       </View>
 
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>

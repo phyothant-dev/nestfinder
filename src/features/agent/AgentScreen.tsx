@@ -3,8 +3,18 @@ import { router } from "expo-router";
 import { BadgeCheck, MapPin, MessageCircle, Phone, Share2 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, Alert, DeviceEventEmitter, Image, Linking, ScrollView, Share, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, DeviceEventEmitter, Image, Linking, ScrollView, Share, TouchableOpacity, View } from "react-native";
 import Text from "@/shared/components/Text";
+import { Button, ButtonText } from "@/shared/components/button/button";
+import { Heading } from "@/shared/components/heading/heading";
+import {
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/shared/components/alertdialog/alertdialog";
 
 import { Card } from "@/features/home/Cards";
 import { BackButton } from "@/shared/components/BackButton";
@@ -28,6 +38,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
   const [stats, setStats] = useState({ total: 0, sold: 0 });
   const [filterTab, setFilterTab] = useState<"sale" | "rent">("sale");
   const [loading, setLoading] = useState(true);
+  const [phoneDialog, setPhoneDialog] = useState<{ title: string; message: string } | null>(null);
   const [isSelf, setIsSelf] = useState(false);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [fallbackPhone, setFallbackPhone] = useState("");
@@ -104,10 +115,10 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
     if (phone) {
       Linking.openURL(`tel:${phone}`);
     } else {
-      Alert.alert(
-        t("agent.noPhoneTitle"),
-        t("agent.noPhoneMessage"),
-      );
+      setPhoneDialog({
+        title: t("agent.noPhoneTitle"),
+        message: t("agent.noPhoneMessage"),
+      });
     }
   };
 
@@ -360,6 +371,31 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
           ))
         )}
       </ScrollView>
+
+      <AlertDialog
+        isOpen={phoneDialog !== null}
+        onClose={() => setPhoneDialog(null)}
+      >
+        <AlertDialogBackdrop />
+        <AlertDialogContent className="p-6 rounded-3xl bg-white items-center">
+          <AlertDialogHeader>
+            <Heading>{phoneDialog?.title}</Heading>
+          </AlertDialogHeader>
+          <AlertDialogBody>
+            <Text className="text-center text-black-200 font-rubik">
+              {phoneDialog?.message}
+            </Text>
+          </AlertDialogBody>
+          <AlertDialogFooter className="w-full">
+            <Button
+              className="bg-primary-300 w-full"
+              onPress={() => setPhoneDialog(null)}
+            >
+              <ButtonText>{t("alerts_and_dialogs.button_confirm")}</ButtonText>
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </View>
   );
 }

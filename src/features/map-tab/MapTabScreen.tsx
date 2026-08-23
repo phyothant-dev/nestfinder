@@ -260,6 +260,7 @@ export default function MapTabScreen() {
       <View className="flex-1">
         {htmlCache ? (
           <WebView
+            key={htmlCache}
             ref={webViewRef}
             source={{ html: htmlCache }}
             style={{ flex: 1 }}

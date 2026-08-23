@@ -626,16 +626,9 @@ export default function PropertySearchForm() {
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "10,000", value: "10000" },
-              { label: "20,000", value: "20000" },
-              { label: "30,000", value: "30000" },
-              { label: "40,000", value: "40000" },
-              { label: "50,000", value: "50000" },
-              { label: "60,000", value: "60000" },
-              { label: "70,000", value: "70000" },
-              { label: "80,000", value: "80000" },
-              { label: "90,000", value: "90000" },
-              { label: "100,000", value: "100000" },
+              { label: "100 Lakhs", value: "100" },
+              { label: "500 Lakhs", value: "500" },
+              { label: "1000 Lakhs", value: "1000" },
             ]}
             placeholder={t("filter.minPrice") || "Min Price"}
             value={dropdowns.minPrice}
@@ -645,26 +638,9 @@ export default function PropertySearchForm() {
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "10,000", value: "10000" },
-              { label: "20,000", value: "20000" },
-              { label: "30,000", value: "30000" },
-              { label: "40,000", value: "40000" },
-              { label: "50,000", value: "50000" },
-              { label: "60,000", value: "60000" },
-              { label: "70,000", value: "70000" },
-              { label: "80,000", value: "80000" },
-              { label: "90,000", value: "90000" },
-              { label: "100,000", value: "100000" },
-              { label: "110,000", value: "110000" },
-              { label: "120,000", value: "120000" },
-              { label: "130,000", value: "130000" },
-              { label: "140,000", value: "140000" },
-              { label: "150,000", value: "150000" },
-              { label: "160,000", value: "160000" },
-              { label: "170,000", value: "170000" },
-              { label: "180,000", value: "180000" },
-              { label: "190,000", value: "190000" },
-              { label: "200,000", value: "200000" },
+              { label: "2000 Lakhs", value: "2000" },
+              { label: "5000 Lakhs", value: "5000" },
+              { label: "10000 Lakhs", value: "10000" },
             ]}
             placeholder={t("filter.maxPrice") || "Max Price"}
             value={dropdowns.maxPrice}

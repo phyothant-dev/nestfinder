@@ -32,8 +32,8 @@ export default function LoginScreen() {
     if (params.logout === "success") {
       setInfoDialog({
         visible: true,
-        title: "Logged Out",
-        message: "You have been logged out successfully.",
+        title: t("login.loggedOutTitle"),
+        message: t("login.loggedOutMessage"),
         isSuccess: true,
       });
     }
@@ -193,7 +193,7 @@ export default function LoginScreen() {
 
               <View className="flex-row items-center my-4">
                 <View className="flex-1 h-px bg-primary-200" />
-                <Text className="mx-4 text-black-100 text-sm font-rubik">or</Text>
+                <Text className="mx-4 text-black-100 text-sm font-rubik">{t("login.or")}</Text>
                 <View className="flex-1 h-px bg-primary-200" />
               </View>
 

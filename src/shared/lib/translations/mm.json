@@ -38,6 +38,7 @@
   },
   "error": {
     "title": "မှားယွင်းမှု",
+    "searchFailed": "ရှာဖွေမှု မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။",
     "databaseErrorTitle": "ဒေတာဘေ့စ် အမှား",
     "databaseErrorMessage": "ပထဝီဝင်တည်နေရာ အချက်အလက်များကို ထပ်တူပြု၍မရပါ။"
   },
@@ -126,7 +127,10 @@
     "loginFailed": "Login မအောင်မြင်ပါ",
     "enterEmailPassword": "အီးမေးလ်နှင့် လျှို့ဝှက်နံပါတ် ထည့်ပါ",
     "googleButton": "Google ဖြင့် ဝင်ရန်",
-    "forgotPassword": "လျှို့ဝှက်နံပါတ် မေ့နေပါသလား?"
+    "forgotPassword": "လျှို့ဝှက်နံပါတ် မေ့နေပါသလား?",
+    "loggedOutTitle": "အကောင့်ထွက်ပြီးပါပြီ",
+    "loggedOutMessage": "အကောင့်မှ အောင်မြင်စွာ ထွက်ပြီးပါပြီ။",
+    "or": "သို့"
   },
   "register": {
     "title": "အကောင့်အသစ်ဖွင့်ရန်",
@@ -207,6 +211,8 @@
   "compare": {
     "title": "နှိုင်းယှဉ်ထားသော စာရင်းများ",
     "empty": "နှိုင်းယှဉ်ရန် အိမ်ခြံမြေများ ရွေးချယ်ပါ",
+    "listingsCount": "ကြော်ငြာများ: {{count}}",
+    "compareButton": "နှိုင်းယှဉ်ရန်",
     "quickInfo": "အချက်အလက်များ",
     "propertyCode": "အိမ်ခြံမြေကုဒ်",
     "propertyType": "အမျိုးအစား",
@@ -389,7 +395,8 @@
   },
   "mapScreen": {
     "propertyLocation": "အိမ်ခြံမြေတည်နေရာ",
-    "googleMaps": "Google Maps"
+    "googleMaps": "Google Maps",
+    "mapUnavailable": "မြေပုံ မရနိုင်ပါ"
   },
   "myListings": {
     "loginRequired": "လော့ဂ်အင်ဝင်ရန် လိုအပ်ပါသည်။",

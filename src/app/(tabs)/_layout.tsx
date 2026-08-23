@@ -162,10 +162,10 @@ export default function TabsLayout() {
           gap: 12,
         }}>
           <Text className="text-primary-300 text-sm font-rubik-bold">
-            Listings: {compareItems.length}
+            {t("compare.listingsCount", { count: compareItems.length })}
           </Text>
           <TouchableOpacity onPress={() => router.push("/compare")}>
-            <Text className="text-primary-300 font-rubik-bold text-sm">Compare</Text>
+            <Text className="text-primary-300 font-rubik-bold text-sm">{t("compare.compareButton")}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => useCompareStore.getState().clear()}>
             <Trash2 size={18} color="#ED3F27" />

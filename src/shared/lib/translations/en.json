@@ -38,6 +38,7 @@
   },
   "error": {
     "title": "Error",
+    "searchFailed": "Search failed. Please try again.",
     "databaseErrorTitle": "Database Error",
     "databaseErrorMessage": "Could not synchronize geolocation assets."
   },
@@ -126,7 +127,10 @@
     "loginFailed": "Login Failed",
     "enterEmailPassword": "Please enter email and password",
     "googleButton": "Continue with Google",
-    "forgotPassword": "Forgot Password?"
+    "forgotPassword": "Forgot Password?",
+    "loggedOutTitle": "Logged Out",
+    "loggedOutMessage": "You have been logged out successfully.",
+    "or": "or"
   },
   "register": {
     "title": "Create New Account",
@@ -207,6 +211,8 @@
   "compare": {
     "title": "Compared Listings",
     "empty": "Select properties to compare",
+    "listingsCount": "Listings: {{count}}",
+    "compareButton": "Compare",
     "quickInfo": "Quick Info",
     "propertyCode": "Property Code",
     "propertyType": "Property Type",
@@ -389,7 +395,8 @@
   },
   "mapScreen": {
     "propertyLocation": "Property Location",
-    "googleMaps": "Google Maps"
+    "googleMaps": "Google Maps",
+    "mapUnavailable": "Map unavailable"
   },
   "myListings": {
     "loginRequired": "You must be logged in.",

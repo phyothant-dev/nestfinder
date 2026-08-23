@@ -218,7 +218,7 @@ export default function RegisterScreen() {
 
           <View className="flex-row items-center my-2">
             <View className="flex-1 h-px bg-primary-200" />
-            <Text className="mx-3 text-black-100 text-sm font-rubik">or</Text>
+            <Text className="mx-3 text-black-100 text-sm font-rubik">{t("login.or")}</Text>
             <View className="flex-1 h-px bg-primary-200" />
           </View>
 

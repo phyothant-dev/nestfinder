@@ -271,7 +271,7 @@ export default function MapTabScreen() {
           />
         ) : (
           <View className="flex-1 items-center justify-center">
-            <Text className="text-black-200 font-rubik text-sm">Map unavailable</Text>
+            <Text className="text-black-200 font-rubik text-sm">{t("mapScreen.mapUnavailable")}</Text>
           </View>
         )}
 

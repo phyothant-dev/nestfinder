@@ -266,7 +266,7 @@ export default function PropertySearchForm() {
       setResults(data || []);
     } catch (err: any) {
       console.error("Search error:", err);
-      setAlertDialog({ title: "Error", message: "Search failed. Please try again." });
+      setAlertDialog({ title: t("error.title"), message: t("error.searchFailed") });
     } finally {
       setSearching(false);
     }

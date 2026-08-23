@@ -396,6 +396,28 @@
     "error": "Error",
     "ok": "OK"
   },
+  "wantedListings": {
+    "title": "Wanted Listings",
+    "tabBuy": "People looking to buy a house",
+    "tabRent": "People looking to rent a house",
+    "all": "All",
+    "allRegions": "All States & Regions",
+    "allTownships": "All Townships",
+    "noResults": "No results found",
+    "noListings": "No listings yet",
+    "search": "Search",
+    "select": "Select",
+    "labelRegion": "State / Region",
+    "labelTownship": "Township",
+    "labelPropertyType": "Property Type",
+    "labelPriceFrom": "Price From",
+    "labelPriceTo": "Price To",
+    "searchButton": "Search",
+    "lakh": "Lakhs",
+    "from": "from",
+    "to": "to",
+    "max": "Max"
+  },
   "agent": {
     "title": "Agent",
     "realEstateAgent": "Real Estate Agent",

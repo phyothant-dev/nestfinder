@@ -14,23 +14,6 @@ import { BackButton } from "@/shared/components/BackButton";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.25;
 
-const PROPERTY_TYPES = [
-  { label: "အားလုံး", value: "" },
-  { label: "တိုက်ခန်း", value: "apartment" },
-  { label: "ကွန်ဒို", value: "condo" },
-  { label: "လုံးချင်းအိမ်", value: "house" },
-  { label: "မြေကွက်", value: "land" },
-  { label: "အဆောင်", value: "hostel" },
-];
-
-const PRICE_OPTIONS = [
-  { label: "အားလုံး", value: "" },
-  ...[5, 10, 20, 30, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 4000, 5000].map((n) => ({
-    label: `${n} (သိန်း)`,
-    value: String(n),
-  })),
-];
-
 interface FilterForm {
   regionId: string;
   townshipId: string;
@@ -48,8 +31,7 @@ const EMPTY_FILTER: FilterForm = {
 };
 
 export default function WantedListingsScreen() {
-  const { i18n } = useTranslation();
-  const isBurmese = i18n.language === "mm" || i18n.language?.startsWith("my");
+  const { t } = useTranslation();
 
   const [buyListings, setBuyListings] = useState<any[]>([]);
   const [rentListings, setRentListings] = useState<any[]>([]);
@@ -69,6 +51,23 @@ export default function WantedListingsScreen() {
   const tabRef = useRef(activeTab);
   tabRef.current = activeTab;
 
+  const propertyTypes = useMemo(() => [
+    { label: t("wantedListings.all"), value: "" },
+    { label: t("property.apartment"), value: "apartment" },
+    { label: t("property.condo"), value: "condo" },
+    { label: t("property.house"), value: "house" },
+    { label: t("property.land"), value: "land" },
+    { label: t("property.hostel"), value: "hostel" },
+  ], [t]);
+
+  const priceOptions = useMemo(() => [
+    { label: t("wantedListings.all"), value: "" },
+    ...[5, 10, 20, 30, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 2500, 3000, 4000, 5000].map((n) => ({
+      label: `${n} (${t("wantedListings.lakh")})`,
+      value: String(n),
+    })),
+  ], [t]);
+
   useEffect(() => {
     async function fetchLocations() {
       const [regionsRes, townshipsRes] = await Promise.all([
@@ -86,8 +85,8 @@ export default function WantedListingsScreen() {
       label: r.name_mm || r.name_en,
       value: String(r.id),
     }));
-    return [{ label: "ပြည်နယ်နှင့်တိုင်းဒေသကြီးအားလုံး", value: "" }, ...formatted];
-  }, [rawRegions]);
+    return [{ label: t("wantedListings.allRegions"), value: "" }, ...formatted];
+  }, [rawRegions, t]);
 
   const townshipOptions = useMemo(() => {
     const subset = filterForm.regionId
@@ -97,8 +96,8 @@ export default function WantedListingsScreen() {
       label: t.name_mm || t.name_en,
       value: String(t.id),
     }));
-    return [{ label: "မြို့နယ်အားလုံး", value: "" }, ...formatted];
-  }, [rawTownships, filterForm.regionId]);
+    return [{ label: t("wantedListings.allTownships"), value: "" }, ...formatted];
+  }, [rawTownships, filterForm.regionId, t]);
 
   const hasActiveFilter = !!(appliedFilters.buy.regionId || appliedFilters.buy.townshipId || appliedFilters.buy.propertyType || appliedFilters.buy.priceFrom || appliedFilters.buy.priceTo || appliedFilters.rent.regionId || appliedFilters.rent.townshipId || appliedFilters.rent.propertyType || appliedFilters.rent.priceFrom || appliedFilters.rent.priceTo);
 
@@ -207,24 +206,27 @@ export default function WantedListingsScreen() {
   };
 
   const filters = [
-    { id: "buy" as const, label: isBurmese ? "အိမ်ဝယ်လိုသူများ" : "People looking to buy a house" },
-    { id: "rent" as const, label: isBurmese ? "အိမ်ငှားလိုသူများ" : "People looking to rent a house" },
+    { id: "buy" as const, label: t("wantedListings.tabBuy") },
+    { id: "rent" as const, label: t("wantedListings.tabRent") },
   ];
 
-  const propertyTypeMap: Record<string, string> = {
-    apartment: "တိုက်ခန်း",
-    condo: "ကွန်ဒို",
-    house: "လုံးချင်းအိမ်",
-    land: "မြေကွက်",
-    hostel: "အဆောင်",
+  const propertyTypeLabel = (type: string) => {
+    const map: Record<string, string> = {
+      apartment: t("property.apartment"),
+      condo: t("property.condo"),
+      house: t("property.house"),
+      land: t("property.land"),
+      hostel: t("property.hostel"),
+    };
+    return map[type] ?? type;
   };
 
   const renderItem = (item: any) => {
     const regionName = item.states_regions ? item.states_regions.name_mm : "";
     const townshipName = item.townships ? item.townships.name_mm : "";
-    const propertyType = item.property_type ? propertyTypeMap[item.property_type] ?? item.property_type : null;
+    const propertyType = item.property_type ? propertyTypeLabel(item.property_type) : null;
     const hasBudget = item.budget_min || item.budget_max;
-    const currencyLabel = item.currency_unit === "usd" ? "USD" : "သိန်း";
+    const currencyLabel = item.currency_unit === "usd" ? "USD" : t("wantedListings.lakh");
 
     return (
       <TouchableOpacity
@@ -250,10 +252,10 @@ export default function WantedListingsScreen() {
           {hasBudget && (
             <Text className="text-primary-300 text-[15px] font-rubik-bold mt-2">
               {item.budget_min && item.budget_max
-                ? `${item.budget_min.toLocaleString()} မှ ${item.budget_max.toLocaleString()} ${currencyLabel} အတွင်း`
+                ? `${item.budget_min.toLocaleString()} ${t("wantedListings.from")} ${item.budget_max.toLocaleString()} ${currencyLabel} ${t("wantedListings.to")}`
                 : item.budget_min
                   ? `${item.budget_min.toLocaleString()}+ ${currencyLabel}`
-                  : `အမြင့်ဆုံး ${item.budget_max.toLocaleString()} ${currencyLabel}`}
+                  : `${t("wantedListings.max")} ${item.budget_max.toLocaleString()} ${currencyLabel}`}
             </Text>
           )}
         </View>
@@ -284,7 +286,7 @@ export default function WantedListingsScreen() {
     ) : (
       <View className="items-center py-12">
         <Text className="text-black-100 font-rubik-medium text-base">
-          {hasActiveFilter ? "ရလဒ်မတွေ့ပါ" : "ကြော်ငြာများမရှိသေးပါ"}
+          {hasActiveFilter ? t("wantedListings.noResults") : t("wantedListings.noListings")}
         </Text>
       </View>
     ),
@@ -311,7 +313,7 @@ export default function WantedListingsScreen() {
           className="flex-row items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3"
         >
           <Text className={`text-sm font-rubik ${selected && selected.value ? "text-black-300" : "text-gray-400"}`}>
-            {selected?.label || "ရွေးချယ်ပါ"}
+            {selected?.label || t("wantedListings.select")}
           </Text>
           <ChevronDown size={18} color="#9CA3AF" />
         </TouchableOpacity>
@@ -343,7 +345,7 @@ export default function WantedListingsScreen() {
         <View className="flex-row items-center justify-between">
           <BackButton onPress={handleBack} />
            <Text className="text-lg font-rubik-bold text-black-300">
-            {isBurmese ? "ဝယ်/ငှားလိုသော ကြော်ငြာများ" : "Wanted Listings"}
+            {t("wantedListings.title")}
           </Text>
           <View className="w-10" />
         </View>
@@ -410,7 +412,7 @@ export default function WantedListingsScreen() {
           <View className="bg-white rounded-t-3xl max-h-[85%]">
             <View className="flex-row items-center justify-between px-5 pt-5 pb-3">
               <Text className="text-lg font-rubik-bold text-black-300">
-                ရှာဖွေရန်
+                {t("wantedListings.search")}
               </Text>
               <TouchableOpacity onPress={() => { setFilterForm(EMPTY_FILTER); setShowFilter(false); }} className="w-8 h-8 items-center justify-center rounded-full bg-gray-100">
                 <X size={18} color="#6B7280" />
@@ -419,37 +421,37 @@ export default function WantedListingsScreen() {
 
             <ScrollView className="px-5 pt-2 pb-6" showsVerticalScrollIndicator={false}>
               <Dropdown
-                label="ပြည်နယ်နှင့်တိုင်းဒေသကြီး"
+                label={t("wantedListings.labelRegion")}
                 value={filterForm.regionId}
                 options={regionOptions}
                 onSelect={(val) => setFilterForm((p) => ({ ...p, regionId: val, townshipId: "" }))}
               />
 
               <Dropdown
-                label="မြို့နယ်"
+                label={t("wantedListings.labelTownship")}
                 value={filterForm.townshipId}
                 options={townshipOptions}
                 onSelect={(val) => setFilterForm((p) => ({ ...p, townshipId: val }))}
               />
 
               <Dropdown
-                label="အိမ်ခြံမြေအမျိုးအစား"
+                label={t("wantedListings.labelPropertyType")}
                 value={filterForm.propertyType}
-                options={PROPERTY_TYPES}
+                options={propertyTypes}
                 onSelect={(val) => setFilterForm((p) => ({ ...p, propertyType: val }))}
               />
 
               <Dropdown
-                label="ဈေးနှုန်း မှ"
+                label={t("wantedListings.labelPriceFrom")}
                 value={filterForm.priceFrom}
-                options={PRICE_OPTIONS}
+                options={priceOptions}
                 onSelect={(val) => setFilterForm((p) => ({ ...p, priceFrom: val }))}
               />
 
               <Dropdown
-                label="ဈေးနှုန်း အတွင်း"
+                label={t("wantedListings.labelPriceTo")}
                 value={filterForm.priceTo}
-                options={PRICE_OPTIONS}
+                options={priceOptions}
                 onSelect={(val) => setFilterForm((p) => ({ ...p, priceTo: val }))}
               />
 
@@ -458,7 +460,7 @@ export default function WantedListingsScreen() {
                   className="py-3.5 rounded-xl bg-primary-300 items-center"
                 >
                   <Text className="text-sm font-rubik-semibold text-white">
-                    ရှာမည်
+                    {t("wantedListings.searchButton")}
                   </Text>
                 </TouchableOpacity>
             </ScrollView>

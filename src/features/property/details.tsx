@@ -436,7 +436,9 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
   const displayPrice =
     property.currency_unit === "lakhs"
       ? `${property.price} ${isBurmese ? "သိန်း (ကျပ်)" : "Lakhs"}`
-      : `$${property.price}`;
+      : property.currency_unit === "kyats"
+        ? `${property.price.toLocaleString()} ${isBurmese ? "ကျပ်" : "Ks"}`
+        : `$${property.price}`;
 
   const regionName = property.states_regions
     ? isBurmese && property.states_regions.name_mm
@@ -1036,7 +1038,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
                 decelerationRate="fast"
                 renderItem={({ item: rp }) => {
                   const rpPrice = rp.price
-                    ? `${rp.price.toLocaleString()} ${rp.currency_unit === "lakhs" ? "သိန်း (ကျပ်)" : "$"}`
+                    ? `${rp.price.toLocaleString()} ${rp.currency_unit === "lakhs" ? (isBurmese ? "သိန်း (ကျပ်)" : "Lakhs") : rp.currency_unit === "kyats" ? (isBurmese ? "ကျပ်" : "Ks") : "$"}`
                     : "";
                   const rpImage = rp.images?.[0] || DEFAULT_IMAGE;
                   const rpTitle = rp.title_mm || rp.title_en || "";

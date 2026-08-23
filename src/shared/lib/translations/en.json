@@ -319,6 +319,7 @@
     "archive": "Archive",
     "unarchive": "Unarchive",
     "justNow": "Just now",
+    "today": "Today",
     "yesterday": "Yesterday",
     "minutesAgo": "{{count}}m ago",
     "hoursAgo": "{{count}}h ago",
@@ -348,6 +349,13 @@
     "deleteTitle": "Delete Conversation",
     "deleteConfirm": "Are you sure you want to delete this conversation?",
     "unknown": "Unknown",
+    "sentAttachment": "Sent an attachment",
+    "newMessage": "New Message",
+    "attachment": "Attachment",
+    "seen": "Seen",
+    "sent": "Sent",
+    "editMessagePlaceholder": "Edit message...",
+    "typeMessagePlaceholder": "Type a message...",
     "error": "Error"
   },
   "tabs": {

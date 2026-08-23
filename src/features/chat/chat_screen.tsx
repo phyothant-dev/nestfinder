@@ -60,14 +60,14 @@ interface DateSeparator {
 
 type ChatListItem = Message | DateSeparator;
 
-function formatDateLabel(dateStr: string): string {
+function formatDateLabel(dateStr: string, t: (key: string) => string): string {
   const date = new Date(dateStr + "T00:00:00");
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
-  if (dateStr === todayStr) return "Today";
+  if (dateStr === todayStr) return t("chat.today");
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  if (dateStr === yesterday.toISOString().split("T")[0]) return "Yesterday";
+  if (dateStr === yesterday.toISOString().split("T")[0]) return t("chat.yesterday");
   return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -75,13 +75,13 @@ function formatDateLabel(dateStr: string): string {
   });
 }
 
-function buildMessageList(messages: Message[]): ChatListItem[] {
+function buildMessageList(messages: Message[], t: (key: string) => string): ChatListItem[] {
   const items: ChatListItem[] = [];
   let lastDate: string | null = null;
   for (const msg of messages) {
     const msgDate = msg.created_at.split("T")[0];
     if (msgDate !== lastDate) {
-      items.push({ id: `date-${msgDate}`, type: "date", label: formatDateLabel(msgDate) });
+      items.push({ id: `date-${msgDate}`, type: "date", label: formatDateLabel(msgDate, t) });
       lastDate = msgDate;
     }
     items.push(msg);
@@ -172,7 +172,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
           .eq("id", otherId)
           .single();
 
-        setOtherName(profile?.full_name || "Unknown");
+        setOtherName(profile?.full_name || t("chat.unknown"));
 
         const { data: msgs, error: msgErr } = await supabase
           .from("messages")
@@ -324,7 +324,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
     if (Platform.OS === "ios") {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: ["Cancel", "Photo Library", "Files", "Camera"],
+          options: [t("chat.cancel"), t("chat.photoLibrary"), t("chat.files"), t("chat.camera")],
           cancelButtonIndex: 0,
         },
         (index) => {
@@ -540,8 +540,8 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
       if (recipientId) {
         const snippet = textToSend
           ? textToSend.slice(0, 100)
-          : "Sent an attachment";
-        sendNotification(recipientId, "New Message", snippet, {
+          : t("chat.sentAttachment");
+        sendNotification(recipientId, t("chat.newMessage"), snippet, {
           screen: "chat",
           conversationId: channelId,
         });
@@ -647,7 +647,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
         <View style={styles.pinnedBanner}>
           <Pin size={14} color={"#134686"} />
           <Text style={styles.pinnedBannerText} numberOfLines={1}>
-            {pinnedMessages[0].text || (pinnedMessages[0].attachment ? "Attachment" : "")}
+            {pinnedMessages[0].text || (pinnedMessages[0].attachment ? t("chat.attachment") : "")}
           </Text>
           <TouchableOpacity
             onPress={() => setShowUnpinDialog(true)}
@@ -660,7 +660,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
 
       <FlashList
         ref={flatListRef}
-        data={buildMessageList(messages)}
+        data={buildMessageList(messages, t)}
         keyExtractor={(item) => ("type" in item ? item.id : item.id)}
         contentContainerStyle={styles.messageList}
         onContentSizeChange={() => {
@@ -711,7 +711,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
                         {replyMsg.sender_id === userId ? t("chat.you") : otherName}
                       </Text>
                       <Text style={[styles.replyText, isMine ? { color: "rgba(255,255,255,0.6)" } : { color: "#666876" }]} numberOfLines={1}>
-                        {replyMsg.text || (replyMsg.attachment?.type?.startsWith("image/") ? "Photo" : replyMsg.attachment?.type?.startsWith("video/") ? "Video" : replyMsg.attachment ? "Attachment" : "")}
+                        {replyMsg.text || (replyMsg.attachment?.type?.startsWith("image/") ? t("chat.photo") : replyMsg.attachment?.type?.startsWith("video/") ? t("chat.video") : replyMsg.attachment ? t("chat.attachment") : "")}
                       </Text>
                     </View>
                   </View>
@@ -745,7 +745,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
               </View>
               {isMine && item.id === lastSentMsgId && (
                 <Text style={[styles.readStatusBelow, item.read_at ? styles.readStatusRead : styles.readStatusSent]}>
-                  {item.read_at ? "Seen" : "Sent"}
+                  {item.read_at ? t("chat.seen") : t("chat.sent")}
                 </Text>
               )}
             </TouchableOpacity>
@@ -803,7 +803,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
               Reply to {replyTo.sender_id === userId ? "yourself" : otherName}
             </Text>
             <Text style={styles.replyBarText} numberOfLines={1}>
-              {replyTo.text || (replyTo.attachment?.type?.startsWith("image/") ? "Photo" : replyTo.attachment?.type?.startsWith("video/") ? "Video" : "Attachment")}
+              {replyTo.text || (replyTo.attachment?.type?.startsWith("image/") ? t("chat.photo") : replyTo.attachment?.type?.startsWith("video/") ? t("chat.video") : t("chat.attachment"))}
             </Text>
           </View>
           <TouchableOpacity onPress={() => setReplyTo(null)} style={styles.replyBarClose}>
@@ -831,7 +831,7 @@ export default function ChatRoomScreen({ channelId }: ChatRoomScreenProps) {
         <TextInput
           value={input}
           onChangeText={setInput}
-          placeholder={editingMessage ? "Edit message..." : "Type a message..."}
+          placeholder={editingMessage ? t("chat.editMessagePlaceholder") : t("chat.typeMessagePlaceholder")}
           placeholderTextColor={"#8C8E98"}
           style={styles.input}
           multiline

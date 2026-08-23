@@ -319,6 +319,7 @@
     "archive": "သိမ်းဆည်းရန်",
     "unarchive": "ပြန်ထုတ်ရန်",
     "justNow": "အခုလေးတင်",
+    "today": "ယနေ့",
     "yesterday": "မနေ့က",
     "minutesAgo": "{{count}} မိနစ်အကြာ",
     "hoursAgo": "{{count}} နာရီအကြာ",
@@ -348,6 +349,13 @@
     "deleteTitle": "စကားပြောခန်း ဖျက်ရန်",
     "deleteConfirm": "ဤစကားပြောခန်းကို ဖျက်လိုပါသလား။",
     "unknown": "မသိ",
+    "sentAttachment": "ဖိုင်တွဲတစ်ခု ပို့ပြီး",
+    "newMessage": "မက်ဆေ့ချ်အသစ်",
+    "attachment": "ဖိုင်တွဲ",
+    "seen": "ကြည့်ပြီး",
+    "sent": "ပို့ပြီး",
+    "editMessagePlaceholder": "မက်ဆေ့ချ် ပြင်ရန်...",
+    "typeMessagePlaceholder": "မက်ဆေ့ချ်ရေးပါ...",
     "error": "မှားယွင်းမှု"
   },
   "tabs": {

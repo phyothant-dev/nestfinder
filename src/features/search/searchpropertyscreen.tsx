@@ -4,7 +4,7 @@ import { ChevronLeft, Heart, Share2 } from "lucide-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator, DeviceEventEmitter, Image, ScrollView, TouchableOpacity, View } from "react-native";
+  ActivityIndicator, DeviceEventEmitter, Image, TouchableOpacity, View } from "react-native";
 import Text from "@/shared/components/Text";
 import { AlertDialog } from "@/shared/components/alert-dialog";
 import { Button, ButtonText } from "@/shared/components/button/button";
@@ -385,8 +385,7 @@ export default function PropertySearchForm() {
 
   return (
     <View className="gap-5">
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row py-1">
-        <View className="flex-row gap-5 items-center justify-center px-5">
+      <View className="flex-row gap-5 items-center justify-center py-1">
           {(["sale", "rent", "building"] as const).map((type) => (
               <TouchableOpacity key={type} onPress={() => setDealType(type)} className="flex-row items-center gap-2">
               <View className={`w-5 h-5 rounded-full border-2 items-center justify-center ${dealType === type ? "border-primary-300" : "border-primary-200"}`}>
@@ -399,8 +398,7 @@ export default function PropertySearchForm() {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
-      </ScrollView>
+      </View>
 
       <View>
         <SelectField

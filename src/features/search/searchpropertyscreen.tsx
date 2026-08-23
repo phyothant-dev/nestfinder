@@ -508,9 +508,12 @@ export default function PropertySearchForm() {
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "100 Lakhs", value: "100" },
-              { label: "500 Lakhs", value: "500" },
-              { label: "1000 Lakhs", value: "1000" },
+              { label: "10,000 Ks", value: "10000" },
+              { label: "20,000 Ks", value: "20000" },
+              { label: "30,000 Ks", value: "30000" },
+              { label: "50,000 Ks", value: "50000" },
+              { label: "75,000 Ks", value: "75000" },
+              { label: "100,000 Ks", value: "100000" },
             ]}
             placeholder={t("filter.minPrice") || "Min Price"}
             value={dropdowns.minPrice}
@@ -520,9 +523,14 @@ export default function PropertySearchForm() {
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "2000 Lakhs", value: "2000" },
-              { label: "5000 Lakhs", value: "5000" },
-              { label: "10000 Lakhs", value: "10000" },
+              { label: "10,000 Ks", value: "10000" },
+              { label: "20,000 Ks", value: "20000" },
+              { label: "30,000 Ks", value: "30000" },
+              { label: "50,000 Ks", value: "50000" },
+              { label: "75,000 Ks", value: "75000" },
+              { label: "100,000 Ks", value: "100000" },
+              { label: "150,000 Ks", value: "150000" },
+              { label: "200,000 Ks", value: "200000" },
             ]}
             placeholder={t("filter.maxPrice") || "Max Price"}
             value={dropdowns.maxPrice}

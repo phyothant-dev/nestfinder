@@ -45,7 +45,6 @@
   "property": {
     "savedSuccess": "Property saved successfully.",
     "removedFromSaved": "Property removed from saved.",
-    "propertyFallback": "Property",
     "agentFallback": "Agent",
     "featureBalcony": "Balcony",
     "featureGarden": "Garden",

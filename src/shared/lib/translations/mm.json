@@ -45,7 +45,6 @@
   "property": {
     "savedSuccess": "အိမ်ခြံမြေကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။",
     "removedFromSaved": "အိမ်ခြံမြေကို သိမ်းဆည်းမှုမှ ဖယ်ရှားပြီးပါပြီ။",
-    "propertyFallback": "အိမ်ခြံမြေ",
     "agentFallback": "အေးဂျင့်",
     "featureBalcony": "ဟင်းလင်ကွင်း",
     "featureGarden": "ဥယျာဉ်",

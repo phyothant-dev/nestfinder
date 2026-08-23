@@ -330,7 +330,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
         .single();
       conversationId = created?.id;
       if (conversationId) {
-        const title = property.title_en || property.title_mm || t("property.propertyFallback");
+        const title = property.title_en || property.title_mm || "Property";
         await supabase.from("messages").insert({
           conversation_id: conversationId,
           sender_id: user.id,

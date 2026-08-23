@@ -621,6 +621,7 @@ export default function PropertySearchForm() {
         </View>
       )}
 
+      {dealType !== "building" && (
       <View className="flex-row gap-3">
         <View className="flex-1">
           <SelectField
@@ -671,6 +672,7 @@ export default function PropertySearchForm() {
           />
         </View>
       </View>
+      )}
 
       {dealType !== "building" && (
         <View>

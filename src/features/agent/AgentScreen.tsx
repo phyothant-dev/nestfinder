@@ -1,9 +1,9 @@
 import { supabase } from "@/shared/lib/supabase";
 import { router } from "expo-router";
-import { BadgeCheck, MapPin, MessageCircle, Phone, Share2 } from "lucide-react-native";
+import { BadgeCheck, MapPin, MessageCircle, Phone } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, DeviceEventEmitter, Image, Linking, ScrollView, Share, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, DeviceEventEmitter, Image, Linking, ScrollView, TouchableOpacity, View } from "react-native";
 import Text from "@/shared/components/Text";
 import { Button, ButtonText } from "@/shared/components/button/button";
 import { Heading } from "@/shared/components/heading/heading";
@@ -153,12 +153,6 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
       conversationId = created?.id;
     }
     if (conversationId) router.push(`/chat/${conversationId}` as any);
-  };
-
-  const handleShare = async () => {
-    await Share.share({
-      message: `${agent?.full_name || "Agent"} - Nestfinder\nhttps://warm-bublanina-7b1ea2.netlify.app/agent/${agentId}`,
-    });
   };
 
   const handleSave = async (propertyId: string) => {

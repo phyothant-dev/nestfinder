@@ -124,8 +124,8 @@ export default function SavedPropertiesScreen() {
             const price =
               item.currency_unit === "lakhs"
                 ? `${item.price} Lakhs`
-                : item.currency_unit === "kyats"
-                  ? `${item.price.toLocaleString()} Ks`
+                  : item.currency_unit === "kyats"
+                    ? `${item.price.toLocaleString()} ကျပ်`
                   : `$${item.price}`;
             const image = item.images?.[0];
             const regionName = item.states_regions

@@ -94,7 +94,7 @@ function PropertyDetail({ item }: { item: any }) {
     item.currency_unit === "lakhs"
       ? `${item.price.toLocaleString()} သိန်း (ကျပ်)`
       : item.currency_unit === "kyats"
-        ? `${item.price.toLocaleString()} Ks`
+        ? `${item.price.toLocaleString()} ကျပ်`
         : `$${item.price}`;
   const regionName = item.states_regions
     ? item.states_regions.name_mm || item.states_regions.name_en

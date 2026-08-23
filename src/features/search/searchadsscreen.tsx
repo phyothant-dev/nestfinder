@@ -85,7 +85,7 @@ export default function AdsSearchForm() {
           <View style={{ gap: 12, paddingBottom: 24 }}>
             {results.map((item) => {
               const title = isBurmese && item.title_mm ? item.title_mm : item.title_en;
-              const price = item.currency_unit === "lakhs" ? `${item.price} Lakhs` : item.currency_unit === "kyats" ? `${item.price.toLocaleString()} Ks` : `$${item.price}`;
+              const price = item.currency_unit === "lakhs" ? `${item.price} Lakhs` : item.currency_unit === "kyats" ? `${item.price.toLocaleString()} ကျပ်` : `$${item.price}`;
               const image = item.images?.[0];
               return (
                 <TouchableOpacity

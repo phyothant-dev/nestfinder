@@ -60,7 +60,7 @@ function buildMapHtml(
       lng: p.longitude,
       title: p.title_en || p.title_mm || "Property",
       price:
-        p.currency_unit === "lakhs" ? `${p.price}L` : p.currency_unit === "kyats" ? `${p.price.toLocaleString()}Ks` : `$${p.price}`,
+        p.currency_unit === "lakhs" ? `${p.price}L` : p.currency_unit === "kyats" ? `${p.price.toLocaleString()} ကျပ်` : `$${p.price}`,
       img: p.images?.[0] || "",
       distance: p.distance?.toFixed(1) || "",
     })),
@@ -357,7 +357,7 @@ export default function MapTabScreen() {
                   {selectedProperty.currency_unit === "lakhs"
                     ? `${selectedProperty.price} Lakhs`
                     : selectedProperty.currency_unit === "kyats"
-                      ? `${selectedProperty.price.toLocaleString()} Ks`
+                      ? `${selectedProperty.price.toLocaleString()} ကျပ်`
                       : `$${selectedProperty.price}`}
                 </Text>
                 <Text className="text-black-100 text-xs font-rubik mt-1">

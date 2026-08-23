@@ -91,7 +91,7 @@ export const Card = ({ item, onPress, onSave, onCompare, isSaved, compareSelecte
     item.currency_unit === "lakhs"
       ? `${item.price} သိန်း (ကျပ်)`
       : item.currency_unit === "kyats"
-        ? `${item.price.toLocaleString()} Ks`
+        ? `${item.price.toLocaleString()} ကျပ်`
         : `$${item.price}`;
   const regionName = item.states_regions
     ? item.states_regions.name_mm || item.states_regions.name_en
@@ -204,7 +204,7 @@ export const FeaturedCard = ({ item, onPress }: Props) => {
     item.currency_unit === "lakhs"
       ? `${item.price} သိန်း (ကျပ်)`
       : item.currency_unit === "kyats"
-        ? `${item.price.toLocaleString()} Ks`
+        ? `${item.price.toLocaleString()} ကျပ်`
         : `$${item.price}`;
 
   return (

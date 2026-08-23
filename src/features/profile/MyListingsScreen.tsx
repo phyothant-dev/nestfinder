@@ -265,7 +265,7 @@ export default function MyListingsScreen() {
           contentContainerStyle={{ padding: 12, gap: 12 }}
           renderItem={({ item }) => {
             const price =
-              item.currency_unit === "lakhs" ? `${item.price} Lakhs` : item.currency_unit === "kyats" ? `${item.price.toLocaleString()} Ks` : `$${item.price}`;
+              item.currency_unit === "lakhs" ? `${item.price} Lakhs` : item.currency_unit === "kyats" ? `${item.price.toLocaleString()} ကျပ်` : `$${item.price}`;
             const image = item.images?.[0];
             const regionName = item.states_regions
               ? item.states_regions.name_mm || item.states_regions.name_en

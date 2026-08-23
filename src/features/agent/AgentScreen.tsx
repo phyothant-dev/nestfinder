@@ -20,12 +20,13 @@ interface AgentScreenProps {
 }
 
 export default function AgentScreen({ agentId, propertyId, phone: detailPhone }: AgentScreenProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isBurmese = i18n.language === "mm" || i18n.language?.startsWith("my");
 
   const [agent, setAgent] = useState<any>(null);
   const [listings, setListings] = useState<any[]>([]);
-  const [stats, setStats] = useState({ total: 0, sold: 0, views: 0 });
+  const [stats, setStats] = useState({ total: 0, sold: 0 });
+  const [filterTab, setFilterTab] = useState<"sale" | "rent">("sale");
   const [loading, setLoading] = useState(true);
   const [isSelf, setIsSelf] = useState(false);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
@@ -73,13 +74,12 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
 
         const { data: statsData } = await supabase
           .from("properties")
-          .select("is_sold, views")
+          .select("is_sold")
           .eq("user_id", agentId)
           .eq("is_flagged", false);
         setStats({
           total: statsData?.length || 0,
           sold: statsData?.filter((s) => s.is_sold).length || 0,
-          views: statsData?.reduce((sum, s) => sum + (s.views || 0), 0) || 0,
         });
 
         const { data: listingsData } = await supabase
@@ -210,6 +210,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
       })
     : "";
   const location = [agent.city, agent.region].filter(Boolean).join(", ");
+  const filteredListings = listings.filter((p) => p.deal_type === filterTab);
 
   return (
     <View className="flex-1 bg-cream">
@@ -298,16 +299,10 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
                 {isBurmese ? "ကြော်ငြာများ" : "Listings"}
               </Text>
             </View>
-            <View className="flex-1 items-center border-r border-primary-100">
+            <View className="flex-1 items-center">
               <Text className="text-xl font-rubik-extrabold text-gray-950">{stats.sold}</Text>
               <Text className="text-xs font-rubik mt-0.5" style={{ color: GRAY }}>
                 {isBurmese ? "ရောင်းပြီး" : "Sold"}
-              </Text>
-            </View>
-            <View className="flex-1 items-center">
-              <Text className="text-xl font-rubik-extrabold text-gray-950">{stats.views}</Text>
-              <Text className="text-xs font-rubik mt-0.5" style={{ color: GRAY }}>
-                {isBurmese ? "ကြည့်ရှုမှု" : "Views"}
               </Text>
             </View>
           </View>
@@ -320,17 +315,39 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
           ) : null}
         </View>
 
-        <Text className="text-lg font-rubik-extrabold text-gray-950 mb-3">
-          {isBurmese ? "ကြော်ငြာများ" : "Listings"}
-        </Text>
-        {listings.length === 0 ? (
+        <View className="flex-row items-center justify-between mb-3">
+          <Text className="text-lg font-rubik-extrabold text-gray-950">
+            {isBurmese ? "ကြော်ငြာများ" : "Listings"}
+          </Text>
+          <View className="flex-row rounded-full border border-primary-200 overflow-hidden bg-white">
+            {(["sale", "rent"] as const).map((key) => {
+              const isActive = filterTab === key;
+              return (
+                <TouchableOpacity
+                  key={key}
+                  onPress={() => setFilterTab(key)}
+                  className={`px-4 py-1.5 ${isActive ? "bg-primary-300" : ""}`}
+                >
+                  <Text
+                    className={`text-xs font-rubik-semibold ${isActive ? "text-white" : "text-gray-500"}`}
+                  >
+                    {key === "sale"
+                      ? t("profile.tabForSale") || "For Sale"
+                      : t("profile.tabForRent") || "For Rent"}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+        {filteredListings.length === 0 ? (
           <View className="bg-white rounded-2xl border border-primary-200 py-10 items-center">
             <Text className="text-sm font-rubik" style={{ color: GRAY }}>
               {isBurmese ? "ကြော်ငြာမရှိသေးပါ" : "No listings yet"}
             </Text>
           </View>
         ) : (
-          listings.map((p) => (
+          filteredListings.map((p) => (
             <Card
               key={p.id}
               item={p}

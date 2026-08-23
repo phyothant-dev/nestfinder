@@ -396,6 +396,20 @@
     "error": "Error",
     "ok": "OK"
   },
+  "agent": {
+    "title": "Agent",
+    "realEstateAgent": "Real Estate Agent",
+    "notFound": "Agent not found",
+    "goBack": "Go back",
+    "call": "Call",
+    "chat": "Chat",
+    "listings": "Listings",
+    "sold": "Sold",
+    "memberSince": "Member since",
+    "noListings": "No listings yet",
+    "noPhoneTitle": "No phone number available",
+    "noPhoneMessage": "This agent doesn't have a phone number yet."
+  },
   "alerts_and_dialogs": {
     "button_confirm": "OK",
     "login_required": {

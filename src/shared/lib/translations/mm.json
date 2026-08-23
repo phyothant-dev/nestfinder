@@ -396,6 +396,20 @@
     "error": "မှားယွင်းမှု",
     "ok": "ကောင်းပြီ"
   },
+  "agent": {
+    "title": "အေးဂျင့်",
+    "realEstateAgent": "အိမ်ခြံမြေအကျိုးဆောင်",
+    "notFound": "အေးဂျင့် မတွေ့ပါ",
+    "goBack": "နောက်သို့ပြန်သွားရန်",
+    "call": "ဖုန်းခေါ်ရန်",
+    "chat": "ချတ်",
+    "listings": "ကြော်ငြာများ",
+    "sold": "ရောင်းပြီး",
+    "memberSince": "စတင်ခဲ့သည်",
+    "noListings": "ကြော်ငြာမရှိသေးပါ",
+    "noPhoneTitle": "ဖုန်းနံပါတ် မရရှိနိုင်ပါ",
+    "noPhoneMessage": "ဤအေးဂျင့်တွင် ဖုန်းနံပါတ် မရှိပါ။"
+  },
   "alerts_and_dialogs": {
     "button_confirm": "ကောင်းပြီ",
     "login_required": {

@@ -105,8 +105,8 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
       Linking.openURL(`tel:${phone}`);
     } else {
       Alert.alert(
-        isBurmese ? "ဖုန်းနံပါတ် မရရှိနိုင်ပါ" : "No phone number available",
-        isBurmese ? "ဤအေးဂျင့်တွင် ဖုန်းနံပါတ် မရှိပါ။" : "This agent doesn't have a phone number yet.",
+        t("agent.noPhoneTitle"),
+        t("agent.noPhoneMessage"),
       );
     }
   };
@@ -192,11 +192,11 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
     return (
       <View className="flex-1 bg-cream items-center justify-center">
         <Text className="text-gray-500 font-rubik">
-          {isBurmese ? "အေးဂျင့် မတွေ့ပါ" : "Agent not found"}
+          {t("agent.notFound")}
         </Text>
         <TouchableOpacity onPress={() => router.back()} className="mt-4">
           <Text className="text-primary-300 font-rubik-medium">
-            {isBurmese ? "နောက်သို့ပြန်သွားရန်" : "Go back"}
+            {t("agent.goBack")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -217,7 +217,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
       <View className="px-5 pt-2 pb-3 border-b border-primary-200 bg-white flex-row items-center">
         <BackButton onPress={() => router.back()} />
         <Text className="text-lg font-rubik-bold text-gray-950 flex-1 ml-3">
-          {isBurmese ? "အေးဂျင့်" : "Agent"}
+          {t("agent.title")}
         </Text>
         <TouchableOpacity onPress={handleShare} className="w-10 h-10 items-center justify-center rounded-full bg-primary-100">
           <Share2 size={20} color={GREEN} />
@@ -248,7 +248,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
                 <BadgeCheck size={18} color="#134686" fill="#134686" />
               </View>
               <Text className="text-sm font-rubik mt-0.5" style={{ color: GRAY }}>
-                {isBurmese ? "အိမ်ခြံမြေအကျိုးဆောင်" : "Real Estate Agent"}
+                {t("agent.realEstateAgent")}
               </Text>
               {location ? (
                 <View className="flex-row items-center gap-1 mt-1">
@@ -271,7 +271,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
               >
                 <Phone size={16} color="#fff" />
                 <Text className="text-white text-sm font-rubik-bold">
-                  {isBurmese ? "ဖုန်းခေါ်ရန်" : "Call"}
+                  {t("agent.call")}
                 </Text>
               </TouchableOpacity>
               {propertyId ? (
@@ -283,7 +283,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
                 >
                   <MessageCircle size={16} color={GREEN} />
                   <Text className="text-sm font-rubik-bold" style={{ color: GREEN }}>
-                    {isBurmese ? "ချတ်" : "Chat"}
+                    {t("agent.chat")}
                   </Text>
                 </TouchableOpacity>
               ) : null}
@@ -296,20 +296,20 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
             <View className="flex-1 items-center border-r border-primary-100">
               <Text className="text-xl font-rubik-extrabold text-gray-950">{stats.total}</Text>
               <Text className="text-xs font-rubik mt-0.5" style={{ color: GRAY }}>
-                {isBurmese ? "ကြော်ငြာများ" : "Listings"}
+                {t("agent.listings")}
               </Text>
             </View>
             <View className="flex-1 items-center">
               <Text className="text-xl font-rubik-extrabold text-gray-950">{stats.sold}</Text>
               <Text className="text-xs font-rubik mt-0.5" style={{ color: GRAY }}>
-                {isBurmese ? "ရောင်းပြီး" : "Sold"}
+                {t("agent.sold")}
               </Text>
             </View>
           </View>
           {memberSince ? (
             <View className="border-t border-primary-100 px-5 py-2.5">
               <Text className="text-xs font-rubik text-center" style={{ color: GRAY }}>
-                {isBurmese ? "စတင်ခဲ့သည်" : "Member since"} {memberSince}
+                {t("agent.memberSince")} {memberSince}
               </Text>
             </View>
           ) : null}
@@ -317,7 +317,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
 
         <View className="flex-row items-center justify-between mb-3">
           <Text className="text-lg font-rubik-extrabold text-gray-950">
-            {isBurmese ? "ကြော်ငြာများ" : "Listings"}
+            {t("agent.listings")}
           </Text>
           <View className="flex-row rounded-full border border-primary-200 overflow-hidden bg-white">
             {(["sale", "rent"] as const).map((key) => {
@@ -343,7 +343,7 @@ export default function AgentScreen({ agentId, propertyId, phone: detailPhone }:
         {filteredListings.length === 0 ? (
           <View className="bg-white rounded-2xl border border-primary-200 py-10 items-center">
             <Text className="text-sm font-rubik" style={{ color: GRAY }}>
-              {isBurmese ? "ကြော်ငြာမရှိသေးပါ" : "No listings yet"}
+              {t("agent.noListings")}
             </Text>
           </View>
         ) : (

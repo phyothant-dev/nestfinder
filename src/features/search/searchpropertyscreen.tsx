@@ -420,6 +420,7 @@ export default function PropertySearchForm() {
         />
       </View>
 
+      {dealType !== "building" && (
       <View>
         <SelectField
           options={[
@@ -441,6 +442,7 @@ export default function PropertySearchForm() {
           }}
         />
       </View>
+      )}
 
       {(dropdowns.propertyType === "condo" || dropdowns.propertyType === "apartment") && (
         <View>
@@ -488,6 +490,7 @@ export default function PropertySearchForm() {
         </View>
       </View>
 
+      {dealType !== "building" && (
       <View>
         <SelectField
           options={[
@@ -501,7 +504,9 @@ export default function PropertySearchForm() {
           onSelect={(val) => handleSelectDropdown("rooms", val)}
         />
       </View>
+      )}
 
+      {dealType !== "building" && (
       <View>
         <SelectField
           options={[
@@ -515,6 +520,7 @@ export default function PropertySearchForm() {
           onSelect={(val) => handleSelectDropdown("sqft", val)}
         />
       </View>
+      )}
 
       <TouchableOpacity
         onPress={() => handleSearchSubmit()}

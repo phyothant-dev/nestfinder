@@ -14,8 +14,7 @@ import Text from "@/shared/components/Text";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { t, i18n } = useTranslation();
-  const isBurmese = i18n.language === "mm" || i18n.language?.startsWith("my");
+  const { t } = useTranslation();
 
   const [properties, setProperties] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState("all");
@@ -232,9 +231,9 @@ export default function HomeScreen() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return isBurmese ? "မင်္ဂလာနံနက်ခင်းပါ" : "Good Morning";
-    if (hour < 18) return isBurmese ? "မင်္ဂလာနေ့လယ်ခင်းပါ" : "Good Afternoon";
-    return isBurmese ? "မင်္ဂလာညနေခင်းပါ" : "Good Evening";
+    if (hour < 12) return t("home.goodMorning");
+    if (hour < 18) return t("home.goodAfternoon");
+    return t("home.goodEvening");
   };
 
   return (
@@ -261,7 +260,7 @@ export default function HomeScreen() {
                     {getGreeting()}
                   </Text>
                   <Text className="text-base font-rubik-medium text-black-300">
-                    {user?.full_name || (isBurmese ? "ဧည့်သည်" : "Guest")}
+                    {user?.full_name || t("home.guest")}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -433,7 +432,7 @@ export default function HomeScreen() {
           ) : (
             <View className="items-center py-12">
               <Text className="text-black-100 font-rubik-medium text-base">
-                {isBurmese ? "ကြော်ငြာများမရှိသေးပါ" : "No properties found"}
+                {t("home.noProperties")}
               </Text>
             </View>
           )

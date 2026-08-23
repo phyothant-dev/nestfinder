@@ -45,6 +45,26 @@
     "savedSuccess": "Property saved successfully.",
     "removedFromSaved": "Property removed from saved."
   },
+  "cards": {
+    "floorGround": "Ground Floor",
+    "floorGroundAttic": "Ground Floor + Attic",
+    "floorLow": "Low (1-4)",
+    "floorMid": "Mid (5-8)",
+    "floorHigh": "High (9+)",
+    "floorSuffix": "floor",
+    "sold": "Sold",
+    "property": "Property",
+    "sqft": "sqft",
+    "acre": "Acre",
+    "lakhsUnit": "Lakhs (Kyat)"
+  },
+  "home": {
+    "goodMorning": "Good Morning",
+    "goodAfternoon": "Good Afternoon",
+    "goodEvening": "Good Evening",
+    "guest": "Guest",
+    "noProperties": "No properties found"
+  },
   "createPost": {
     "selectCategory": "Choose Advertisement Type",
     "sale": "For Sale",

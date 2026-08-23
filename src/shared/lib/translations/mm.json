@@ -45,6 +45,26 @@
     "savedSuccess": "အိမ်ခြံမြေကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။",
     "removedFromSaved": "အိမ်ခြံမြေကို သိမ်းဆည်းမှုမှ ဖယ်ရှားပြီးပါပြီ။"
   },
+  "cards": {
+    "floorGround": "မြေညီ",
+    "floorGroundAttic": "မြေညီ + attic",
+    "floorLow": "အောက်ခြေ (၁-၄)",
+    "floorMid": "အလယ် (၅-၈)",
+    "floorHigh": "အထက် (၉+)",
+    "floorSuffix": "လွှာ",
+    "sold": "ရောင်းပြီး",
+    "property": "အိမ်ခြံမြေ",
+    "sqft": "စတုရန်းပေ",
+    "acre": "ဧက",
+    "lakhsUnit": "သိန်း (ကျပ်)"
+  },
+  "home": {
+    "goodMorning": "မင်္ဂလာနံနက်ခင်းပါ",
+    "goodAfternoon": "မင်္ဂလာနေ့လယ်ခင်းပါ",
+    "goodEvening": "မင်္ဂလာညနေခင်းပါ",
+    "guest": "ဧည့်သည်",
+    "noProperties": "ကြော်ငြာများမရှိသေးပါ"
+  },
   "createPost": {
     "selectCategory": "ကြော်ငြာအမျိုးအစားရွေးချယ်ပါ",
     "sale": "ရောင်းရန်ရှိသည်",

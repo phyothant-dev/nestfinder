@@ -1,7 +1,8 @@
 import { Eye, GitCompare, Heart, Share2 } from "lucide-react-native";
 import { Image, Pressable, Share, TouchableOpacity, View } from "react-native";
 import Text from "@/shared/components/Text";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -22,30 +23,6 @@ interface Props {
   isSaved?: boolean;
   compareSelected?: boolean;
 }
-
-const propertyTypeMap: Record<string, string> = {
-  apartment: "တိုက်ခန်း",
-  condo: "ကွန်ဒို",
-  house: "လုံးချင်းအိမ်",
-  land: "မြေကွက်",
-  hostel: "အဆောင်",
-};
-
-const getFloorLabel = (floor?: string) => {
-  switch (floor) {
-    case "ground": return "မြေညီ";
-    case "ground_attic": return "မြေညီ + attic";
-    case "low": return "အောက်ခြေ (၁-၄)";
-    case "mid": return "အလယ် (၅-၈)";
-    case "high": return "အထက် (၉+)";
-    default:
-      if (floor && /^\d+$/.test(floor)) {
-        const n = parseInt(floor, 10);
-        return `${floor} လွှာ`;
-      }
-      return "";
-  }
-};
 
 const SLATE_GRAY = "#64748B";
 const DIVIDER = "#E5E7EB";
@@ -86,10 +63,35 @@ function ActionButton({ onPress, children }: { onPress?: () => void; children: R
 }
 
 export const Card = ({ item, onPress, onSave, onCompare, isSaved, compareSelected }: Props) => {
+  const { t } = useTranslation();
+
+  const propertyTypeMap = useMemo(() => ({
+    apartment: t("property.apartment"),
+    condo: t("property.condo"),
+    house: t("property.house"),
+    land: t("property.land"),
+    hostel: t("property.hostel"),
+  }), [t]);
+
+  const getFloorLabel = (floor?: string) => {
+    switch (floor) {
+      case "ground": return t("cards.floorGround");
+      case "ground_attic": return t("cards.floorGroundAttic");
+      case "low": return t("cards.floorLow");
+      case "mid": return t("cards.floorMid");
+      case "high": return t("cards.floorHigh");
+      default:
+        if (floor && /^\d+$/.test(floor)) {
+          return `${floor} ${t("cards.floorSuffix")}`;
+        }
+        return "";
+    }
+  };
+
   const displayImage = item.images?.[0] || item.image || DEFAULT_IMAGE;
   const displayPrice =
     item.currency_unit === "lakhs"
-      ? `${item.price} သိန်း (ကျပ်)`
+      ? `${item.price} ${t("cards.lakhsUnit")}`
       : `$${item.price}`;
   const regionName = item.states_regions
     ? item.states_regions.name_mm || item.states_regions.name_en
@@ -97,10 +99,10 @@ export const Card = ({ item, onPress, onSave, onCompare, isSaved, compareSelecte
   const townshipName = item.townships
     ? item.townships.name_mm || item.townships.name_en
     : "";
-  const typeLabel = propertyTypeMap[item.property_type] || "အိမ်ခြံမြေ";
+  const typeLabel = propertyTypeMap[item.property_type as keyof typeof propertyTypeMap] || t("cards.property");
   const floorLabel = getFloorLabel(item.floor);
   const areaLabel = item.area_value
-    ? `${item.area_value} ${item.area_unit === "sqft" ? "စတုရန်းပေ" : "ဧက"}`
+    ? `${item.area_value} ${item.area_unit === "sqft" ? t("cards.sqft") : t("cards.acre")}`
     : "";
 
   const heartOpacity = useSharedValue(1);
@@ -144,7 +146,7 @@ export const Card = ({ item, onPress, onSave, onCompare, isSaved, compareSelecte
         {item.is_sold && (
           <View className="absolute top-3 left-3 bg-danger px-3 py-1 rounded-full">
             <Text className="text-white text-xs font-rubik-extrabold">
-              ရောင်းပြီး{item.sold_at ? ` ${new Date(item.sold_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : ""}
+              {t("cards.sold")}{item.sold_at ? ` ${new Date(item.sold_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : ""}
             </Text>
           </View>
         )}
@@ -195,12 +197,13 @@ export const Card = ({ item, onPress, onSave, onCompare, isSaved, compareSelecte
 };
 
 export const FeaturedCard = ({ item, onPress }: Props) => {
+  const { t } = useTranslation();
   const displayImage = item.images?.[0] || item.image || DEFAULT_IMAGE;
   const displayTitle = item.title_mm || item.title_en || item.name || "";
   const displayLocation = item.search_value || item.address || "";
   const displayPrice =
     item.currency_unit === "lakhs"
-      ? `${item.price} သိန်း (ကျပ်)`
+      ? `${item.price} ${t("cards.lakhsUnit")}`
       : `$${item.price}`;
 
   return (

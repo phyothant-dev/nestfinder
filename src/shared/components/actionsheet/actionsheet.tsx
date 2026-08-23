@@ -56,11 +56,11 @@ export function ActionSheet({
                 className="max-h-[50vh]"
                 showsVerticalScrollIndicator={false}
               >
-                {options.map((opt) => {
+                {options.map((opt, idx) => {
                   const selected = opt.value === value;
                   return (
                     <TouchableOpacity
-                      key={opt.value}
+                      key={`${placeholder}-${opt.value}-${idx}`}
                       onPress={() => {
                         onSelect(opt.value);
                         onClose();

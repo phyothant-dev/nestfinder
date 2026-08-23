@@ -1,15 +1,20 @@
+import Text from "@/shared/components/Text";
+import { SelectField } from "@/shared/components/actionsheet/actionsheet";
+import { AlertDialog } from "@/shared/components/alert-dialog";
+import { Button, ButtonText } from "@/shared/components/button/button";
+import { Heading } from "@/shared/components/heading/heading";
 import { supabase } from "@/shared/lib/supabase";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronLeft, Heart, Share2 } from "lucide-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  ActivityIndicator, DeviceEventEmitter, Image, TouchableOpacity, View } from "react-native";
-import Text from "@/shared/components/Text";
-import { AlertDialog } from "@/shared/components/alert-dialog";
-import { Button, ButtonText } from "@/shared/components/button/button";
-import { Heading } from "@/shared/components/heading/heading";
-import { SelectField } from "@/shared/components/actionsheet/actionsheet";
+    ActivityIndicator,
+    DeviceEventEmitter,
+    Image,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 interface SupabaseRegionRow {
   id: string;
@@ -65,7 +70,10 @@ export default function PropertySearchForm() {
   const [rawRegions, setRawRegions] = useState<SupabaseRegionRow[]>([]);
   const [rawTownships, setRawTownships] = useState<SupabaseTownshipRow[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [alertDialog, setAlertDialog] = useState<{ title: string; message: string } | null>(null);
+  const [alertDialog, setAlertDialog] = useState<{
+    title: string;
+    message: string;
+  } | null>(null);
 
   const [dropdowns, setDropdowns] = useState({
     stateRegion: "",
@@ -146,7 +154,10 @@ export default function PropertySearchForm() {
     setResults([]);
 
     const dp = searchParams as Record<string, string>;
-    const dt = dp.dealType && ["sale", "rent", "building"].includes(dp.dealType) ? dp.dealType : "sale";
+    const dt =
+      dp.dealType && ["sale", "rent", "building"].includes(dp.dealType)
+        ? dp.dealType
+        : "sale";
     setDealType(dt);
     const dd = {
       stateRegion: dp.stateRegion || "",
@@ -165,7 +176,9 @@ export default function PropertySearchForm() {
   }, [searchParams]);
 
   const handleSaveProperty = async (propertyId: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       router.push("/(auth)/login");
       return;
@@ -184,7 +197,11 @@ export default function PropertySearchForm() {
           return next;
         });
         DeviceEventEmitter.emit("savedPropertiesChanged");
-        setAlertDialog({ title: t("common.removed") || "Removed", message: t("property.removedFromSaved") || "Property removed from saved." });
+        setAlertDialog({
+          title: t("common.removed") || "Removed",
+          message:
+            t("property.removedFromSaved") || "Property removed from saved.",
+        });
       } else {
         const { error } = await supabase
           .from("saved_properties")
@@ -192,10 +209,16 @@ export default function PropertySearchForm() {
         if (error) throw error;
         setSavedIds((prev) => new Set(prev).add(propertyId));
         DeviceEventEmitter.emit("savedPropertiesChanged");
-        setAlertDialog({ title: t("common.saved") || "Saved", message: t("property.savedSuccess") || "Property saved successfully." });
+        setAlertDialog({
+          title: t("common.saved") || "Saved",
+          message: t("property.savedSuccess") || "Property saved successfully.",
+        });
       }
     } catch (err: any) {
-      setAlertDialog({ title: t("error.title") || "Error", message: err.message });
+      setAlertDialog({
+        title: t("error.title") || "Error",
+        message: err.message,
+      });
     }
   };
 
@@ -204,8 +227,14 @@ export default function PropertySearchForm() {
       try {
         setIsLoading(true);
         const [regionsRes, townshipsRes] = await Promise.all([
-          supabase.from("states_regions").select("id, name_en, name_mm").order("name_en", { ascending: true }),
-          supabase.from("townships").select("id, region_id, name_en, name_mm").order("name_en", { ascending: true }),
+          supabase
+            .from("states_regions")
+            .select("id, name_en, name_mm")
+            .order("name_en", { ascending: true }),
+          supabase
+            .from("townships")
+            .select("id, region_id, name_en, name_mm")
+            .order("name_en", { ascending: true }),
         ]);
         if (regionsRes.error) throw regionsRes.error;
         if (townshipsRes.error) throw townshipsRes.error;
@@ -214,7 +243,9 @@ export default function PropertySearchForm() {
       } catch {
         setAlertDialog({
           title: t("error.databaseErrorTitle") || "Database Error",
-          message: t("error.databaseErrorMessage") || "Could not synchronize geolocation assets.",
+          message:
+            t("error.databaseErrorMessage") ||
+            "Could not synchronize geolocation assets.",
         });
       } finally {
         setIsLoading(false);
@@ -228,7 +259,10 @@ export default function PropertySearchForm() {
       label: isBurmese && item.name_mm ? item.name_mm : item.name_en,
       value: item.id,
     }));
-    return [{ label: t("filter.allRegions") || "All Regions", value: "" }, ...formatted];
+    return [
+      { label: t("filter.allRegions") || "All Regions", value: "" },
+      ...formatted,
+    ];
   }, [rawRegions, isBurmese, t]);
 
   const filteredTownships = useMemo<ApiDropdownItem[]>(() => {
@@ -239,20 +273,32 @@ export default function PropertySearchForm() {
       label: isBurmese && item.name_mm ? item.name_mm : item.name_en,
       value: item.id,
     }));
-    return [{ label: t("filter.allTownships") || "All Townships", value: "" }, ...formatted];
+    return [
+      { label: t("filter.allTownships") || "All Townships", value: "" },
+      ...formatted,
+    ];
   }, [rawTownships, dropdowns.stateRegion, isBurmese, t]);
 
   const handleSelectDropdown = (key: keyof typeof dropdowns, value: string) => {
     setDropdowns((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSearchSubmit = async (overrides?: { dealType?: string; dropdowns?: typeof dropdowns }) => {
+  const handleSearchSubmit = async (overrides?: {
+    dealType?: string;
+    dropdowns?: typeof dropdowns;
+  }) => {
     const dt = overrides?.dealType ?? dealType;
     const dd = overrides?.dropdowns ?? dropdowns;
     setSearching(true);
     setResults(null);
     try {
-      let query = supabase.from("properties").select("*, views, states_regions(name_en, name_mm), townships(name_en, name_mm)").eq("is_flagged", false).order("created_at", { ascending: false });
+      let query = supabase
+        .from("properties")
+        .select(
+          "*, views, states_regions(name_en, name_mm), townships(name_en, name_mm)",
+        )
+        .eq("is_flagged", false)
+        .order("created_at", { ascending: false });
 
       if (dt) query = query.eq("deal_type", dt);
       if (dd.propertyType) query = query.eq("property_type", dd.propertyType);
@@ -272,7 +318,10 @@ export default function PropertySearchForm() {
       setResults(data || []);
     } catch (err: any) {
       console.error("Search error:", err);
-      setAlertDialog({ title: t("error.title"), message: t("error.searchFailed") });
+      setAlertDialog({
+        title: t("error.title"),
+        message: t("error.searchFailed"),
+      });
     } finally {
       setSearching(false);
     }
@@ -290,19 +339,28 @@ export default function PropertySearchForm() {
     return (
       <View className="flex-1">
         <View className="flex-row items-center justify-between mb-4">
-          <TouchableOpacity onPress={() => setResults(null)} className="flex-row items-center gap-2">
+          <TouchableOpacity
+            onPress={() => setResults(null)}
+            className="flex-row items-center gap-2"
+          >
             <ChevronLeft size={22} color="#134686" />
-            <Text className="text-primary-300 font-rubik-bold">{t("filter.backToSearch")}</Text>
+            <Text className="text-primary-300 font-rubik-bold">
+              {t("filter.backToSearch")}
+            </Text>
           </TouchableOpacity>
         </View>
         {!searching && (
           <Text className="text-black-300 font-rubik-bold text-lg mb-3">
-            {t("filter.resultsFound", { num: isBurmese ? toMyanmarNum(results.length) : results.length })}
+            {t("filter.resultsFound", {
+              num: isBurmese ? toMyanmarNum(results.length) : results.length,
+            })}
           </Text>
         )}
         {results.length === 0 && !searching ? (
           <View className="py-12 items-center">
-            <Text className="text-black-100 font-rubik">{t("filter.noResults") || "No properties found"}</Text>
+            <Text className="text-black-100 font-rubik">
+              {t("filter.noResults") || "No properties found"}
+            </Text>
           </View>
         ) : results.length === 0 && searching ? (
           <View className="py-12 items-center">
@@ -311,7 +369,10 @@ export default function PropertySearchForm() {
         ) : (
           <View style={{ gap: 12, paddingBottom: 24 }}>
             {results.map((item) => {
-              const price = item.currency_unit === "lakhs" ? `${item.price} Lakhs` : `$${item.price}`;
+              const price =
+                item.currency_unit === "lakhs"
+                  ? `${item.price} Lakhs`
+                  : `$${item.price}`;
               const image = item.images?.[0];
               const regionName = item.states_regions
                 ? item.states_regions.name_mm || item.states_regions.name_en
@@ -329,10 +390,17 @@ export default function PropertySearchForm() {
                     activeOpacity={0.7}
                   >
                     {image && (
-                      <Image source={{ uri: image }} className="w-full h-40" resizeMode="cover" />
+                      <Image
+                        source={{ uri: image }}
+                        className="w-full h-40"
+                        resizeMode="cover"
+                      />
                     )}
                     <View className="px-4 pt-3 pb-2 gap-1">
-                      <Text className="text-black-100 text-xs font-rubik" numberOfLines={1}>
+                      <Text
+                        className="text-black-100 text-xs font-rubik"
+                        numberOfLines={1}
+                      >
                         {regionName} | {townshipName}
                       </Text>
                       <View className="flex-row items-center gap-2">
@@ -342,22 +410,26 @@ export default function PropertySearchForm() {
                           </Text>
                         </View>
                       </View>
-                      <Text className="text-primary-300 text-lg font-rubik-extrabold mt-1">{price}</Text>
+                      <Text className="text-primary-300 text-lg font-rubik-extrabold mt-1">
+                        {price}
+                      </Text>
                     </View>
                   </TouchableOpacity>
                   <View className="flex-row items-center justify-end px-4 py-2.5 border-t border-primary-100">
                     <View className="flex-row items-center gap-4">
-                    <TouchableOpacity
-                      onPress={() => handleSaveProperty(item.id)}
-                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    >
-                      <Heart
-                        size={18}
-                        color={savedIds.has(item.id) ? "#ED3F27" : "#8C8E98"}
-                        fill={savedIds.has(item.id) ? "#ED3F27" : "transparent"}
-                      />
-                    </TouchableOpacity>
-                    <Share2 size={18} color="#8C8E98" />
+                      <TouchableOpacity
+                        onPress={() => handleSaveProperty(item.id)}
+                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      >
+                        <Heart
+                          size={18}
+                          color={savedIds.has(item.id) ? "#ED3F27" : "#8C8E98"}
+                          fill={
+                            savedIds.has(item.id) ? "#ED3F27" : "transparent"
+                          }
+                        />
+                      </TouchableOpacity>
+                      <Share2 size={18} color="#8C8E98" />
                     </View>
                   </View>
                 </View>
@@ -376,11 +448,15 @@ export default function PropertySearchForm() {
               <Heading>{alertDialog?.title || ""}</Heading>
             </AlertDialog.Header>
             <AlertDialog.Body>
-              <Text className="text-center text-slate-500">{alertDialog?.message || ""}</Text>
+              <Text className="text-center text-slate-500">
+                {alertDialog?.message || ""}
+              </Text>
             </AlertDialog.Body>
             <AlertDialog.Footer className="w-full flex-row justify-center">
               <Button onPress={() => setAlertDialog(null)} className="flex-1">
-                <ButtonText>{t("alerts_and_dialogs.button_confirm")}</ButtonText>
+                <ButtonText>
+                  {t("alerts_and_dialogs.button_confirm")}
+                </ButtonText>
               </Button>
             </AlertDialog.Footer>
           </AlertDialog.Content>
@@ -392,18 +468,26 @@ export default function PropertySearchForm() {
   return (
     <View className="gap-5">
       <View className="flex-row gap-5 items-center justify-center py-1">
-          {(["sale", "rent", "building"] as const).map((type) => (
-              <TouchableOpacity key={type} onPress={() => setDealType(type)} className="flex-row items-center gap-2">
-              <View className={`w-5 h-5 rounded-full border-2 items-center justify-center ${dealType === type ? "border-primary-300" : "border-primary-200"}`}>
-                {dealType === type && <View className="w-2.5 h-2.5 bg-primary-300 rounded-full" />}
-              </View>
-              <Text className="text-black-300 font-rubik-bold text-sm">
-                {type === "sale" && (t("filter.forSale") || "For Sale")}
-                {type === "rent" && (t("filter.forRent") || "For Rent")}
-                {type === "building" && (t("filter.building") || "Building")}
-              </Text>
-            </TouchableOpacity>
-          ))}
+        {(["sale", "rent", "building"] as const).map((type) => (
+          <TouchableOpacity
+            key={type}
+            onPress={() => setDealType(type)}
+            className="flex-row items-center gap-2"
+          >
+            <View
+              className={`w-5 h-5 rounded-full border-2 items-center justify-center ${dealType === type ? "border-primary-300" : "border-primary-200"}`}
+            >
+              {dealType === type && (
+                <View className="w-2.5 h-2.5 bg-primary-300 rounded-full" />
+              )}
+            </View>
+            <Text className="text-black-300 font-rubik-bold text-sm">
+              {type === "sale" && (t("filter.forSale") || "For Sale")}
+              {type === "rent" && (t("filter.forRent") || "For Rent")}
+              {type === "building" && (t("filter.building") || "Building")}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <View>
@@ -412,7 +496,11 @@ export default function PropertySearchForm() {
           placeholder={t("filter.stateRegion") || "Select State/Region"}
           value={dropdowns.stateRegion}
           onSelect={(val) => {
-            setDropdowns((prev) => ({ ...prev, stateRegion: val, township: "" }));
+            setDropdowns((prev) => ({
+              ...prev,
+              stateRegion: val,
+              township: "",
+            }));
           }}
         />
       </View>
@@ -427,71 +515,100 @@ export default function PropertySearchForm() {
       </View>
 
       {dealType === "building" && (
-      <View>
-        <SelectField
-          options={[
-            { label: t("filter.allHostelTypes") || "All Hostel Types", value: "" },
-            { label: t("filter.maleHostel") || "Male Hostel", value: "male" },
-            { label: t("filter.femaleHostel") || "Female Hostel", value: "female" },
-            { label: t("filter.marriedHostel") || "Married Couples' Hostel", value: "married" },
-          ]}
-          placeholder={t("filter.chooseHostelType") || "Choose Hostel Type"}
-          value={dropdowns.hostelType}
-          onSelect={(val) => handleSelectDropdown("hostelType", val)}
-        />
-      </View>
+        <View>
+          <SelectField
+            options={[
+              {
+                label: t("filter.allHostelTypes") || "All Hostel Types",
+                value: "",
+              },
+              { label: t("filter.maleHostel") || "Male Hostel", value: "male" },
+              {
+                label: t("filter.femaleHostel") || "Female Hostel",
+                value: "female",
+              },
+              {
+                label: t("filter.marriedHostel") || "Married Couples' Hostel",
+                value: "married",
+              },
+            ]}
+            placeholder={t("filter.chooseHostelType") || "Choose Hostel Type"}
+            value={dropdowns.hostelType}
+            onSelect={(val) => handleSelectDropdown("hostelType", val)}
+          />
+        </View>
       )}
 
       {dealType === "building" && (
-      <View>
-        <SelectField
-          options={[
-            { label: t("filter.allStructures") || "All Structures", value: "" },
-            { label: t("filter.hall") || "Hall", value: "hall" },
-            { label: t("filter.marriedAccommodation") || "Married Couples' Accommodation", value: "married_accommodation" },
-            ...Array.from({ length: 20 }, (_, i) => ({
-              label: `${i + 1} ${t("filter.bedroom") || "Bedroom"}`,
-              value: `${i + 1}`,
-            })),
-          ]}
-          placeholder={t("filter.chooseHostelStructure") || "Choose Hostel Structure"}
-          value={dropdowns.hostelStructure}
-          onSelect={(val) => handleSelectDropdown("hostelStructure", val)}
-        />
-      </View>
+        <View>
+          <SelectField
+            options={[
+              {
+                label: t("filter.allStructures") || "All Structures",
+                value: "",
+              },
+              { label: t("filter.hall") || "Hall", value: "hall" },
+              {
+                label:
+                  t("filter.marriedAccommodation") ||
+                  "Married Couples' Accommodation",
+                value: "married_accommodation",
+              },
+              ...Array.from({ length: 20 }, (_, i) => ({
+                label: `${i + 1} ${t("filter.bedroom") || "Bedroom"}`,
+                value: `${i + 1}`,
+              })),
+            ]}
+            placeholder={
+              t("filter.chooseHostelStructure") || "Choose Hostel Structure"
+            }
+            value={dropdowns.hostelStructure}
+            onSelect={(val) => handleSelectDropdown("hostelStructure", val)}
+          />
+        </View>
       )}
 
       {dealType !== "building" && (
-      <View>
-        <SelectField
-          options={[
-            { label: t("filter.allProperties") || "All Property Types", value: "" },
-            { label: t("property.condo") || "Condominium", value: "condo" },
-            { label: t("property.apartment") || "Apartment", value: "apartment" },
-            { label: t("property.house") || "House / Villa", value: "house" },
-            { label: t("property.land") || "Land", value: "land" },
-            { label: t("property.hostel") || "Hostel", value: "hostel" },
-          ]}
-          placeholder={t("filter.propertyType") || "Property Type"}
-          value={dropdowns.propertyType}
-          onSelect={(val) => {
-            setDropdowns((prev) => ({
-              ...prev,
-              propertyType: val,
-              floor: val === "condo" || val === "apartment" ? prev.floor : "",
-            }));
-          }}
-        />
-      </View>
+        <View>
+          <SelectField
+            options={[
+              {
+                label: t("filter.allProperties") || "All Property Types",
+                value: "",
+              },
+              { label: t("property.condo") || "Condominium", value: "condo" },
+              {
+                label: t("property.apartment") || "Apartment",
+                value: "apartment",
+              },
+              { label: t("property.house") || "House / Villa", value: "house" },
+              { label: t("property.land") || "Land", value: "land" },
+              { label: t("property.hostel") || "Hostel", value: "hostel" },
+            ]}
+            placeholder={t("filter.propertyType") || "Property Type"}
+            value={dropdowns.propertyType}
+            onSelect={(val) => {
+              setDropdowns((prev) => ({
+                ...prev,
+                propertyType: val,
+                floor: val === "condo" || val === "apartment" ? prev.floor : "",
+              }));
+            }}
+          />
+        </View>
       )}
 
-      {(dropdowns.propertyType === "condo" || dropdowns.propertyType === "apartment") && (
+      {(dropdowns.propertyType === "condo" ||
+        dropdowns.propertyType === "apartment") && (
         <View>
           <SelectField
             options={[
               { label: t("choose floor") || "All Floors", value: "" },
               { label: t("ground floor") || "Ground Floor", value: "ground" },
-              { label: t("ground + attic") || "Ground + Attic", value: "ground_attic" },
+              {
+                label: t("ground + attic") || "Ground + Attic",
+                value: "ground_attic",
+              },
               ...Array.from({ length: 20 }, (_, i) => ({
                 label: `${i + 1}${ordinal(i + 1)} Floor`,
                 value: `${i + 1}`,
@@ -508,16 +625,16 @@ export default function PropertySearchForm() {
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "10,000 Ks", value: "10000" },
-              { label: "20,000 Ks", value: "20000" },
-              { label: "30,000 Ks", value: "30000" },
-              { label: "40,000 Ks", value: "40000" },
-              { label: "50,000 Ks", value: "50000" },
-              { label: "60,000 Ks", value: "60000" },
-              { label: "70,000 Ks", value: "70000" },
-              { label: "80,000 Ks", value: "80000" },
-              { label: "90,000 Ks", value: "90000" },
-              { label: "100,000 Ks", value: "100000" },
+              { label: "10,000", value: "10000" },
+              { label: "20,000", value: "20000" },
+              { label: "30,000", value: "30000" },
+              { label: "40,000", value: "40000" },
+              { label: "50,000", value: "50000" },
+              { label: "60,000", value: "60000" },
+              { label: "70,000", value: "70000" },
+              { label: "80,000", value: "80000" },
+              { label: "90,000", value: "90000" },
+              { label: "100,000", value: "100000" },
             ]}
             placeholder={t("filter.minPrice") || "Min Price"}
             value={dropdowns.minPrice}
@@ -527,26 +644,26 @@ export default function PropertySearchForm() {
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "10,000 Ks", value: "10000" },
-              { label: "20,000 Ks", value: "20000" },
-              { label: "30,000 Ks", value: "30000" },
-              { label: "40,000 Ks", value: "40000" },
-              { label: "50,000 Ks", value: "50000" },
-              { label: "60,000 Ks", value: "60000" },
-              { label: "70,000 Ks", value: "70000" },
-              { label: "80,000 Ks", value: "80000" },
-              { label: "90,000 Ks", value: "90000" },
-              { label: "100,000 Ks", value: "100000" },
-              { label: "110,000 Ks", value: "110000" },
-              { label: "120,000 Ks", value: "120000" },
-              { label: "130,000 Ks", value: "130000" },
-              { label: "140,000 Ks", value: "140000" },
-              { label: "150,000 Ks", value: "150000" },
-              { label: "160,000 Ks", value: "160000" },
-              { label: "170,000 Ks", value: "170000" },
-              { label: "180,000 Ks", value: "180000" },
-              { label: "190,000 Ks", value: "190000" },
-              { label: "200,000 Ks", value: "200000" },
+              { label: "10,000", value: "10000" },
+              { label: "20,000", value: "20000" },
+              { label: "30,000", value: "30000" },
+              { label: "40,000", value: "40000" },
+              { label: "50,000", value: "50000" },
+              { label: "60,000", value: "60000" },
+              { label: "70,000", value: "70000" },
+              { label: "80,000", value: "80000" },
+              { label: "90,000", value: "90000" },
+              { label: "100,000", value: "100000" },
+              { label: "110,000", value: "110000" },
+              { label: "120,000", value: "120000" },
+              { label: "130,000", value: "130000" },
+              { label: "140,000", value: "140000" },
+              { label: "150,000", value: "150000" },
+              { label: "160,000", value: "160000" },
+              { label: "170,000", value: "170000" },
+              { label: "180,000", value: "180000" },
+              { label: "190,000", value: "190000" },
+              { label: "200,000", value: "200000" },
             ]}
             placeholder={t("filter.maxPrice") || "Max Price"}
             value={dropdowns.maxPrice}
@@ -556,35 +673,35 @@ export default function PropertySearchForm() {
       </View>
 
       {dealType !== "building" && (
-      <View>
-        <SelectField
-          options={[
-            { label: `1 ${t("filter.room") || "Room"}`, value: "1" },
-            { label: `2 ${t("filter.rooms") || "Rooms"}`, value: "2" },
-            { label: `3 ${t("filter.rooms") || "Rooms"}`, value: "3" },
-            { label: `4+ ${t("filter.rooms") || "Rooms"}`, value: "4" },
-          ]}
-          placeholder={t("filter.rooms") || "Rooms"}
-          value={dropdowns.rooms}
-          onSelect={(val) => handleSelectDropdown("rooms", val)}
-        />
-      </View>
+        <View>
+          <SelectField
+            options={[
+              { label: `1 ${t("filter.room") || "Room"}`, value: "1" },
+              { label: `2 ${t("filter.rooms") || "Rooms"}`, value: "2" },
+              { label: `3 ${t("filter.rooms") || "Rooms"}`, value: "3" },
+              { label: `4+ ${t("filter.rooms") || "Rooms"}`, value: "4" },
+            ]}
+            placeholder={t("filter.rooms") || "Rooms"}
+            value={dropdowns.rooms}
+            onSelect={(val) => handleSelectDropdown("rooms", val)}
+          />
+        </View>
       )}
 
       {dealType !== "building" && (
-      <View>
-        <SelectField
-          options={[
-            { label: "400 Sqft", value: "400" },
-            { label: "800 Sqft", value: "800" },
-            { label: "1200 Sqft", value: "1200" },
-            { label: "2000+ Sqft", value: "2000" },
-          ]}
-          placeholder={t("filter.sqft") || "Square Feet"}
-          value={dropdowns.sqft}
-          onSelect={(val) => handleSelectDropdown("sqft", val)}
-        />
-      </View>
+        <View>
+          <SelectField
+            options={[
+              { label: "400 Sqft", value: "400" },
+              { label: "800 Sqft", value: "800" },
+              { label: "1200 Sqft", value: "1200" },
+              { label: "2000+ Sqft", value: "2000" },
+            ]}
+            placeholder={t("filter.sqft") || "Square Feet"}
+            value={dropdowns.sqft}
+            onSelect={(val) => handleSelectDropdown("sqft", val)}
+          />
+        </View>
       )}
 
       <TouchableOpacity
@@ -612,7 +729,9 @@ export default function PropertySearchForm() {
             <Heading>{alertDialog?.title || ""}</Heading>
           </AlertDialog.Header>
           <AlertDialog.Body>
-            <Text className="text-center text-slate-500">{alertDialog?.message || ""}</Text>
+            <Text className="text-center text-slate-500">
+              {alertDialog?.message || ""}
+            </Text>
           </AlertDialog.Body>
           <AlertDialog.Footer className="w-full flex-row justify-center">
             <Button onPress={() => setAlertDialog(null)} className="flex-1">

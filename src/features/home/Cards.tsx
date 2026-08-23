@@ -90,7 +90,9 @@ export const Card = ({ item, onPress, onSave, onCompare, isSaved, compareSelecte
   const displayPrice =
     item.currency_unit === "lakhs"
       ? `${item.price} သိန်း (ကျပ်)`
-      : `$${item.price}`;
+      : item.currency_unit === "kyats"
+        ? `${item.price.toLocaleString()} Ks`
+        : `$${item.price}`;
   const regionName = item.states_regions
     ? item.states_regions.name_mm || item.states_regions.name_en
     : "";
@@ -201,7 +203,9 @@ export const FeaturedCard = ({ item, onPress }: Props) => {
   const displayPrice =
     item.currency_unit === "lakhs"
       ? `${item.price} သိန်း (ကျပ်)`
-      : `$${item.price}`;
+      : item.currency_unit === "kyats"
+        ? `${item.price.toLocaleString()} Ks`
+        : `$${item.price}`;
 
   return (
     <TouchableOpacity

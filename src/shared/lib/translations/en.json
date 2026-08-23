@@ -112,7 +112,17 @@
     "noResults": "No results found",
     "searchButton": "Search Now",
     "backToSearch": "Back to Search",
-    "resultsFound": "{{num}} results found"
+    "resultsFound": "{{num}} results found",
+    "chooseHostelType": "Choose Hostel Type",
+    "allHostelTypes": "All Hostel Types",
+    "maleHostel": "Male Hostel",
+    "femaleHostel": "Female Hostel",
+    "marriedHostel": "Married Couples' Hostel",
+    "chooseHostelStructure": "Choose Hostel Structure",
+    "allStructures": "All Structures",
+    "hall": "Hall",
+    "marriedAccommodation": "Married Couples' Accommodation",
+    "bedroom": "Bedroom"
   },
   "adsFilter": {
     "byIdNumber": "By ID Number",

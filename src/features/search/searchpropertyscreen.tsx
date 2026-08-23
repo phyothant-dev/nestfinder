@@ -76,6 +76,8 @@ export default function PropertySearchForm() {
     maxPrice: "",
     rooms: "",
     sqft: "",
+    hostelType: "",
+    hostelStructure: "",
   });
 
   const [results, setResults] = useState<Property[] | null>(null);
@@ -96,6 +98,8 @@ export default function PropertySearchForm() {
         maxPrice: "",
         rooms: "",
         sqft: "",
+        hostelType: "",
+        hostelStructure: "",
       });
       setResults(null);
     };
@@ -153,6 +157,8 @@ export default function PropertySearchForm() {
       maxPrice: dp.maxPrice || "",
       rooms: dp.rooms || "",
       sqft: dp.sqft || "",
+      hostelType: dp.hostelType || "",
+      hostelStructure: dp.hostelStructure || "",
     };
     setDropdowns(dd);
     handleSearchSubmit({ dealType: dt, dropdowns: dd });
@@ -419,6 +425,41 @@ export default function PropertySearchForm() {
           onSelect={(val) => handleSelectDropdown("township", val)}
         />
       </View>
+
+      {dealType === "building" && (
+      <View>
+        <SelectField
+          options={[
+            { label: t("filter.allHostelTypes") || "All Hostel Types", value: "" },
+            { label: t("filter.maleHostel") || "Male Hostel", value: "male" },
+            { label: t("filter.femaleHostel") || "Female Hostel", value: "female" },
+            { label: t("filter.marriedHostel") || "Married Couples' Hostel", value: "married" },
+          ]}
+          placeholder={t("filter.chooseHostelType") || "Choose Hostel Type"}
+          value={dropdowns.hostelType}
+          onSelect={(val) => handleSelectDropdown("hostelType", val)}
+        />
+      </View>
+      )}
+
+      {dealType === "building" && (
+      <View>
+        <SelectField
+          options={[
+            { label: t("filter.allStructures") || "All Structures", value: "" },
+            { label: t("filter.hall") || "Hall", value: "hall" },
+            { label: t("filter.marriedAccommodation") || "Married Couples' Accommodation", value: "married_accommodation" },
+            ...Array.from({ length: 20 }, (_, i) => ({
+              label: `${i + 1} ${t("filter.bedroom") || "Bedroom"}`,
+              value: `${i + 1}`,
+            })),
+          ]}
+          placeholder={t("filter.chooseHostelStructure") || "Choose Hostel Structure"}
+          value={dropdowns.hostelStructure}
+          onSelect={(val) => handleSelectDropdown("hostelStructure", val)}
+        />
+      </View>
+      )}
 
       {dealType !== "building" && (
       <View>

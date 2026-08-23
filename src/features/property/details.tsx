@@ -431,10 +431,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
     hostel: "အဆောင်",
   };
 
-  const displayTitle =
-    isBurmese && property.title_mm
-      ? property.title_mm
-      : property.title_en || property.title_mm;
+  const displayTitle = property.title_mm || property.title_en;
 
   const displayPrice =
     property.currency_unit === "lakhs"

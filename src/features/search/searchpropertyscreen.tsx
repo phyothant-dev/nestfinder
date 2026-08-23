@@ -672,14 +672,19 @@ export default function PropertySearchForm() {
           />
         </View>
       </View>
-      ) : (
+      ) : dealType === "rent" ? (
       <View className="flex-row gap-3">
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "100 Lakhs", value: "100" },
-              { label: "500 Lakhs", value: "500" },
-              { label: "1000 Lakhs", value: "1000" },
+              { label: isBurmese ? "1 သိန်း" : "1 Lakh", value: "1" },
+              { label: isBurmese ? "5 သိန်း" : "5 Lakhs", value: "5" },
+              { label: isBurmese ? "10 သိန်း" : "10 Lakhs", value: "10" },
+              { label: isBurmese ? "20 သိန်း" : "20 Lakhs", value: "20" },
+              { label: isBurmese ? "30 သိန်း" : "30 Lakhs", value: "30" },
+              { label: isBurmese ? "50 သိန်း" : "50 Lakhs", value: "50" },
+              { label: isBurmese ? "75 သိန်း" : "75 Lakhs", value: "75" },
+              { label: isBurmese ? "100 သိန်း" : "100 Lakhs", value: "100" },
             ]}
             placeholder={t("filter.minPrice") || "Min Price"}
             value={dropdowns.minPrice}
@@ -689,9 +694,41 @@ export default function PropertySearchForm() {
         <View className="flex-1">
           <SelectField
             options={[
-              { label: "2000 Lakhs", value: "2000" },
-              { label: "5000 Lakhs", value: "5000" },
-              { label: "10000 Lakhs", value: "10000" },
+              { label: isBurmese ? "1 သိန်း" : "1 Lakh", value: "1" },
+              { label: isBurmese ? "5 သိန်း" : "5 Lakhs", value: "5" },
+              { label: isBurmese ? "10 သိန်း" : "10 Lakhs", value: "10" },
+              { label: isBurmese ? "20 သိန်း" : "20 Lakhs", value: "20" },
+              { label: isBurmese ? "30 သိန်း" : "30 Lakhs", value: "30" },
+              { label: isBurmese ? "50 သိန်း" : "50 Lakhs", value: "50" },
+              { label: isBurmese ? "75 သိန်း" : "75 Lakhs", value: "75" },
+              { label: isBurmese ? "100 သိန်း" : "100 Lakhs", value: "100" },
+            ]}
+            placeholder={t("filter.maxPrice") || "Max Price"}
+            value={dropdowns.maxPrice}
+            onSelect={(val) => handleSelectDropdown("maxPrice", val)}
+          />
+        </View>
+      </View>
+      ) : (
+      <View className="flex-row gap-3">
+        <View className="flex-1">
+          <SelectField
+            options={[
+              { label: isBurmese ? "100 သိန်း" : "100 Lakhs", value: "100" },
+              { label: isBurmese ? "500 သိန်း" : "500 Lakhs", value: "500" },
+              { label: isBurmese ? "1000 သိန်း" : "1000 Lakhs", value: "1000" },
+            ]}
+            placeholder={t("filter.minPrice") || "Min Price"}
+            value={dropdowns.minPrice}
+            onSelect={(val) => handleSelectDropdown("minPrice", val)}
+          />
+        </View>
+        <View className="flex-1">
+          <SelectField
+            options={[
+              { label: isBurmese ? "2000 သိန်း" : "2000 Lakhs", value: "2000" },
+              { label: isBurmese ? "5000 သိန်း" : "5000 Lakhs", value: "5000" },
+              { label: isBurmese ? "10000 သိန်း" : "10000 Lakhs", value: "10000" },
             ]}
             placeholder={t("filter.maxPrice") || "Max Price"}
             value={dropdowns.maxPrice}

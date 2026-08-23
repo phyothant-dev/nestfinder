@@ -330,7 +330,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
         .single();
       conversationId = created?.id;
       if (conversationId) {
-        const title = property.title_en || property.title_mm || "Property";
+        const title = property.title_en || property.title_mm || t("property.propertyFallback");
         await supabase.from("messages").insert({
           conversation_id: conversationId,
           sender_id: user.id,
@@ -485,14 +485,14 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
     : null;
 
   const features = [
-    property.air_conditioning && "Air Conditioning",
-    property.balcony && "Balcony",
-    property.garden && "Garden",
-    property.water_supply && "Water Supply",
-    property.electricity && "Electricity",
-    property.security && "Security",
-    property.internet && "Internet",
-    property.car_parking && "Car Parking",
+    property.air_conditioning && t("property.featureAirConditioning"),
+    property.balcony && t("property.featureBalcony"),
+    property.garden && t("property.featureGarden"),
+    property.water_supply && t("property.featureWaterSupply"),
+    property.electricity && t("property.featureElectricity"),
+    property.security && t("property.featureSecurity"),
+    property.internet && t("property.featureInternet"),
+    property.car_parking && t("property.featureCarParking"),
   ].filter(Boolean) as string[];
 
   return (
@@ -780,7 +780,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
                   label={isBurmese ? "ဧရိယာ" : "Area"}
                   value={
                     property.area_value
-                      ? `${property.area_value} ${property.area_unit === "sqft" ? "sqft" : "Acre"}`
+                      ? `${property.area_value} ${property.area_unit === "sqft" ? t("property.sqft") : t("property.acre")}`
                       : "-"
                   }
                 />
@@ -999,7 +999,7 @@ export default function Details({ propertyId, onBack }: DetailsProps) {
                   <View className="flex-1 ml-3">
                     <View className="flex-row items-center gap-1.5">
                       <Text className="text-sm font-rubik-semibold" style={{ color: textPrimary }}>
-                        {agent.full_name || "Agent"}
+                        {agent.full_name || t("property.agentFallback")}
                       </Text>
                       <CheckCircle size={14} color="#134686" fill="#134686" />
                     </View>

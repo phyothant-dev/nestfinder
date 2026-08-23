@@ -44,7 +44,19 @@
   },
   "property": {
     "savedSuccess": "Property saved successfully.",
-    "removedFromSaved": "Property removed from saved."
+    "removedFromSaved": "Property removed from saved.",
+    "propertyFallback": "Property",
+    "agentFallback": "Agent",
+    "featureBalcony": "Balcony",
+    "featureGarden": "Garden",
+    "featureElectricity": "Electricity",
+    "featureSecurity": "Security",
+    "featureInternet": "Internet",
+    "featureAirConditioning": "Air Conditioning",
+    "featureWaterSupply": "Water Supply",
+    "featureCarParking": "Car Parking",
+    "sqft": "sqft",
+    "acre": "Acre"
   },
   "createPost": {
     "selectCategory": "Choose Advertisement Type",

@@ -44,7 +44,19 @@
   },
   "property": {
     "savedSuccess": "အိမ်ခြံမြေကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။",
-    "removedFromSaved": "အိမ်ခြံမြေကို သိမ်းဆည်းမှုမှ ဖယ်ရှားပြီးပါပြီ။"
+    "removedFromSaved": "အိမ်ခြံမြေကို သိမ်းဆည်းမှုမှ ဖယ်ရှားပြီးပါပြီ။",
+    "propertyFallback": "အိမ်ခြံမြေ",
+    "agentFallback": "အေးဂျင့်",
+    "featureBalcony": "ဟင်းလင်ကွင်း",
+    "featureGarden": "ဥယျာဉ်",
+    "featureElectricity": "လျှပ်စစ်",
+    "featureSecurity": "လုံခြုံရေး",
+    "featureInternet": "အင်တာနက်",
+    "featureAirConditioning": "လေအေးစက်",
+    "featureWaterSupply": "ရေ",
+    "featureCarParking": "ကားပါကင်",
+    "sqft": "စတုရန်းပေ",
+    "acre": "ဧက"
   },
   "createPost": {
     "selectCategory": "ကြော်ငြာအမျိုးအစားရွေးချယ်ပါ",

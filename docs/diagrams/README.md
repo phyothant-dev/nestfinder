@@ -12,7 +12,7 @@ All diagrams for the Nest Finder (Expo React Native + Supabase) app. Each diagra
 | Sequence — create post | [sequence-create.mmd](./sequence-create.mmd) | Domain flow for "Post property / hostel / wanted listing" |
 | Sequence — chat | [sequence-chat.mmd](./sequence-chat.mmd) | Domain flow for "Chat with agent / seller", "Respond via chat" |
 | Sequence — profile | [sequence-profile.mmd](./sequence-profile.mmd) | Domain flow for "Manage My Listings", "Manage profile", "Receive notifications" |
-| Sequence — seller process | [sequence-seller.mmd](./sequence-seller.mmd) | Domain flow for the seller: post, manage, mark sold / delete, respond via chat |
+| Sequence — buyer & seller process | [sequence-seller.mmd](./sequence-seller.mmd) | Domain flow for the full deal: seller posts, buyer browses / saves / compares, both negotiate via chat, seller marks sold / deletes |
 | Class diagram | [class.mmd](./class.mmd) | Supabase database tables as classes (same schema as ER) |
 | ER diagram | [er.mmd](./er.mmd) | Supabase database schema and relationships |
 | Use case diagram | [usecase.mmd](./usecase.mmd) | Actors and use cases (rendered as a flowchart; GitHub Mermaid has no `useCaseDiagram` support) |

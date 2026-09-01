@@ -2,27 +2,53 @@ sequenceDiagram
     actor Seller
     participant P as Property
     participant L as My Listings
+    actor Buyer
     participant N as Notification
+    participant R as Region / Township
+    participant V as PropertyView
+    participant SP as SavedProperty
+    participant A as Agent (Profile)
     participant C as Conversation
     participant M as Message
-    participant B as Buyer
 
     Seller->>P: post listing (property / hostel, media)
     P-->>Seller: id + ad_number (PROP-xxxxx)
     P->>N: notify-new-property (fan-out)
-    N-->>B: new_property notification + push
-    Seller->>L: open My Listings
-    L-->>Seller: own listings + monthly post limit
-    Seller->>L: filter tab (For Sale / For Rent / Sold)
+    N-->>Buyer: new_property notification + push
+
+    Buyer->>P: browse / search (deal, region, type, price, rooms)
+    P->>R: filter by state_region_id / township_id
+    R-->>P: matching rows
+    P-->>Buyer: public listings (is_flagged = false)
+    Buyer->>P: open property detail
+    P->>V: increment_property_views(user_id)
+    V-->>P: view counted
+    P-->>Buyer: property + related
+    Buyer->>SP: save (user_id, property_id)
+    SP-->>Buyer: saved
+    Buyer->>P: compare (add / remove / clear)
+    P-->>Buyer: compare items
+    Buyer->>A: view agent profile / call
+    A-->>Buyer: listings + stats
+
+    Buyer->>C: contact agent (property, buyer, seller)
+    C-->>Both: conversation + unread counts
+    Buyer->>M: send message (offer / question)
+    M->>C: realtime INSERT
+    M->>N: notify-new-message
+    N-->>Seller: new_message notification + push
+    Seller->>M: reply (text / attachment)
+    M->>C: realtime INSERT
+    M->>N: notify-new-message
+    N-->>Buyer: new_message notification + push
+    Both->>M: mark read (read_at)
+    C-->>Both: unread cleared
+
+    Buyer->>P: close the deal (negotiate & pay off-platform)
+    P-->>Buyer: seller marks property sold / unavailable
+    Seller->>L: manage listing (filter For Sale / For Rent / Sold)
     L-->>Seller: filtered listings
     Seller->>P: update is_sold = true, sold_at
     P-->>Seller: marked sold
     Seller->>P: delete listing
     P-->>Seller: removed
-    Seller->>C: open conversation (property, buyer)
-    C-->>Seller: seller_unread_count
-    Seller->>M: insert reply (text / attachment)
-    M->>N: notify-new-message
-    N-->>B: new_message notification + push
-    Seller->>M: mark read (read_at)
-    C-->>Seller: unread cleared
